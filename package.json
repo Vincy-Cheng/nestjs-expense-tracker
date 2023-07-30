@@ -19,12 +19,14 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm": "npm run build && ts-node ./node_modules/typeorm/cli",
-    "migration:run": "npm run typeorm migration:run -- -d ./src/datasource.ts",
-    "migration:generate": "npm run typeorm -- -d ./src/datasource.ts migration:generate ./src/migrations/$npm_config_name",
-    "migration:create": "npm run typeorm -- migration:create ./src/migrations/$npm_config_name",
-    "migration:revert": "npm run typeorm -- -d ./src/datasource.ts migration:revert",
-    "migration:windows:generate": "npm run typeorm -- -d ./src/datasource.ts migration:generate ./src/migrations/%npm_config_name%",
-    "migration:windows:create": "npm run typeorm -- migration:create ./src/migrations/%npm_config_name%"
+    "m:run": "npm run typeorm m:run -- -d ./src/datasource.ts",
+    "m:gen": "npm run typeorm -- -d ./src/datasource.ts m:gen ./src/migrations/$npm_config_name",
+    "m:create": "npm run typeorm -- m:create ./src/migrations/$npm_config_name",
+    "m:revert": "npm run typeorm -- -d ./src/datasource.ts m:revert",
+    "m:win:gen": "npm run typeorm -- -d ./src/datasource.ts m:gen ./src/migrations/%npm_config_name%",
+    "m:win:create": "npm run typeorm -- m:create ./src/migrations/%npm_config_name%",
+    "m:gen-run":"npm run m:gen --name=$npm_config_name m:run",
+    "m:win:gen-run":"npm run m:win:gen --name=%npm_config_name% m:run"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
