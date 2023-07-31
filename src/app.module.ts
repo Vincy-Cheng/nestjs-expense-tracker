@@ -7,6 +7,9 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { datasource } from './datasource';
+import { AccountsModule } from './accounts/accounts.module';
+import { CategoriesModule } from './categories/categories.module';
+import { RecordsModule } from './records/records.module';
 
 @Module({
   imports: [
@@ -37,6 +40,9 @@ import { datasource } from './datasource';
       },
     }),
     UsersModule,
+    AccountsModule,
+    CategoriesModule,
+    RecordsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

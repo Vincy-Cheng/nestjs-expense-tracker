@@ -1,40 +1,41 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  OneToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Account } from '../../accounts/entities/account.entity';
+import { Category } from '../../categories/entities/category.entity';
+import { RecordType } from '../../enums';
 
-@Entity({ name: 'users' })
-export class User extends BaseEntity {
+@Entity({ name: 'records' })
+export class Record extends BaseEntity {
   @PrimaryGeneratedColumn()
   @ApiProperty()
   id: number;
 
-  @Column({ length: 500 })
+  @Column()
   @ApiProperty()
   @IsNotEmpty()
-  username: string;
+  @IsNumber()
+  price: number;
+
+  @Column()
+  @ApiProperty({ type: RecordType })
+  @IsEnum(RecordType)
+  @IsNotEmpty()
+  recordType: RecordType;
 
   @Column({ length: 500 })
   @ApiProperty()
   @IsNotEmpty()
-  @IsEmail()
-  email: string;
-
-  @Column({})
-  @ApiProperty()
-  @IsNotEmpty()
-  @Exclude({ toPlainOnly: true })
-  password: string;
+  remarks: string;
 
   @CreateDateColumn({ type: 'timestamp' })
   @Exclude()
@@ -48,10 +49,10 @@ export class User extends BaseEntity {
   @Exclude()
   deletedAt: Date;
 
-  @OneToMany(() => Account, (accounts) => accounts.user)
-  accounts: Account[];
+  @ManyToOne(() => Category, (category) => category.records)
+  category: Category;
 
-  constructor(partial: Partial<User>) {
+  constructor(partial: Partial<Record>) {
     super();
     Object.assign(this, partial);
   }
