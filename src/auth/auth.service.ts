@@ -16,7 +16,7 @@ export class AuthService {
    * @returns
    */
   async validateUser(username: string, password: string): Promise<any> {
-    const user = await this.usersService.findOne(username);
+    const user = await this.usersService.findByUsername(username);
 
     // Match the hashed password
     if (user && user.password === password) {
