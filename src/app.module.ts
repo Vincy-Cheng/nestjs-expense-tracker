@@ -10,6 +10,7 @@ import { datasource } from './datasource';
 import { AccountsModule } from './accounts/accounts.module';
 import { CategoriesModule } from './categories/categories.module';
 import { RecordsModule } from './records/records.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { RecordsModule } from './records/records.module';
     AccountsModule,
     CategoriesModule,
     RecordsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
