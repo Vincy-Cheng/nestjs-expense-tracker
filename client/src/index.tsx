@@ -6,6 +6,8 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import { store } from './store';
 import { Provider } from 'react-redux';
+import { DarkModeProvider } from './provider/DarkModeProvider';
+import { MenuOpenProvider } from './provider/MenuOpenProvider';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -13,11 +15,13 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    {/* <BrowserRouter> */}
     <Provider store={store}>
-      <App />
+      <DarkModeProvider>
+        <MenuOpenProvider>
+          <App />
+        </MenuOpenProvider>
+      </DarkModeProvider>
     </Provider>
-    {/* </BrowserRouter> */}
   </React.StrictMode>,
 );
 

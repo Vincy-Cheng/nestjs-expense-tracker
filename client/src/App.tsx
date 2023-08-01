@@ -5,9 +5,9 @@ import Layout from './layout/Layout';
 
 function App() {
   return (
-    <Layout>
-      <RouterProvider router={router} />
-    </Layout>
+    // <Layout>
+    <RouterProvider router={router} />
+    // </Layout>
   );
 }
 
