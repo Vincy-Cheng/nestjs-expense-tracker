@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react';
+import Header from '../components/Header';
 
 type LayoutProps = {
   children: ReactElement;
@@ -7,7 +8,7 @@ type LayoutProps = {
 const Layout = ({ children }: LayoutProps) => {
   return (
     <div>
-      <div>Title</div>
+      <Header />
       <div>{children}</div>
     </div>
   );
