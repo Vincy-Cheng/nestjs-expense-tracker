@@ -8,6 +8,16 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
 
+  app.setGlobalPrefix('api/v1', {
+    exclude: ['_ah/start'],
+  });
+
+  app.enableCors({
+    origin: /^https?:\/\/((localhost)|(127\.0\.0\.1)):\d{4}$/,
+    credentials: true,
+    exposedHeaders: ['Content-Disposition'],
+  });
+
   const config = new DocumentBuilder()
     .setTitle('Expense Tracker')
     .setVersion('1.0')
