@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { IsCurrency, IsISO4217CurrencyCode, IsNotEmpty } from 'class-validator';
+import { IsISO4217CurrencyCode, IsNotEmpty } from 'class-validator';
 import {
   BaseEntity,
   Column,

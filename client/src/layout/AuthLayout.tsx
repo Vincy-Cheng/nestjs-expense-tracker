@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { useAppSelector } from '../../hooks';
-import Layout from '../../layout/Layout';
+import { useAppSelector } from '../hooks';
+import Layout from './Layout';
 
 type Props = {};
 
@@ -11,7 +11,7 @@ const AuthLayout = (props: Props) => {
   }
 
   return (
-    <Layout>
+    <Layout mode="dashboard">
       <Outlet />
     </Layout>
   );
