@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -23,6 +23,8 @@ export class AuthService {
       if (await bcrypt.compare(password, user.password)) {
         const { password, ...result } = user;
         return result;
+      } else {
+        throw new UnauthorizedException('Incorrect password');
       }
     }
 
@@ -36,10 +38,11 @@ export class AuthService {
    * @param {string} user.username
    * @returns
    */
-  async login(user: { id: number; username: string }) {
+  async login(user: { id: number; username: string; email: string }) {
     const payload = { username: user.username, sub: user.id };
     return {
       access_token: this.jwtService.sign(payload),
+      user,
     };
   }
 }

@@ -1,20 +1,33 @@
 import React from 'react';
-import { useAppDispatch } from '../hooks';
+import { useAppDispatch, useAppSelector } from '../hooks';
 import { logout } from '../store/userSlice';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {};
 
 const Header = (props: Props) => {
   const dispatch = useAppDispatch();
+  const { isSignedIn } = useAppSelector((state) => state.user);
+  const navigate = useNavigate();
   return (
-    <div className="">
-      Header{' '}
+    <div className="flex justify-between">
+      Expense Tracker
       <button
         onClick={() => {
           dispatch(logout());
         }}
       >
-        logout
+        {isSignedIn ? (
+          <>Logout</>
+        ) : (
+          <div
+            onClick={() => {
+              navigate('/login');
+            }}
+          >
+            Login
+          </div>
+        )}
       </button>
     </div>
   );

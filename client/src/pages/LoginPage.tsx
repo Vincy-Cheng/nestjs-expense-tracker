@@ -1,29 +1,42 @@
 import React, { useState } from 'react';
 import { useAppDispatch } from '../hooks';
-import { logout, setIsSignedIn } from '../store/userSlice';
+import { setIsSignedIn } from '../store/userSlice';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { signIn } from '../apis';
+import CustomAlert from '../components/CustomAlert';
 
 type Props = {};
 
 const LoginPage = (props: Props) => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [error, setError] = useState<string>('');
   const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
 
   const login = useMutation(signIn, {
     onError(error, variables, context) {
-      // An error happened!
-      dispatch(logout());
+      console.log(error);
     },
     onSuccess(data, variables, context) {
-      console.log(data);
-      dispatch(setIsSignedIn());
-      navigate('/');
+      if (data && data?.status < 400 && data.user) {
+        dispatch(
+          setIsSignedIn({
+            access_token: data.access_token,
+            user: data.user,
+          }),
+        );
+        setError('');
+        navigate('/');
+      } else {
+        // Handle error
+        console.log(data?.error);
+        setError(data?.error?.data.message ?? '');
+      }
     },
+    retry: 3,
   });
 
   const handleSignIn = async (
@@ -37,8 +50,10 @@ const LoginPage = (props: Props) => {
   };
 
   return (
-    <div className="flex flex-col items-center gap-4 font-Barlow ">
-      <div className="w-fit p-3 text-lg flex flex-col gap-2 rounded-lg shadow">
+    <div className="flex flex-col items-center gap-4 font-Barlow">
+      <div className="min-w-[50%] py-3 px-5 text-lg flex flex-col gap-2 rounded-lg shadow">
+        {error && <CustomAlert type={'error'} content={error} />}
+
         <div className="flex flex-col gap-2">
           <div>Username: </div>
           <input
