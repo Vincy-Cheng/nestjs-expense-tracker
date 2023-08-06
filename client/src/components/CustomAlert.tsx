@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { AlertTriangle, Check, CircleX, InfoCircle } from 'tabler-icons-react';
 
-type CustomAlertType = 'warning' | 'success' | 'error' | 'info';
+export type CustomAlertType = 'warning' | 'success' | 'error' | 'info';
 
 type CustomAlertProps = {
   type: CustomAlertType;

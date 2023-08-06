@@ -12,7 +12,6 @@ const Layout = ({ children, mode }: LayoutProps) => {
   return (
     <div className="grid grid-cols-5 min-h-screen h-full font-Barlow p-2 gap-2">
       {mode === 'dashboard' && <Navbar />}
-      {/* <Navbar /> */}
 
       <div
         className={clsx(
