@@ -44,9 +44,7 @@ const LoginPage = (props: Props) => {
     retry: 3,
   });
 
-  const handleSignIn = async (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-  ) => {
+  const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (username && password) {
@@ -62,7 +60,10 @@ const LoginPage = (props: Props) => {
 
   return (
     <div className="flex flex-col items-center gap-4 font-Barlow">
-      <div className="min-w-[50%] py-3 px-5 text-lg flex flex-col gap-2 rounded-lg shadow">
+      <form
+        className="min-w-[50%] py-3 px-5 text-lg flex flex-col gap-2 rounded-lg shadow"
+        onSubmit={handleSignIn}
+      >
         {error && <CustomAlert type={'error'} content={error} />}
 
         <div className="flex flex-col gap-2">
@@ -107,14 +108,14 @@ const LoginPage = (props: Props) => {
           </div>
         </div>
         <div className="flex justify-end">
-          <div
+          <button
             className="bg-info-400 w-fit p-1 rounded-md text-white hover:bg-info-300 cursor-pointer active:bg-info-500 select-none"
-            onClick={handleSignIn}
+            type="submit"
           >
             Login
-          </div>
+          </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

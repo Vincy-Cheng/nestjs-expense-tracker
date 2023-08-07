@@ -48,9 +48,7 @@ const RegisterPage = (props: Props) => {
     retry: 3,
   });
 
-  const handleRegister = async (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-  ) => {
+  const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (
@@ -74,7 +72,10 @@ const RegisterPage = (props: Props) => {
 
   return (
     <div className="flex flex-col items-center gap-4 font-Barlow">
-      <div className="w-1/2 py-3 px-5 text-lg flex flex-col gap-2 rounded-lg shadow">
+      <form
+        className="w-1/2 py-3 px-5 text-lg flex flex-col gap-2 rounded-lg shadow"
+        onSubmit={handleRegister}
+      >
         {error.message && (
           <CustomAlert type={error.type} content={error.message} />
         )}
@@ -151,14 +152,11 @@ const RegisterPage = (props: Props) => {
         </div>
 
         <div className="flex justify-end">
-          <div
-            className="bg-info-400 w-fit p-1 rounded-md text-white hover:bg-info-300 cursor-pointer active:bg-info-500 select-none"
-            onClick={handleRegister}
-          >
+          <button className="bg-info-400 w-fit p-1 rounded-md text-white hover:bg-info-300 cursor-pointer active:bg-info-500 select-none">
             Register
-          </div>
+          </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 };
