@@ -19,12 +19,12 @@ export class User extends BaseEntity {
   @ApiProperty()
   id: number;
 
-  @Column({ length: 500 })
+  @Column({ length: 500, unique: true })
   @ApiProperty()
   @IsNotEmpty()
   username: string;
 
-  @Column({ length: 500 })
+  @Column({ length: 500, unique: true })
   @ApiProperty()
   @IsNotEmpty()
   @IsEmail()

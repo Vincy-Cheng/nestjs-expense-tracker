@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -16,7 +17,25 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  async create(@Body() createUserDto: CreateUserDto) {
+    // Check any existed user
+
+    const userInUsername = await this.usersService.findByUsername(
+      createUserDto.username,
+    );
+
+    const userInEmail = await this.usersService.findByEmail(
+      createUserDto.email,
+    );
+
+    if (userInUsername) {
+      throw new UnauthorizedException('Username is already in used.');
+    }
+
+    if (userInEmail) {
+      throw new UnauthorizedException('Email is already in used.');
+    }
+
     return this.usersService.create(createUserDto);
   }
 
@@ -25,10 +44,10 @@ export class UsersController {
   //   return this.usersService.findAll();
   // }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.usersService.findByUsername(+id);
-  // }
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.usersService.findByUsername(+id);
+  }
 
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
