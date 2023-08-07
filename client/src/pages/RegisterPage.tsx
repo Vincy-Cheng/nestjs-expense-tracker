@@ -4,19 +4,21 @@ import { useAppDispatch } from '../hooks';
 import CustomAlert, { CustomAlertType } from '../components/CustomAlert';
 import { User } from '../apis/type';
 import { Eye } from 'tabler-icons-react';
+import { useMutation } from '@tanstack/react-query';
+import { register } from '../apis';
 
 type Props = {};
 
-interface NewUser extends User {
+export interface NewUser extends User {
   email: string;
-  confirmPasssword: string;
+  confirmPassword: string;
 }
 
 const RegisterPage = (props: Props) => {
   const [userInfo, setUserInfo] = useState<NewUser>({
     username: '',
     password: '',
-    confirmPasssword: '',
+    confirmPassword: '',
     email: '',
   });
   const [error, setError] = useState<{
@@ -27,13 +29,52 @@ const RegisterPage = (props: Props) => {
   const [showConfirmPassword, setConfirmShowPassword] =
     useState<boolean>(false);
 
-  const navigate = useNavigate();
+  const isValidEmail = (email: string): boolean => {
+    return /\S+@\S+\.\S+/.test(email);
+  };
 
-  const dispatch = useAppDispatch();
+  const createUser = useMutation(register, {
+    onError(error, variables, context) {
+      console.log(error);
+    },
+    onSuccess(data, variables, context) {
+      if (data && data?.status < 400 && data.user) {
+        setError({ type: 'success', message: 'User is created' });
+      } else {
+        // Handle error
+        setError({ type: 'error', message: data?.error?.data.message ?? '' });
+      }
+    },
+    retry: 3,
+  });
+
+  const handleRegister = async (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ) => {
+    event.preventDefault();
+
+    if (
+      !userInfo.username ||
+      !userInfo.email ||
+      !userInfo.password ||
+      !userInfo.confirmPassword
+    ) {
+      return setError({
+        message: 'Please fill up all the blanks',
+        type: 'error',
+      });
+    }
+
+    if (isValidEmail(userInfo.email)) {
+      await createUser.mutateAsync(userInfo);
+    } else {
+      setError({ message: 'Invalid email', type: 'error' });
+    }
+  };
 
   return (
     <div className="flex flex-col items-center gap-4 font-Barlow">
-      <div className="min-w-[50%] py-3 px-5 text-lg flex flex-col gap-2 rounded-lg shadow">
+      <div className="w-1/2 py-3 px-5 text-lg flex flex-col gap-2 rounded-lg shadow">
         {error.message && (
           <CustomAlert type={error.type} content={error.message} />
         )}
@@ -90,8 +131,8 @@ const RegisterPage = (props: Props) => {
           <div>Confirm Password: </div>
           <div className=" border border-info-600 rounded-md flex justify-between items-center px-2">
             <input
-              value={userInfo.confirmPasssword}
-              type={showPassword ? 'text' : 'password'}
+              value={userInfo.confirmPassword}
+              type={showConfirmPassword ? 'text' : 'password'}
               className="outline-none bg-transparent flex-1"
               onChange={(e) => {
                 setUserInfo((prev) => {
@@ -112,7 +153,7 @@ const RegisterPage = (props: Props) => {
         <div className="flex justify-end">
           <div
             className="bg-info-400 w-fit p-1 rounded-md text-white hover:bg-info-300 cursor-pointer active:bg-info-500 select-none"
-            // onClick={handleSignIn}
+            onClick={handleRegister}
           >
             Register
           </div>

@@ -11,7 +11,14 @@ const Header = (props: Props) => {
   const navigate = useNavigate();
   return (
     <div className="flex justify-between">
-      Expense Tracker
+      <button
+        onClick={() => {
+          navigate('/');
+        }}
+      >
+        Expense Tracker
+      </button>
+
       <button
         onClick={() => {
           dispatch(logout());

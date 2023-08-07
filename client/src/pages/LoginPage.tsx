@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useAppDispatch } from '../hooks';
+import { useAppDispatch, useAppSelector } from '../hooks';
 import { setIsSignedIn } from '../store/userSlice';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { signIn } from '../apis';
 import CustomAlert from '../components/CustomAlert';
@@ -10,6 +10,8 @@ import { Eye } from 'tabler-icons-react';
 type Props = {};
 
 const LoginPage = (props: Props) => {
+  const { isSignedIn } = useAppSelector((state) => state.user);
+
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
@@ -48,9 +50,15 @@ const LoginPage = (props: Props) => {
     event.preventDefault();
 
     if (username && password) {
-      login.mutateAsync({ username, password });
+      await login.mutateAsync({ username, password });
+    } else {
+      setError('Username / Password is missing');
     }
   };
+
+  if (isSignedIn) {
+    return <Navigate to={'/'} />;
+  }
 
   return (
     <div className="flex flex-col items-center gap-4 font-Barlow">

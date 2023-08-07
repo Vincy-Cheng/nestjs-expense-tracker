@@ -25,7 +25,7 @@ const CustomAlert = ({ type, content }: CustomAlertProps) => {
   return (
     <div
       className={clsx(
-        'p-2 rounded-sm flex gap-2 text-emerald-500 bg-emerald-100 items-center',
+        'p-2 rounded-sm flex gap-2',
         type === 'error'
           ? 'text-red-500 bg-red-100'
           : type === 'warning'
@@ -35,7 +35,7 @@ const CustomAlert = ({ type, content }: CustomAlertProps) => {
           : 'text-secondary-400 bg-secondary-100',
       )}
     >
-      {icon(type)}
+      <span className="pt-1"> {icon(type)}</span>
       <p className="flex-1">{content}</p>
     </div>
   );
