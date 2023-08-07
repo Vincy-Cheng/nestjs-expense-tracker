@@ -6,6 +6,11 @@ export interface User {
   password: string;
 }
 
+export interface Account {
+  name: string;
+  currency: string;
+}
+
 interface ErrorResponse {
   status: number;
   error?: AxiosResponse;

@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAccountDto } from './dto/create-account.dto';
-import { UpdateAccountDto } from './dto/update-account.dto';
+import { CreateWalletDto } from './dto/create-wallet.dto';
+import { UpdateWalletDto } from './dto/update-wallet.dto';
+import { Wallet } from './entities/wallet.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Account } from './entities/account.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
-export class AccountsService {
+export class WalletsService {
   constructor(
-    @InjectRepository(Account) private accountRepository: Repository<Account>,
+    @InjectRepository(Wallet) private accountRepository: Repository<Wallet>,
   ) {}
 
-  create(createAccountDto: CreateAccountDto) {
+  create(createWalletDto: CreateWalletDto) {
     return 'This action adds a new account';
   }
 
@@ -29,7 +29,7 @@ export class AccountsService {
     return `This action returns a #${id} account`;
   }
 
-  update(id: number, updateAccountDto: UpdateAccountDto) {
+  update(id: number, UpdateWalletDto: UpdateWalletDto) {
     return `This action updates a #${id} account`;
   }
 

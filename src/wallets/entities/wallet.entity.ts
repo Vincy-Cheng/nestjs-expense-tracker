@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { IsISO4217CurrencyCode, IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsISO4217CurrencyCode } from 'class-validator';
 import {
   BaseEntity,
   Column,
@@ -12,11 +12,11 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from '../../users/entities/user.entity';
 import { Category } from '../../categories/entities/category.entity';
+import { User } from '../../users/entities/user.entity';
 
-@Entity({ name: 'accounts' })
-export class Account extends BaseEntity {
+@Entity({ name: 'wallets' })
+export class Wallet extends BaseEntity {
   @PrimaryGeneratedColumn()
   @ApiProperty()
   id: number;
@@ -43,13 +43,13 @@ export class Account extends BaseEntity {
   @Exclude()
   deletedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.accounts)
+  @ManyToOne(() => User, (user) => user.wallets)
   user: User;
 
-  @OneToMany(() => Category, (category) => category.account)
+  @OneToMany(() => Category, (category) => category.wallet)
   categories: Category[];
 
-  constructor(partial: Partial<Account>) {
+  constructor(partial: Partial<Wallet>) {
     super();
     Object.assign(this, partial);
   }

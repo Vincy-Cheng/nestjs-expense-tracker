@@ -11,7 +11,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Account } from '../../accounts/entities/account.entity';
+import { Wallet } from '../../wallets/entities/wallet.entity';
 
 @Entity({ name: 'users' })
 export class User extends BaseEntity {
@@ -48,8 +48,8 @@ export class User extends BaseEntity {
   @Exclude()
   deletedAt: Date;
 
-  @OneToMany(() => Account, (accounts) => accounts.user)
-  accounts: Account[];
+  @OneToMany(() => Wallet, (wallets) => wallets.user)
+  wallets: Wallet[];
 
   constructor(partial: Partial<User>) {
     super();

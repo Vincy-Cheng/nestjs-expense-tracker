@@ -7,10 +7,10 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { datasource } from './datasource';
-import { AccountsModule } from './accounts/accounts.module';
 import { CategoriesModule } from './categories/categories.module';
 import { RecordsModule } from './records/records.module';
 import { AuthModule } from './auth/auth.module';
+import { WalletsModule } from './wallets/wallets.module';
 
 @Module({
   imports: [
@@ -26,10 +26,10 @@ import { AuthModule } from './auth/auth.module';
       },
     }),
     UsersModule,
-    AccountsModule,
     CategoriesModule,
     RecordsModule,
     AuthModule,
+    WalletsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

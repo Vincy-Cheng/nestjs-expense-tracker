@@ -6,6 +6,7 @@ import Chart from '../pages/Chart';
 import LoginPage from '../pages/LoginPage';
 import Layout from '../layout/Layout';
 import RegisterPage from '../pages/RegisterPage';
+import Record from '../pages/Record';
 
 export const routes = {
   authRoute: [
@@ -18,6 +19,11 @@ export const routes = {
       name: 'Charts',
       path: '/charts',
       element: <Chart />,
+    },
+    {
+      name: 'Records',
+      path: '/records',
+      element: <Record />,
     },
   ],
   publicRoute: [

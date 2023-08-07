@@ -26,14 +26,7 @@ const Header = (props: Props) => {
 
   return (
     <div className="flex justify-between">
-      <button
-        className="text-lg"
-        onClick={() => {
-          navigate('/');
-        }}
-      >
-        {header()}
-      </button>
+      <div className="text-lg">{header()}</div>
 
       <button
         onClick={() => {
