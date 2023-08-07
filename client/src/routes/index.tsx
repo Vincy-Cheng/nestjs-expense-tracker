@@ -7,15 +7,45 @@ import LoginPage from '../pages/LoginPage';
 import Layout from '../layout/Layout';
 import RegisterPage from '../pages/RegisterPage';
 
+export const routes = {
+  authRoute: [
+    {
+      name: 'Home',
+      path: '/',
+      element: <Home />,
+    },
+    {
+      name: 'Charts',
+      path: '/charts',
+      element: <Chart />,
+    },
+  ],
+  publicRoute: [
+    {
+      name: 'Login Page',
+      path: '/login',
+      element: <LoginPage />,
+    },
+    {
+      name: 'Register Page',
+      path: '/register',
+      element: <RegisterPage />,
+    },
+  ],
+};
+
 export const router = createBrowserRouter([
   {
     path: '',
     element: <AuthLayout />,
-    errorElement: <ErrorPage />,
-    children: [
-      { path: '/', element: <Home /> },
-      { path: 'charts', element: <Chart /> },
-    ],
+    errorElement: (
+      <Layout mode="layout">
+        <ErrorPage />
+      </Layout>
+    ),
+    children: routes.authRoute.map((route) => {
+      return { path: route.path, element: route.element };
+    }),
   },
   {
     path: '',
@@ -24,9 +54,8 @@ export const router = createBrowserRouter([
         <Outlet />
       </Layout>
     ),
-    children: [
-      { path: 'login', element: <LoginPage /> },
-      { path: 'register', element: <RegisterPage /> },
-    ],
+    children: routes.publicRoute.map((route) => {
+      return { path: route.path, element: route.element };
+    }),
   },
 ]);

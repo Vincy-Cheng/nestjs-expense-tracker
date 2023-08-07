@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAppDispatch } from '../hooks';
 import CustomAlert, { CustomAlertType } from '../components/CustomAlert';
 import { User } from '../apis/type';
 import { Eye } from 'tabler-icons-react';

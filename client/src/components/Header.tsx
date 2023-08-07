@@ -1,7 +1,7 @@
-import React from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks';
+import { routes } from '../routes';
 import { logout } from '../store/userSlice';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 type Props = {};
 
@@ -9,14 +9,30 @@ const Header = (props: Props) => {
   const dispatch = useAppDispatch();
   const { isSignedIn } = useAppSelector((state) => state.user);
   const navigate = useNavigate();
+
+  const location = useLocation();
+
+  const header = () => {
+    const authRoute = routes.authRoute.find(
+      (route) => route.path === location.pathname,
+    );
+
+    if (authRoute) {
+      return authRoute.name;
+    } else {
+      return ' Expense Tracker';
+    }
+  };
+
   return (
     <div className="flex justify-between">
       <button
+        className="text-lg"
         onClick={() => {
           navigate('/');
         }}
       >
-        Expense Tracker
+        {header()}
       </button>
 
       <button
