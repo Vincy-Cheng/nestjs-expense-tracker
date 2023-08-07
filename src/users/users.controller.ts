@@ -7,11 +7,18 @@ import {
   Param,
   Delete,
   UnauthorizedException,
+  UseGuards,
+  ClassSerializerInterceptor,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('User')
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -44,9 +51,10 @@ export class UsersController {
   //   return this.usersService.findAll();
   // }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findByUsername(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.usersService.findById(+id);
   }
 
   // @Patch(':id')

@@ -31,7 +31,7 @@ export class User extends BaseEntity {
   email: string;
 
   @Column({})
-  @ApiProperty()
+  @ApiProperty({ writeOnly: true })
   @IsNotEmpty()
   @Exclude({ toPlainOnly: true })
   password: string;
