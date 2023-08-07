@@ -3,6 +3,7 @@ import jwt_decode from 'jwt-decode';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import Layout from './Layout';
 import { logout } from '../store/userSlice';
+import { Axios } from '../apis';
 
 type Props = {};
 
@@ -28,6 +29,13 @@ const AuthLayout = (props: Props) => {
   } catch (error) {
     dispatch(logout());
     return <Navigate to={'/login'} />;
+  }
+
+  if (sessionStorage.getItem('access_token') !== '') {
+    //set default Authorization header for all requests
+    Axios.defaults.headers.common[
+      'Authorization'
+    ] = `Bearer ${sessionStorage.getItem('access_token')}`;
   }
 
   return (
