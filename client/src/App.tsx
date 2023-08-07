@@ -9,11 +9,11 @@ const queryClient = new QueryClient();
 
 function App() {
   return (
-    <Provider store={store}>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <Provider store={store}>
         <RouterProvider router={router} />
-      </QueryClientProvider>
-    </Provider>
+      </Provider>
+    </QueryClientProvider>
   );
 }
 
