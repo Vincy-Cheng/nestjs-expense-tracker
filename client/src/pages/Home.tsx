@@ -1,18 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
-import React from 'react';
-import { Account, User } from '../apis/type';
-import { fetchAllAccounts } from '../apis/account';
-import { Axios } from '../apis';
-import { AxiosError } from 'axios';
 import { Plus } from 'tabler-icons-react';
+import { fetchAllWallets } from '../apis/wallet';
 
 type Props = {};
 
 const Home = (props: Props) => {
   const { data, isError, isLoading, error } = useQuery(
-    ['accounts'],
+    ['wallets'],
     async () => {
-      return await fetchAllAccounts();
+      return await fetchAllWallets();
     },
     {},
   );

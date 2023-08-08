@@ -33,8 +33,6 @@ const userSlice = createSlice({
       Axios.defaults.headers.common[
         'Authorization'
       ] = `Bearer ${action.payload.access_token}`;
-
-      console.log('set signed in');
     },
     logout: (state) => {
       state.isSignedIn = false;
