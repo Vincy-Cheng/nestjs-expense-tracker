@@ -25,3 +25,9 @@ export interface LoginResponse extends ErrorResponse {
 export interface RegisterResponse extends ErrorResponse {
   user?: IUserInfo;
 }
+
+export interface CreateWalletResponse extends ErrorResponse {
+  id?: number;
+  name?: string;
+  currency?: string;
+}

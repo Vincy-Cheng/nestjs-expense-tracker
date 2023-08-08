@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChartBar, Home, Wallet } from 'tabler-icons-react';
+import { ChartBar, Home, ReportSearch, Wallet } from 'tabler-icons-react';
 
 type Props = {};
 
@@ -14,6 +14,7 @@ const navItems: INavItem[] = [
   { name: 'Home', icon: <Home strokeWidth="1" />, path: '/' },
   { name: 'Chart', icon: <ChartBar strokeWidth="1" />, path: '/charts' },
   { name: 'Wallets', icon: <Wallet strokeWidth="1" />, path: '/wallets' },
+  { name: 'Records', icon: <ReportSearch strokeWidth="1" />, path: '/records' },
 ];
 
 const Navbar = (props: Props) => {

@@ -47,7 +47,7 @@ const CustomSelector = ({
         }}
         ref={buttonRef}
       >
-        <p className="truncate select-none">{value ? value : options[0]}</p>
+        <p className="truncate select-none">{value}</p>
         <ChevronDown />
       </div>
       <ul

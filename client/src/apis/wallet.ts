@@ -1,10 +1,11 @@
 import axios, { AxiosResponse } from 'axios';
 import { Axios } from '.';
+import { CreateWalletResponse } from './type';
 
 export async function createWallet(newWallet: {
   name: string;
   currency: string;
-}) {
+}): Promise<CreateWalletResponse | undefined> {
   try {
     const url = 'v1/wallets';
     const res: AxiosResponse = await Axios.post(url, {

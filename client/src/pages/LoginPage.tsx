@@ -6,6 +6,8 @@ import { useMutation } from '@tanstack/react-query';
 import { signIn } from '../apis';
 import CustomAlert from '../components/Custom/CustomAlert';
 import CustomTextField from '../components/Custom/CustomTextField';
+import { User } from '../apis/type';
+import axios from 'axios';
 
 type Props = {};
 

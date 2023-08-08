@@ -7,6 +7,7 @@ import LoginPage from '../pages/LoginPage';
 import Layout from '../layout/Layout';
 import RegisterPage from '../pages/RegisterPage';
 import WalletPage from '../pages/WalletPage';
+import Records from '../pages/Records';
 
 export const routes = {
   authRoute: [
@@ -24,6 +25,11 @@ export const routes = {
       name: 'All Wallet',
       path: '/wallets',
       element: <WalletPage />,
+    },
+    {
+      name: 'Records',
+      path: '/records',
+      element: <Records />,
     },
   ],
   publicRoute: [
