@@ -6,7 +6,7 @@ import Chart from '../pages/Chart';
 import LoginPage from '../pages/LoginPage';
 import Layout from '../layout/Layout';
 import RegisterPage from '../pages/RegisterPage';
-import Record from '../pages/Record';
+import WalletPage from '../pages/WalletPage';
 
 export const routes = {
   authRoute: [
@@ -21,9 +21,9 @@ export const routes = {
       element: <Chart />,
     },
     {
-      name: 'Records',
-      path: '/records',
-      element: <Record />,
+      name: 'All Wallet',
+      path: '/wallets',
+      element: <WalletPage />,
     },
   ],
   publicRoute: [

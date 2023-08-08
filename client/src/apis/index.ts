@@ -29,7 +29,7 @@ export async function register(
   newUser: NewUser,
 ): Promise<RegisterResponse | undefined> {
   try {
-    const res: AxiosResponse<RegisterResponse> = await Axios.post('/v1/user', {
+    const res: AxiosResponse<RegisterResponse> = await Axios.post('/v1/users', {
       email: newUser.email,
       username: newUser.username,
       password: newUser.password,
