@@ -4,6 +4,7 @@ import { UpdateWalletDto } from './dto/update-wallet.dto';
 import { Wallet } from './entities/wallet.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class WalletsService {
@@ -11,8 +12,12 @@ export class WalletsService {
     @InjectRepository(Wallet) private accountRepository: Repository<Wallet>,
   ) {}
 
-  create(createWalletDto: CreateWalletDto) {
-    return 'This action adds a new account';
+  async create(createWalletDto: CreateWalletDto, user: User) {
+    return await this.accountRepository.save({
+      name: createWalletDto.name,
+      currency: createWalletDto.currency,
+      user: user,
+    });
   }
 
   async findAll(userId: number) {
