@@ -10,13 +10,17 @@ type LayoutProps = {
 
 const Layout = ({ children, mode }: LayoutProps) => {
   return (
-    <div className="grid grid-cols-5 min-h-screen h-full font-Barlow p-2 gap-2">
-      {mode === 'dashboard' && <Navbar />}
+    <div className="grid grid-cols-5 min-h-screen h-full font-Barlow p-2 gap-2 transition-all select-none">
+      {mode === 'dashboard' && (
+        <div className="sm:block hidden">
+          <Navbar />
+        </div>
+      )}
 
       <div
         className={clsx(
           'grow flex flex-col gap-2',
-          mode === 'dashboard' ? 'col-span-4 ' : 'col-span-5',
+          mode === 'dashboard' ? 'sm:col-span-4 col-span-5' : 'col-span-5',
         )}
       >
         <Header />

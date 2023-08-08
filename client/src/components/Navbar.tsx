@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChartBar, Home, ReportSearch } from 'tabler-icons-react';
+import { ChartBar, Home, Wallet } from 'tabler-icons-react';
 
 type Props = {};
 
@@ -13,14 +13,13 @@ interface INavItem {
 const navItems: INavItem[] = [
   { name: 'Home', icon: <Home strokeWidth="1" />, path: '/' },
   { name: 'Chart', icon: <ChartBar strokeWidth="1" />, path: '/charts' },
-  { name: 'Record', icon: <ReportSearch strokeWidth="1" />, path: '/records' },
-  { name: 'Wallet', icon: <ReportSearch strokeWidth="1" />, path: '/wallets' },
+  { name: 'Wallets', icon: <Wallet strokeWidth="1" />, path: '/wallets' },
 ];
 
 const Navbar = (props: Props) => {
   const navigate = useNavigate();
   return (
-    <div className="bg-secondary-300 rounded-md text-secondary-800">
+    <div className="bg-secondary-300 rounded-md text-secondary-800 h-full">
       <div
         className="text-2xl py-2 px-4 cursor-pointer w-fit"
         onClick={() => {

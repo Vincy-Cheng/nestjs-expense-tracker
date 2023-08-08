@@ -31,19 +31,10 @@ const Header = (props: Props) => {
       <button
         onClick={() => {
           dispatch(logout());
+          navigate('/login');
         }}
       >
-        {isSignedIn ? (
-          <>Logout</>
-        ) : (
-          <div
-            onClick={() => {
-              navigate('/login');
-            }}
-          >
-            Login
-          </div>
-        )}
+        {isSignedIn ? 'Logout' : 'Login'}
       </button>
     </div>
   );
