@@ -14,24 +14,32 @@ import {
 import { WalletsService } from './wallets.service';
 import { CreateWalletDto } from './dto/create-wallet.dto';
 import { UpdateWalletDto } from './dto/update-wallet.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { UsersService } from '../users/users.service';
+import { Wallet } from './entities/wallet.entity';
 
 @ApiTags('Wallet')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('wallets')
 export class WalletsController {
-  constructor(private readonly walletsService: WalletsService) {}
+  constructor(
+    private readonly walletsService: WalletsService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @Post()
-  create(@Body() createWalletDto: CreateWalletDto) {
-    return this.walletsService.create(createWalletDto);
+  async create(@Body() createWalletDto: CreateWalletDto): Promise<Wallet> {
+    // Validate the user
+    const user = await this.usersService.findById(createWalletDto.userId);
+    return await this.walletsService.create(createWalletDto, user);
   }
 
   @Get()
-  findAll(@Request() req) {
-    return this.walletsService.findAll(req.user.id);
+  async findAll(@Request() req) {
+    return await this.walletsService.findAll(req.user.id);
   }
 
   @Get(':id')
