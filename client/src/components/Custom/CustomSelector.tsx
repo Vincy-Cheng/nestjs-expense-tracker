@@ -9,7 +9,7 @@ type CustomSelectorProps = {
   placeholder?: string;
   filter?: boolean;
   value: any;
-  callbackAction: (event: React.MouseEvent<HTMLLIElement, MouseEvent>) => void;
+  callbackAction: (value: string) => void;
 };
 
 const CustomSelector = ({
@@ -87,7 +87,7 @@ const CustomSelector = ({
             )}
             onClick={(e) => {
               if (value !== option) {
-                callbackAction(e);
+                callbackAction(option);
               }
               setOpen(false);
             }}

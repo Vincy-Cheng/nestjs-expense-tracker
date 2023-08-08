@@ -21,7 +21,7 @@ const CustomModal = ({ children, setOpen }: CustomModalProps) => {
       }}
     >
       <div
-        className="modal-content bg-white rounded-md m-auto p-5 shadow w-4/5"
+        className="modal-content bg-white rounded-md m-auto p-5 shadow w-4/5 min-w-min"
         ref={modalContentRef}
       >
         <div
