@@ -6,6 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import { signIn } from '../apis';
 import CustomAlert from '../components/CustomAlert';
 import { Eye } from 'tabler-icons-react';
+import CustomTextField from '../components/CustomTextField';
 
 type Props = {};
 
@@ -66,37 +67,25 @@ const LoginPage = (props: Props) => {
       >
         {error && <CustomAlert type={'error'} content={error} />}
 
-        <div className="flex flex-col gap-2">
-          <div>Username: </div>
-          <input
-            value={username}
-            type="text"
-            className="outline-none border border-info-600 rounded-md  bg-transparent px-2"
-            onChange={(e) => {
-              setUsername(e.target.value);
-            }}
-          />
-        </div>
-        <div className="flex flex-col gap-2">
-          <div> Password: </div>
-          <div className=" border border-info-600 rounded-md flex justify-between items-center px-2">
-            <input
-              value={password}
-              type={showPassword ? 'text' : 'password'}
-              className="outline-none bg-transparent flex-1"
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
-            />
-            <Eye
-              strokeWidth={1}
-              className="text-info-500 cursor-pointer hover:text-info-800 active:text-info-600"
-              onClick={() => {
-                setShowPassword((prev) => !prev);
-              }}
-            />
-          </div>
-        </div>
+        <CustomTextField
+          type="text"
+          name="Username"
+          value={username}
+          callbackAction={(event) => {
+            setUsername(event.target.value);
+          }}
+        />
+        <CustomTextField
+          type="password"
+          name="Password"
+          value={password}
+          callbackAction={(event) => {
+            setPassword(event.target.value);
+          }}
+          visibleControl
+          visible={showPassword}
+          setVisibleControl={setShowPassword}
+        />
         <div>
           <div
             className="cursor-pointer text-xs hover:text-info-600"
