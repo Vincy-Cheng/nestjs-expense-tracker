@@ -12,8 +12,7 @@ export async function signIn(user: User): Promise<LoginResponse | undefined> {
     const res: AxiosResponse<LoginResponse> = await Axios.post(
       '/v1/auth/login',
       {
-        username: user.username,
-        password: user.password,
+        ...user,
       },
     );
 
@@ -30,9 +29,7 @@ export async function register(
 ): Promise<RegisterResponse | undefined> {
   try {
     const res: AxiosResponse<RegisterResponse> = await Axios.post('/v1/users', {
-      email: newUser.email,
-      username: newUser.username,
-      password: newUser.password,
+      ...newUser,
     });
 
     return { ...res.data, status: res.status };

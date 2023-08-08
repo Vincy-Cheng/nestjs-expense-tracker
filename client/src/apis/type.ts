@@ -6,7 +6,8 @@ export interface User {
   password: string;
 }
 
-export interface Account {
+export interface Wallet {
+  id: number;
   name: string;
   currency: string;
 }
