@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import CustomAlert, { CustomAlertType } from '../components/CustomAlert';
+import CustomAlert, { CustomAlertType } from '../components/Custom/CustomAlert';
 import { User } from '../apis/type';
-import { Eye } from 'tabler-icons-react';
 import { useMutation } from '@tanstack/react-query';
 import { register } from '../apis';
-import CustomTextField from '../components/CustomTextField';
+import CustomTextField from '../components/Custom/CustomTextField';
 
 type Props = {};
 

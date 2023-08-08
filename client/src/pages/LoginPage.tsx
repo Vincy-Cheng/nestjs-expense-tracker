@@ -4,9 +4,8 @@ import { setIsSignedIn } from '../store/userSlice';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { signIn } from '../apis';
-import CustomAlert from '../components/CustomAlert';
-import { Eye } from 'tabler-icons-react';
-import CustomTextField from '../components/CustomTextField';
+import CustomAlert from '../components/Custom/CustomAlert';
+import CustomTextField from '../components/Custom/CustomTextField';
 
 type Props = {};
 
