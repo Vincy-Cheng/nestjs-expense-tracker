@@ -1,17 +1,16 @@
 import { useQuery } from '@tanstack/react-query';
 import { Plus } from 'tabler-icons-react';
-import { fetchAllWallets } from '../apis/wallet';
 
 type Props = {};
 
 const Home = (props: Props) => {
-  const { data, isError, isLoading, error } = useQuery(
-    ['wallets'],
-    async () => {
-      return await fetchAllWallets();
-    },
-    {},
-  );
+  // const { data, isError, isLoading, error } = useQuery(
+  //   ['wallets'],
+  //   async () => {
+  //     return await fetchAllWallets();
+  //   },
+  //   {},
+  // );
 
   return (
     <div className="select-none">

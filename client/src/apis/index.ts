@@ -7,21 +7,26 @@ export const Axios = axios.create({
   withCredentials: true,
 });
 
-export async function signIn(user: User): Promise<LoginResponse | undefined> {
-  try {
-    const res: AxiosResponse<LoginResponse> = await Axios.post(
-      '/v1/auth/login',
-      {
-        ...user,
-      },
-    );
+export async function signIn(user: User): Promise<LoginResponse> {
+  // try {
+  //   const res: AxiosResponse<LoginResponse> = await Axios.post(
+  //     '/v1/auth/login',
+  //     {
+  //       ...user,
+  //     },
+  //   );
 
-    return { ...res.data, status: res.status };
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      return { status: error.response.status, error: error.response };
-    }
-  }
+  //   return { ...res.data, status: res.status };
+  // } catch (error) {
+  //   if (axios.isAxiosError(error) && error.response) {
+  //     return { status: error.response.status, error: error.response };
+  //   }
+  // }
+  const res = await Axios.post('/v1/auth/login', {
+    ...user,
+  });
+
+  return res.data;
 }
 
 export async function register(

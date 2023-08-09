@@ -10,6 +10,7 @@ import {
   UseGuards,
   UseInterceptors,
   Request,
+  BadRequestException,
 } from '@nestjs/common';
 import { WalletsService } from './wallets.service';
 import { CreateWalletDto } from './dto/create-wallet.dto';
@@ -53,7 +54,15 @@ export class WalletsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.walletsService.remove(+id);
+  async remove(@Param('id') id: number) {
+    // Check wallet is existing
+
+    const wallet = await this.walletsService.findOne(id);
+
+    if (wallet) {
+      return await this.walletsService.remove(wallet.id);
+    }
+
+    throw new BadRequestException('Wallet does not exist.');
   }
 }

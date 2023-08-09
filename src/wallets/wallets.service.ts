@@ -9,11 +9,11 @@ import { User } from '../users/entities/user.entity';
 @Injectable()
 export class WalletsService {
   constructor(
-    @InjectRepository(Wallet) private accountRepository: Repository<Wallet>,
+    @InjectRepository(Wallet) private walletRepository: Repository<Wallet>,
   ) {}
 
   async create(createWalletDto: CreateWalletDto, user: User) {
-    return await this.accountRepository.save({
+    return await this.walletRepository.save({
       name: createWalletDto.name,
       currency: createWalletDto.currency,
       user: user,
@@ -21,7 +21,7 @@ export class WalletsService {
   }
 
   async findAll(userId: number) {
-    return await this.accountRepository.find({
+    return await this.walletRepository.find({
       where: {
         user: {
           id: userId,
@@ -30,15 +30,15 @@ export class WalletsService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} account`;
+  async findOne(id: number): Promise<Wallet> {
+    return await this.walletRepository.findOne({ where: { id } });
   }
 
   update(id: number, UpdateWalletDto: UpdateWalletDto) {
     return `This action updates a #${id} account`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} account`;
+  async remove(id: number) {
+    return await this.walletRepository.softDelete(id);
   }
 }

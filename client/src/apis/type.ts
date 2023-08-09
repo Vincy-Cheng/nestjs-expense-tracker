@@ -12,22 +12,16 @@ export interface Wallet {
   currency: string;
 }
 
-interface ErrorResponse {
+export interface ErrorResponse {
   status: number;
   error?: AxiosResponse;
 }
 
-export interface LoginResponse extends ErrorResponse {
-  access_token?: string;
-  user?: IUserInfo;
+export interface LoginResponse {
+  access_token: string;
+  user: IUserInfo;
 }
 
 export interface RegisterResponse extends ErrorResponse {
   user?: IUserInfo;
-}
-
-export interface CreateWalletResponse extends ErrorResponse {
-  id?: number;
-  name?: string;
-  currency?: string;
 }

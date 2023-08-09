@@ -23,34 +23,38 @@ const LoginPage = (props: Props) => {
 
   const dispatch = useAppDispatch();
 
-  const login = useMutation(signIn, {
-    onError(error, variables, context) {
-      console.log(error);
-    },
-    onSuccess(data, variables, context) {
-      if (data && data?.status < 400 && data.user) {
-        dispatch(
-          setIsSignedIn({
-            access_token: data.access_token,
-            user: data.user,
-          }),
-        );
-        setError('');
-        navigate('/');
-      } else {
-        // Handle error
-        console.log(data?.error);
-        setError(data?.error?.data.message ?? '');
-      }
-    },
-    retry: 3,
-  });
+  // const login = useMutation(signIn, {
+  //   onError(error, variables, context) {
+  //     console.log(error);
+  //   },
+  //   onSuccess(data, variables, context) {
+  //     // if (data && data?.status < 400 && data.user) {
+  //     //   dispatch(
+  //     //     setIsSignedIn({
+  //     //       access_token: data.access_token,
+  //     //       user: data.user,
+  //     //     }),
+  //     //   );
+  //     //   setError('');
+  //     //   navigate('/');
+  //     // } else {
+  //     //   // Handle error
+  //     //   console.log(data?.error);
+  //     //   setError(data?.error?.data.message ?? '');
+  //     // }
+  //   },
+  //   retry: 3,
+  // });
+
+  const login = useMutation(signIn, {});
 
   const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (username && password) {
-      await login.mutateAsync({ username, password });
+      try {
+        await login.mutateAsync({ username, password });
+      } catch (error) {}
     } else {
       setError('Username / Password is missing');
     }

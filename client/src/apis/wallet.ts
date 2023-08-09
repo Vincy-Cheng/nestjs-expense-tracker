@@ -1,33 +1,28 @@
 import axios, { AxiosResponse } from 'axios';
 import { Axios } from '.';
-import { CreateWalletResponse } from './type';
+import { ErrorResponse, Wallet } from './type';
 
-export async function createWallet(newWallet: {
-  name: string;
-  currency: string;
-}): Promise<CreateWalletResponse | undefined> {
-  try {
-    const url = 'v1/wallets';
-    const res: AxiosResponse = await Axios.post(url, {
-      ...newWallet,
-    });
+export const fetchWallets = async (): Promise<Wallet[]> => {
+  const response = await Axios.get('/v1/wallets');
+  return response.data;
+};
 
-    return { ...res.data, status: res.status };
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      return { status: error.response.status, error: error.response };
-    }
-  }
-}
-
-export async function fetchAllWallets() {
-  const url = 'v1/wallets';
-  const res = await Axios.get(url);
-  return res.data;
-}
+// Create wallet mutation
+export const createWallet = async (
+  newWallet: Partial<Wallet>,
+): Promise<Wallet> => {
+  const response = await Axios.post('/v1/wallets', newWallet);
+  return response.data;
+};
 
 export async function fetchWallet(id: number) {}
 
 export async function updateWallet() {}
 
-export async function deleteWallet(id: number) {}
+export async function deleteWallet(id: number) {
+  const url = `v1/wallets/${id}`;
+
+  const response = await Axios.delete(url);
+
+  return response.data;
+}
