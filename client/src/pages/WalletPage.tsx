@@ -92,7 +92,6 @@ const WalletPage = ({}: WalletPageProps) => {
         id: Date.now(), // Use a temporary ID
         name: wallet.name ?? newWallet.name,
         currency: wallet.currency ?? newWallet.currency,
-        categories: [],
       };
 
       queryClient.setQueryData<IWallet[]>(['wallets'], (prevData) => {

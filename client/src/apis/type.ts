@@ -10,7 +10,6 @@ export interface IWallet {
   id: number;
   name: string;
   currency: string;
-  categories: ICategory[];
 }
 
 export interface ICategory {
