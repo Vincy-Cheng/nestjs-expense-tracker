@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Wallet } from '../apis/type';
+import { IWallet } from '../apis/type';
 import { Plus, Trash } from 'tabler-icons-react';
 import CustomModal from '../components/Custom/CustomModal';
 import CustomTextField from '../components/Custom/CustomTextField';
@@ -26,34 +26,34 @@ const WalletPage = ({}: WalletPageProps) => {
     type: CustomAlertType;
   }>({ message: '', type: 'warning' });
 
-  const { data: wallets } = useQuery<Wallet[]>(['wallets'], fetchWallets);
+  const { data: wallets } = useQuery<IWallet[]>(['wallets'], fetchWallets);
   // Create wallet mutation
   const createWalletMutation = useMutation<
-    Wallet,
+    IWallet,
     AxiosError<{ error: string; message: string[]; statusCode: number }>,
-    Partial<Wallet>
+    Partial<IWallet>
   >(createWallet, {
     onMutate: async (newWallet) => {
       // Optimistically update the cache
-      queryClient.setQueryData<Wallet[]>(['wallets'], (oldData) => {
+      queryClient.setQueryData<IWallet[]>(['wallets'], (oldData) => {
         if (oldData) {
-          return [...oldData, newWallet as Wallet];
+          return [...oldData, newWallet as IWallet];
         }
         return oldData;
       });
 
       return {
-        previousWallets: queryClient.getQueryData<Wallet[]>(['wallets']),
+        previousWallets: queryClient.getQueryData<IWallet[]>(['wallets']),
       };
     },
     onError: (error, variables, context) => {
       // Revert the cache to the previous state on error
       const typedContext = context as {
-        previousWallets: Wallet[] | undefined;
+        previousWallets: IWallet[] | undefined;
       };
 
       if (typedContext.previousWallets) {
-        queryClient.setQueryData<Wallet[]>(
+        queryClient.setQueryData<IWallet[]>(
           ['wallets'],
           typedContext.previousWallets,
         );
@@ -79,22 +79,23 @@ const WalletPage = ({}: WalletPageProps) => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const wallet: Partial<Wallet> = {
+    const wallet: Partial<IWallet> = {
       ...newWallet,
     };
 
     try {
       // Fetch the current data from the cache
-      const oldData = queryClient.getQueryData<Wallet[]>(['wallets']);
+      const oldData = queryClient.getQueryData<IWallet[]>(['wallets']);
 
       // Optimistically update the cache
-      const optimisticWallet: Wallet = {
+      const optimisticWallet: IWallet = {
         id: Date.now(), // Use a temporary ID
         name: wallet.name ?? newWallet.name,
         currency: wallet.currency ?? newWallet.currency,
+        categories: [],
       };
 
-      queryClient.setQueryData<Wallet[]>(['wallets'], (prevData) => {
+      queryClient.setQueryData<IWallet[]>(['wallets'], (prevData) => {
         if (prevData) {
           return [...prevData, optimisticWallet];
         }
@@ -116,7 +117,7 @@ const WalletPage = ({}: WalletPageProps) => {
   const removeWalletMutation = useMutation(deleteWallet, {
     onError(error, variables, context) {},
     onMutate: async (variables) => {
-      queryClient.setQueryData<Wallet[]>(['wallets'], (oldData) => {
+      queryClient.setQueryData<IWallet[]>(['wallets'], (oldData) => {
         if (oldData) {
           return oldData.filter((prev) => prev.id !== variables);
         }
@@ -124,7 +125,7 @@ const WalletPage = ({}: WalletPageProps) => {
       });
 
       return {
-        previousWallets: queryClient.getQueryData<Wallet[]>(['wallets']),
+        previousWallets: queryClient.getQueryData<IWallet[]>(['wallets']),
       };
     },
   });
@@ -143,11 +144,11 @@ const WalletPage = ({}: WalletPageProps) => {
           />
         </div>
         {wallets && (
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-flow-col overflow-x-auto grid-rows-2 py-2 gap-2 w-fit">
             {wallets.map(({ id, name, currency }) => (
               <div
                 key={id}
-                className="rounded-md bg-amber-100 p-3 relative flex flex-col gap-3"
+                className="rounded-md bg-amber-100 p-3 relative flex flex-col gap-3 w-[200px]"
               >
                 <span className="absolute font-semibold text-amber-500 text-opacity-10 text-5xl sm:text-7xl  right-1 bottom-1">
                   {currency}

@@ -1,15 +1,22 @@
 import { AxiosResponse } from 'axios';
 import { IUserInfo } from '../types';
 
-export interface User {
+export interface IUser {
   username: string;
   password: string;
 }
 
-export interface Wallet {
+export interface IWallet {
   id: number;
   name: string;
   currency: string;
+  categories: ICategory[];
+}
+
+export interface ICategory {
+  id: number;
+  name: string;
+  icon: string;
 }
 
 export interface ErrorResponse {

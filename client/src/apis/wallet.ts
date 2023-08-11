@@ -1,16 +1,15 @@
-import axios, { AxiosResponse } from 'axios';
 import { Axios } from '.';
-import { ErrorResponse, Wallet } from './type';
+import { IWallet } from './type';
 
-export const fetchWallets = async (): Promise<Wallet[]> => {
+export const fetchWallets = async (): Promise<IWallet[]> => {
   const response = await Axios.get('/v1/wallets');
   return response.data;
 };
 
 // Create wallet mutation
 export const createWallet = async (
-  newWallet: Partial<Wallet>,
-): Promise<Wallet> => {
+  newWallet: Partial<IWallet>,
+): Promise<IWallet> => {
   const response = await Axios.post('/v1/wallets', newWallet);
   return response.data;
 };
