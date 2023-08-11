@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { setIsSignedIn } from '../store/userSlice';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { signIn } from '../apis';
 import CustomAlert from '../components/Custom/CustomAlert';
 import CustomTextField from '../components/Custom/CustomTextField';
-import { User } from '../apis/type';
-import axios from 'axios';
+import { LoginResponse, IUser } from '../apis/type';
+import { AxiosError } from 'axios';
+import { setIsSignedIn } from '../store/userSlice';
 
 type Props = {};
 
@@ -46,7 +46,26 @@ const LoginPage = (props: Props) => {
   //   retry: 3,
   // });
 
-  const login = useMutation(signIn, {});
+  const login = useMutation<
+    LoginResponse,
+    AxiosError<{ error: string; message: string; statusCode: number }>,
+    IUser
+  >(signIn, {
+    onError(error, variables, context) {
+      console.log(error);
+      setError(error.response?.data.message ?? 'Unexpected error from server');
+    },
+    onSuccess(data, variables, context) {
+      dispatch(
+        setIsSignedIn({
+          access_token: data.access_token,
+          user: data.user,
+        }),
+      );
+      setError('');
+      navigate('/');
+    },
+  });
 
   const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

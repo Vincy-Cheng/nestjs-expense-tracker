@@ -1,27 +1,14 @@
 import axios, { AxiosResponse } from 'axios';
-import { LoginResponse, RegisterResponse, User } from './type';
+import { LoginResponse, RegisterResponse, IUser } from './type';
 import { NewUser } from '../pages/RegisterPage';
+import { IUserInfo } from '../types';
 
 export const Axios = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
   withCredentials: true,
 });
 
-export async function signIn(user: User): Promise<LoginResponse> {
-  // try {
-  //   const res: AxiosResponse<LoginResponse> = await Axios.post(
-  //     '/v1/auth/login',
-  //     {
-  //       ...user,
-  //     },
-  //   );
-
-  //   return { ...res.data, status: res.status };
-  // } catch (error) {
-  //   if (axios.isAxiosError(error) && error.response) {
-  //     return { status: error.response.status, error: error.response };
-  //   }
-  // }
+export async function signIn(user: IUser): Promise<LoginResponse> {
   const res = await Axios.post('/v1/auth/login', {
     ...user,
   });
@@ -29,18 +16,20 @@ export async function signIn(user: User): Promise<LoginResponse> {
   return res.data;
 }
 
-export async function register(
-  newUser: NewUser,
-): Promise<RegisterResponse | undefined> {
-  try {
-    const res: AxiosResponse<RegisterResponse> = await Axios.post('/v1/users', {
-      ...newUser,
-    });
+export async function register(newUser: NewUser): Promise<IUserInfo> {
+  const res = await Axios.post('/v1/users', { ...newUser });
 
-    return { ...res.data, status: res.status };
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      return { status: error.response.status, error: error.response };
-    }
-  }
+  return res.data;
+
+  // try {
+  //   const res: AxiosResponse<RegisterResponse> = await Axios.post('/v1/users', {
+  //     ...newUser,
+  //   });
+
+  //   return { ...res.data, status: res.status };
+  // } catch (error) {
+  //   if (axios.isAxiosError(error) && error.response) {
+  //     return { status: error.response.status, error: error.response };
+  //   }
+  // }
 }

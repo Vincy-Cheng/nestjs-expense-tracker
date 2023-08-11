@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import CustomAlert, { CustomAlertType } from '../components/Custom/CustomAlert';
-import { User } from '../apis/type';
+import { IUser } from '../apis/type';
 import { useMutation } from '@tanstack/react-query';
 import { register } from '../apis';
 import CustomTextField from '../components/Custom/CustomTextField';
+import { IUserInfo } from '../types';
+import { AxiosError } from 'axios';
 
 type Props = {};
 
-export interface NewUser extends User {
+export interface NewUser extends IUser {
   email: string;
   confirmPassword: string;
 }
@@ -31,17 +33,21 @@ const RegisterPage = (props: Props) => {
     return /\S+@\S+\.\S+/.test(email);
   };
 
-  const createUser = useMutation(register, {
+  const createUser = useMutation<
+    IUserInfo,
+    AxiosError<{ error: string; message: string; statusCode: number }>,
+    NewUser
+  >(register, {
     onError(error, variables, context) {
-      console.log(error);
+      setError({
+        type: 'error',
+        message: error.response
+          ? error.response?.data.message ?? ''
+          : error.message,
+      });
     },
     onSuccess(data, variables, context) {
-      if (data && data?.status < 400 && data.user) {
-        setError({ type: 'success', message: 'User is created' });
-      } else {
-        // Handle error
-        setError({ type: 'error', message: data?.error?.data.message ?? '' });
-      }
+      setError({ type: 'success', message: 'User is created' });
     },
     retry: 3,
   });
@@ -69,7 +75,9 @@ const RegisterPage = (props: Props) => {
     }
 
     if (isValidEmail(userInfo.email)) {
-      await createUser.mutateAsync(userInfo);
+      try {
+        await createUser.mutateAsync(userInfo);
+      } catch (error) {}
     } else {
       setError({ message: 'Invalid email', type: 'error' });
     }
