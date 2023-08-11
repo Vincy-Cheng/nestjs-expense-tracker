@@ -14,6 +14,7 @@ import {
 } from 'typeorm';
 import { Category } from '../../categories/entities/category.entity';
 import { User } from '../../users/entities/user.entity';
+import { Record } from '../../records/entities/record.entity';
 
 @Entity({ name: 'wallets' })
 export class Wallet extends BaseEntity {
@@ -46,8 +47,8 @@ export class Wallet extends BaseEntity {
   @ManyToOne(() => User, (user) => user.wallets)
   user: User;
 
-  @OneToMany(() => Category, (category) => category.wallet)
-  categories: Category[];
+  @OneToMany(() => Record, (record) => record.wallet)
+  records: Record[];
 
   constructor(partial: Partial<Wallet>) {
     super();

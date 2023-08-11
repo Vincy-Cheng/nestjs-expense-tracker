@@ -15,6 +15,7 @@ import {
 import { IconName } from '../../enums';
 import { Record } from '../../records/entities/record.entity';
 import { Wallet } from '../../wallets/entities/wallet.entity';
+import { User } from '../../users/entities/user.entity';
 
 @Entity({ name: 'categories' })
 export class Category extends BaseEntity {
@@ -45,8 +46,8 @@ export class Category extends BaseEntity {
   @Exclude()
   deletedAt: Date;
 
-  @ManyToOne(() => Wallet, (wallet) => wallet.categories)
-  wallet: Wallet;
+  @ManyToOne(() => User, (user) => user.categories)
+  user: User;
 
   @OneToMany(() => Record, (records) => records.category)
   records: Record[];

@@ -12,6 +12,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Wallet } from '../../wallets/entities/wallet.entity';
+import { Category } from '../../categories/entities/category.entity';
 
 @Entity({ name: 'users' })
 export class User extends BaseEntity {
@@ -50,6 +51,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Wallet, (wallets) => wallets.user)
   wallets: Wallet[];
+
+  @OneToMany(() => Category, (categories) => categories.user)
+  categories: Category[];
 
   constructor(partial: Partial<User>) {
     super();

@@ -34,8 +34,12 @@ export class WalletsService {
     return await this.walletRepository.findOne({ where: { id } });
   }
 
-  update(id: number, UpdateWalletDto: UpdateWalletDto) {
-    return `This action updates a #${id} account`;
+  async update(id: number, updateWalletDto: UpdateWalletDto) {
+    return await this.walletRepository.save({
+      id: id,
+      name: updateWalletDto.name,
+      currency: updateWalletDto.currency,
+    });
   }
 
   async remove(id: number) {

@@ -11,6 +11,7 @@ import {
   UseInterceptors,
   Request,
   BadRequestException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { WalletsService } from './wallets.service';
 import { CreateWalletDto } from './dto/create-wallet.dto';
@@ -49,7 +50,24 @@ export class WalletsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateWalletDto: UpdateWalletDto) {
+  async update(
+    @Param('id') id: number,
+    @Body() updateWalletDto: UpdateWalletDto,
+    @Request() req,
+  ) {
+    const wallet = await this.walletsService.findOne(id);
+    if (!wallet) {
+      throw new BadRequestException('Wallet does not exist.');
+    }
+
+    const user = await this.usersService.findById(req.user.id);
+
+    if (!user) {
+      throw new UnauthorizedException(
+        'You have no access to update this wallet',
+      );
+    }
+
     return this.walletsService.update(+id, updateWalletDto);
   }
 
@@ -59,10 +77,10 @@ export class WalletsController {
 
     const wallet = await this.walletsService.findOne(id);
 
-    if (wallet) {
-      return await this.walletsService.remove(wallet.id);
+    if (!wallet) {
+      throw new BadRequestException('Wallet does not exist.');
     }
 
-    throw new BadRequestException('Wallet does not exist.');
+    return await this.walletsService.remove(wallet.id);
   }
 }

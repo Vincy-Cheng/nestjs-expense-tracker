@@ -13,6 +13,7 @@ import {
 } from 'typeorm';
 import { Category } from '../../categories/entities/category.entity';
 import { RecordType } from '../../enums';
+import { Wallet } from '../../wallets/entities/wallet.entity';
 
 @Entity({ name: 'records' })
 export class Record extends BaseEntity {
@@ -51,6 +52,9 @@ export class Record extends BaseEntity {
 
   @ManyToOne(() => Category, (category) => category.records)
   category: Category;
+
+  @ManyToOne(() => Wallet, (wallet) => wallet.records)
+  wallet: Wallet;
 
   constructor(partial: Partial<Record>) {
     super();
