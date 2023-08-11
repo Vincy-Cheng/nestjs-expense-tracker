@@ -8,6 +8,7 @@ import Layout from '../layout/Layout';
 import RegisterPage from '../pages/RegisterPage';
 import WalletPage from '../pages/WalletPage';
 import Records from '../pages/Records';
+import SettingPage from '../pages/SettingPage';
 
 export const routes = {
   authRoute: [
@@ -30,6 +31,11 @@ export const routes = {
       name: 'Records',
       path: '/records',
       element: <Records />,
+    },
+    {
+      name: 'User Setting',
+      path: '/settings',
+      element: <SettingPage />,
     },
   ],
   publicRoute: [

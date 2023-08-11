@@ -1,15 +1,10 @@
-import { useAppDispatch, useAppSelector } from '../hooks';
 import { routes } from '../routes';
-import { logout } from '../store/userSlice';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import Setting from './Setting';
 
 type Props = {};
 
 const Header = (props: Props) => {
-  const dispatch = useAppDispatch();
-  const { isSignedIn } = useAppSelector((state) => state.user);
-  const navigate = useNavigate();
-
   const location = useLocation();
 
   const header = () => {
@@ -28,14 +23,15 @@ const Header = (props: Props) => {
     <div className="flex justify-between">
       <div className="text-lg">{header()}</div>
 
-      <button
+      {/* <button
         onClick={() => {
           dispatch(logout());
           navigate('/login');
         }}
       >
         {isSignedIn ? 'Logout' : 'Login'}
-      </button>
+      </button> */}
+      <Setting />
     </div>
   );
 };
