@@ -1,8 +1,7 @@
-import React from 'react';
-import { Settings } from 'tabler-icons-react';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../store/userSlice';
+import { IoSettingsOutline } from 'react-icons/io5';
 
 type Props = {};
 
@@ -15,9 +14,9 @@ const Setting = (props: Props) => {
     <div className="float-right relative">
       {isSignedIn ? (
         <>
-          <Settings
+          <IoSettingsOutline
             strokeWidth={1}
-            className="cursor-pointer hover:bg-zinc-100 rounded-full peer"
+            className="cursor-pointer hover:bg-zinc-100 rounded-full peer text-zinc-600"
           />
           <ul className="hidden peer-hover:block bg-white absolute float-right top-0 right-0 z-10 hover:block rounded-md shadow">
             <li

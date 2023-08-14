@@ -1,6 +1,5 @@
 import React, { ReactElement, useRef } from 'react';
-import { X } from 'tabler-icons-react';
-
+import { GrClose } from 'react-icons/gr';
 type CustomModalProps = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   children: ReactElement;
@@ -30,7 +29,7 @@ const CustomModal = ({ children, setOpen }: CustomModalProps) => {
             setOpen(false);
           }}
         >
-          <X className="" />
+          <GrClose className="" />
         </div>
 
         {children}

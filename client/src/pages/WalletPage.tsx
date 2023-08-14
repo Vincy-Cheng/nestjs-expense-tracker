@@ -1,14 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { IWallet } from '../apis/type';
-import { Plus, Trash } from 'tabler-icons-react';
 import CustomModal from '../components/Custom/CustomModal';
 import CustomTextField from '../components/Custom/CustomTextField';
 import CustomSelector from '../components/Custom/CustomSelector';
 import { currencyList } from '../utils';
 import CustomAlert, { CustomAlertType } from '../components/Custom/CustomAlert';
 import { createWallet, deleteWallet, fetchWallets } from '../apis/wallet';
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosError } from 'axios';
+import { AiOutlinePlus } from 'react-icons/ai';
+import { HiOutlineTrash } from 'react-icons/hi';
 
 type WalletPageProps = {};
 
@@ -134,13 +135,15 @@ const WalletPage = ({}: WalletPageProps) => {
       <div className="bg-amber-200 rounded-md p-2">
         <div className="flex justify-between items-center pb-2">
           <span>List of Wallets</span>
-          <Plus
-            className="cursor-pointer hover:bg-amber-50 rounded-full "
-            onClick={() => {
-              setOpen(true);
-              setErrorMessage({ type: 'warning', message: '' });
-            }}
-          />
+          <div className="hover:bg-amber-50 hover:bg-opacity-50 rounded-full p-1">
+            <AiOutlinePlus
+              className="cursor-pointer "
+              onClick={() => {
+                setOpen(true);
+                setErrorMessage({ type: 'warning', message: '' });
+              }}
+            />
+          </div>
         </div>
         {wallets && (
           <div className="grid grid-flow-col overflow-x-auto grid-rows-2 py-2 gap-2 w-fit">
@@ -160,7 +163,7 @@ const WalletPage = ({}: WalletPageProps) => {
                     } catch (error) {}
                   }}
                 >
-                  <Trash strokeWidth={1} />
+                  <HiOutlineTrash strokeWidth={1} />
                 </div>
 
                 <div>{name}</div>

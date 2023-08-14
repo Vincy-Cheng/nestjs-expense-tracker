@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { IWallet } from '../apis/type';
 import { fetchWallets } from '../apis/wallet';
 import { useAppSelector } from '../hooks';
-import { Settings } from 'tabler-icons-react';
+import { IoSettingsOutline } from 'react-icons/io5';
 
 type Props = {};
 
@@ -34,7 +34,7 @@ const Records = (props: Props) => {
             <div>Expense:</div>
             <div>Balance:</div>
           </div>
-          <Settings strokeWidth={1}></Settings>
+          <IoSettingsOutline strokeWidth={1}></IoSettingsOutline>
         </div>
       )}
 

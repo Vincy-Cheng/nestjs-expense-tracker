@@ -1,7 +1,8 @@
 import clsx from 'clsx';
 import React, { useRef, useState } from 'react';
-import { ChevronDown, Search } from 'tabler-icons-react';
 import { useOutsideAlerter } from '../../hooks';
+import { BsChevronDown } from 'react-icons/bs';
+import { IoSearchOutline } from 'react-icons/io5';
 
 type CustomSelectorProps = {
   title: string;
@@ -48,7 +49,7 @@ const CustomSelector = ({
         ref={buttonRef}
       >
         <p className="truncate select-none">{value}</p>
-        <ChevronDown />
+        <BsChevronDown />
       </div>
       <ul
         className={clsx(
@@ -61,8 +62,8 @@ const CustomSelector = ({
         }}
       >
         {filter && (
-          <div className="flex gap-2 sticky top-0 z-50 overflow-x-hidden mx-2 pt-2 bg-white">
-            <Search className=" text-info-400" strokeWidth={1} />
+          <div className="flex gap-2 sticky top-0 z-50 overflow-x-hidden mx-2 pt-2 bg-white items-center">
+            <IoSearchOutline className=" text-info-400" strokeWidth={1} />
 
             <input
               type="text"

@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import React from 'react';
-import { Eye } from 'tabler-icons-react';
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 
 type CustomTextFieldProps = {
   type: string;
@@ -41,13 +41,25 @@ const CustomTextField = ({
           }}
         />
         {visibleControl && setVisibleControl && (
-          <Eye
-            strokeWidth={1}
-            className="text-info-500 cursor-pointer hover:text-info-800 active:text-info-600"
-            onClick={() => {
-              setVisibleControl((prev) => !prev);
-            }}
-          />
+          <>
+            {visible ? (
+              <AiOutlineEyeInvisible
+                strokeWidth={1}
+                className="text-info-500 cursor-pointer hover:text-info-800 active:text-info-600"
+                onClick={() => {
+                  setVisibleControl((prev) => !prev);
+                }}
+              />
+            ) : (
+              <AiOutlineEye
+                strokeWidth={1}
+                className="text-info-500 cursor-pointer hover:text-info-800 active:text-info-600"
+                onClick={() => {
+                  setVisibleControl((prev) => !prev);
+                }}
+              />
+            )}
+          </>
         )}
       </div>
     </div>

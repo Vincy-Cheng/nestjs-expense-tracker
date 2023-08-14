@@ -23,29 +23,6 @@ const LoginPage = (props: Props) => {
 
   const dispatch = useAppDispatch();
 
-  // const login = useMutation(signIn, {
-  //   onError(error, variables, context) {
-  //     console.log(error);
-  //   },
-  //   onSuccess(data, variables, context) {
-  //     // if (data && data?.status < 400 && data.user) {
-  //     //   dispatch(
-  //     //     setIsSignedIn({
-  //     //       access_token: data.access_token,
-  //     //       user: data.user,
-  //     //     }),
-  //     //   );
-  //     //   setError('');
-  //     //   navigate('/');
-  //     // } else {
-  //     //   // Handle error
-  //     //   console.log(data?.error);
-  //     //   setError(data?.error?.data.message ?? '');
-  //     // }
-  //   },
-  //   retry: 3,
-  // });
-
   const login = useMutation<
     LoginResponse,
     AxiosError<{ error: string; message: string; statusCode: number }>,
@@ -86,7 +63,7 @@ const LoginPage = (props: Props) => {
   return (
     <div className="flex flex-col items-center gap-4 font-Barlow">
       <form
-        className="min-w-[50%] py-3 px-5 text-lg flex flex-col gap-2 rounded-lg shadow"
+        className="min-w-[50%] max-w-[80%] py-3 px-5 text-lg flex flex-col gap-2 rounded-lg shadow"
         onSubmit={handleSignIn}
       >
         {error && <CustomAlert type={'error'} content={error} />}

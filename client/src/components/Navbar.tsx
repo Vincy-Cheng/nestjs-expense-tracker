@@ -1,7 +1,9 @@
 import { ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChartBar, Home, ReportSearch, Wallet } from 'tabler-icons-react';
-
+import { HiOutlineHome } from 'react-icons/hi';
+import { HiOutlineWallet } from 'react-icons/hi2';
+import { AiOutlineBarChart } from 'react-icons/ai';
+import { TbReportSearch } from 'react-icons/tb';
 type Props = {};
 
 interface INavItem {
@@ -11,10 +13,26 @@ interface INavItem {
 }
 
 const navItems: INavItem[] = [
-  { name: 'Home', icon: <Home strokeWidth="1" />, path: '/' },
-  { name: 'Chart', icon: <ChartBar strokeWidth="1" />, path: '/charts' },
-  { name: 'Wallets', icon: <Wallet strokeWidth="1" />, path: '/wallets' },
-  { name: 'Records', icon: <ReportSearch strokeWidth="1" />, path: '/records' },
+  {
+    name: 'Home',
+    icon: <HiOutlineHome strokeWidth="1" />,
+    path: '/',
+  },
+  {
+    name: 'Chart',
+    icon: <AiOutlineBarChart strokeWidth="1" />,
+    path: '/charts',
+  },
+  {
+    name: 'Wallets',
+    icon: <HiOutlineWallet strokeWidth="1" />,
+    path: '/wallets',
+  },
+  {
+    name: 'Records',
+    icon: <TbReportSearch strokeWidth="1" />,
+    path: '/records',
+  },
 ];
 
 const Navbar = (props: Props) => {

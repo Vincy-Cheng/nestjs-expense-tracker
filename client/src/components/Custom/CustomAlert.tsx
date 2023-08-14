@@ -1,5 +1,8 @@
 import clsx from 'clsx';
-import { AlertTriangle, Check, CircleX, InfoCircle } from 'tabler-icons-react';
+import { AiOutlineInfoCircle } from 'react-icons/ai';
+import { BsCheck2Circle } from 'react-icons/bs';
+import { IoIosCloseCircleOutline } from 'react-icons/io';
+import { GoAlert } from 'react-icons/go';
 
 export type CustomAlertType = 'warning' | 'success' | 'error' | 'info';
 
@@ -12,13 +15,13 @@ const CustomAlert = ({ type, content }: CustomAlertProps) => {
   const icon = (value: CustomAlertType) => {
     switch (value) {
       case 'error':
-        return <CircleX />;
+        return <IoIosCloseCircleOutline />;
       case 'warning':
-        return <AlertTriangle />;
+        return <GoAlert />;
       case 'success':
-        return <Check />;
+        return <BsCheck2Circle />;
       case 'info':
-        return <InfoCircle />;
+        return <AiOutlineInfoCircle />;
     }
   };
 
@@ -35,7 +38,7 @@ const CustomAlert = ({ type, content }: CustomAlertProps) => {
           : 'text-secondary-400 bg-secondary-100',
       )}
     >
-      <span className="pt-1"> {icon(type)}</span>
+      <span className="text-2xl pt-1"> {icon(type)}</span>
       <p className="flex-1">{content}</p>
     </div>
   );
