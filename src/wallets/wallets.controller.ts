@@ -33,9 +33,15 @@ export class WalletsController {
   ) {}
 
   @Post()
-  async create(@Body() createWalletDto: CreateWalletDto): Promise<Wallet> {
+  async create(
+    @Body() createWalletDto: CreateWalletDto,
+    @Request() req,
+  ): Promise<Wallet> {
     // Validate the user
     const user = await this.usersService.findById(createWalletDto.userId);
+    if (user.id !== req.user.id) {
+      throw new UnauthorizedException('Unable to create category');
+    }
     return await this.walletsService.create(createWalletDto, user);
   }
 
@@ -55,6 +61,7 @@ export class WalletsController {
     @Body() updateWalletDto: UpdateWalletDto,
     @Request() req,
   ) {
+    // Check wallet is existing
     const wallet = await this.walletsService.findOne(id);
     if (!wallet) {
       throw new BadRequestException('Wallet does not exist.');
@@ -74,7 +81,6 @@ export class WalletsController {
   @Delete(':id')
   async remove(@Param('id') id: number) {
     // Check wallet is existing
-
     const wallet = await this.walletsService.findOne(id);
 
     if (!wallet) {
