@@ -9,6 +9,9 @@ import RegisterPage from '../pages/RegisterPage';
 import WalletPage from '../pages/WalletPage';
 import Records from '../pages/Records';
 import SettingPage from '../pages/SettingPage';
+import CategoryPage from '../pages/CategoryPage';
+import Profile from '../pages/Profile';
+import UpdatePassword from '../pages/UpdatePassword';
 
 export const routes = {
   authRoute: [
@@ -36,6 +39,21 @@ export const routes = {
       name: 'User Setting',
       path: '/settings',
       element: <SettingPage />,
+    },
+    {
+      name: 'Manage Categories',
+      path: '/categories',
+      element: <CategoryPage />,
+    },
+    {
+      name: 'User Profile',
+      path: '/profile',
+      element: <Profile />,
+    },
+    {
+      name: 'Update Password',
+      path: '/update-password',
+      element: <UpdatePassword />,
     },
   ],
   publicRoute: [

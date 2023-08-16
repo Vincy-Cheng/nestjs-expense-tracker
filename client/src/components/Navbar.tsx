@@ -53,9 +53,10 @@ const Navbar = (props: Props) => {
           <a
             href={item.path}
             key={item.name}
-            className="flex gap-2 items-center cursor-pointer hover:bg-secondary-200 active:bg-secondary-100 rounded-md m-1 p-1 hover:scale-105 scale-100 transition-all duration-300"
+            className="flex gap-2 items-center cursor-pointer hover:bg-secondary-200 active:bg-secondary-100 rounded-md m-1 p-1 hover:scale-105 scale-100 transition-all duration-300 "
           >
-            {item.icon}
+            <span className="text-2xl">{item.icon}</span>
+
             {item.name}
           </a>
         ))}

@@ -20,19 +20,10 @@ const Header = (props: Props) => {
   };
 
   return (
-    <div className="flex justify-between">
-      <div className="text-lg">{header()}</div>
-
-      {/* <button
-        onClick={() => {
-          dispatch(logout());
-          navigate('/login');
-        }}
-      >
-        {isSignedIn ? 'Logout' : 'Login'}
-      </button> */}
+    <header className="flex justify-between items-center text-lg">
+      <div>{header()}</div>
       <Setting />
-    </div>
+    </header>
   );
 };
 
