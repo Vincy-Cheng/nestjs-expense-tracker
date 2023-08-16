@@ -28,6 +28,7 @@ const WalletPage = ({}: WalletPageProps) => {
   }>({ message: '', type: 'warning' });
 
   const { data: wallets } = useQuery<IWallet[]>(['wallets'], fetchWallets);
+
   // Create wallet mutation
   const createWalletMutation = useMutation<
     IWallet,
