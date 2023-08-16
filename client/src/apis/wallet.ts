@@ -10,6 +10,7 @@ export const fetchWallets = async (): Promise<IWallet[]> => {
 export const createWallet = async (
   newWallet: Partial<ICreateWallet>,
 ): Promise<IWallet> => {
+  console.log(newWallet);
   const response = await Axios.post('/v1/wallets', newWallet);
   return response.data;
 };

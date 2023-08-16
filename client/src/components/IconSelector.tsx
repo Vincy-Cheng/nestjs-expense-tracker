@@ -5,11 +5,7 @@ import {
   IoMdCloudOutline,
 } from 'react-icons/io';
 import { LuCandy } from 'react-icons/lu';
-import {
-  BiCameraMovie,
-  BiSolidDonateHeart,
-  BiSolidDrink,
-} from 'react-icons/bi';
+import { BiCameraMovie, BiSolidDonateHeart } from 'react-icons/bi';
 import {
   PiAirplaneTiltThin,
   PiBabyThin,
@@ -268,7 +264,7 @@ const IconSelector = ({ name }: IconSelectorProps) => {
     case EIconName.WRENCH:
       return <PiWrenchThin />;
     default:
-      return <div>IconSelector</div>;
+      return <div>Icon</div>;
   }
 };
 

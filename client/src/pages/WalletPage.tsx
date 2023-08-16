@@ -198,7 +198,7 @@ const WalletPage = ({}: WalletPageProps) => {
           <div>
             <form onSubmit={handleSubmit} className="flex flex-col gap-2">
               <div className="text-2xl">Add New Wallet</div>
-              {createWalletMutation.isLoading ? 'Creating...' : 'Create'}
+              {createWalletMutation.isLoading && 'Creating...'}
               {errorMessage.message && (
                 <CustomAlert
                   type={errorMessage.type}
