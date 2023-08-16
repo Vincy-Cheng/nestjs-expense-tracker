@@ -16,12 +16,19 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
+import { CreateCategoryDto } from '../categories/dto/create-category.dto';
+import { IconName } from '../enums';
+import { CategoriesService } from '../categories/categories.service';
+import { UpdateCategoryOrderDto } from './dto/update-category-order';
 
 @ApiTags('User')
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly categoriesService: CategoriesService,
+  ) {}
 
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
@@ -43,7 +50,34 @@ export class UsersController {
       throw new UnauthorizedException('Email is already in used.');
     }
 
-    return this.usersService.create(createUserDto);
+    const user = await this.usersService.create(createUserDto);
+
+    // Pre-insert some category
+    const categories: CreateCategoryDto[] = [
+      { name: 'Transportation', icon: IconName.BUS, userId: user.id },
+      { name: 'Restaurant', icon: IconName.RESTAURANT, userId: user.id },
+      { name: 'Health', icon: IconName.HEALTH, userId: user.id },
+      { name: 'Clothing', icon: IconName.SHIRT, userId: user.id },
+      { name: 'Shopping', icon: IconName.SHOPPING_CART, userId: user.id },
+      { name: 'Education', icon: IconName.GRADUATION, userId: user.id },
+      { name: 'Bank', icon: IconName.BANK, userId: user.id },
+      { name: 'Travel', icon: IconName.AIRPLANE, userId: user.id },
+      { name: 'Utils', icon: IconName.UTILS, userId: user.id },
+    ];
+
+    const categoryOrder = [];
+    for await (const category of categories) {
+      const newCategory = await this.categoriesService.create(category, user);
+      categoryOrder.push(newCategory.id);
+    }
+
+    // Update the category order of the user
+    await this.usersService.updateCategoryOrder({
+      id: user.id,
+      categoryOrder: categoryOrder,
+    });
+
+    return user;
   }
 
   // @Get()
@@ -57,10 +91,19 @@ export class UsersController {
     return await this.usersService.findById(+id);
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-  //   return this.usersService.update(+id, updateUserDto);
-  // }
+  @Patch(':id/category-order')
+  async update(
+    @Param('id') id: number,
+    @Body() updateCategoryOrder: UpdateCategoryOrderDto,
+  ) {
+    const user = await this.usersService.findById(updateCategoryOrder.id);
+    if (!user) {
+      throw new UnauthorizedException(
+        'Unauthorized to update the order of category.',
+      );
+    }
+    return await this.usersService.updateCategoryOrder(updateCategoryOrder);
+  }
 
   // @Delete(':id')
   // remove(@Param('id') id: string) {

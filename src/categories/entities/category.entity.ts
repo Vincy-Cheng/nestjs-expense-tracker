@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { IsEnum, IsNotEmpty } from 'class-validator';
+import { IsBoolean, IsEnum, IsNotEmpty } from 'class-validator';
 import {
   BaseEntity,
   Column,
@@ -14,7 +14,6 @@ import {
 } from 'typeorm';
 import { IconName } from '../../enums';
 import { Record } from '../../records/entities/record.entity';
-import { Wallet } from '../../wallets/entities/wallet.entity';
 import { User } from '../../users/entities/user.entity';
 
 @Entity({ name: 'categories' })
@@ -33,6 +32,11 @@ export class Category extends BaseEntity {
   @IsNotEmpty()
   @IsEnum(IconName)
   icon: IconName;
+
+  @Column({ type: 'boolean' })
+  @ApiProperty()
+  @IsBoolean()
+  enable: boolean;
 
   @CreateDateColumn({ type: 'timestamp' })
   @Exclude()

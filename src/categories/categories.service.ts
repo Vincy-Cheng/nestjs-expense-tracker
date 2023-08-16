@@ -18,6 +18,7 @@ export class CategoriesService {
       name: createCategoryDto.name,
       icon: createCategoryDto.icon,
       user: user,
+      enable: true,
     });
   }
 
@@ -44,6 +45,7 @@ export class CategoriesService {
       id: id,
       name: updateCategoryDto.name,
       icon: updateCategoryDto.icon,
+      enable: updateCategoryDto.enable,
     });
   }
 

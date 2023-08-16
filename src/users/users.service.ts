@@ -5,6 +5,7 @@ import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { UpdateCategoryOrderDto } from './dto/update-category-order';
 
 @Injectable()
 export class UsersService {
@@ -51,8 +52,15 @@ export class UsersService {
     });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
+  }
+
+  async updateCategoryOrder(updateCategoryOrderDto: UpdateCategoryOrderDto) {
+    return await this.userRepository.save({
+      id: updateCategoryOrderDto.id,
+      categoryOrder: updateCategoryOrderDto.categoryOrder,
+    });
   }
 
   async delete(user: User) {

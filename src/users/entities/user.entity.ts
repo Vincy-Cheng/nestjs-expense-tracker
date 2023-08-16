@@ -1,6 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import {
+  IS_ARRAY,
+  IsArray,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+} from 'class-validator';
 import {
   BaseEntity,
   Column,
@@ -54,6 +60,12 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Category, (categories) => categories.user)
   categories: Category[];
+
+  @Column({ type: 'simple-array', nullable: true })
+  @IsArray()
+  @IsOptional()
+  @ApiProperty({ nullable: true })
+  categoryOrder: number[];
 
   constructor(partial: Partial<User>) {
     super();
