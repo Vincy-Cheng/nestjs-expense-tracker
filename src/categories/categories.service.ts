@@ -19,6 +19,7 @@ export class CategoriesService {
       icon: createCategoryDto.icon,
       user: user,
       enable: true,
+      type: createCategoryDto.type,
     });
   }
 

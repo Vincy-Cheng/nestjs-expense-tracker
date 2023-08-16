@@ -13,11 +13,10 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateCategoryDto } from '../categories/dto/create-category.dto';
-import { IconName } from '../enums';
+import { IconName, CategoryType } from '../enums';
 import { CategoriesService } from '../categories/categories.service';
 import { UpdateCategoryOrderDto } from './dto/update-category-order';
 
@@ -54,15 +53,66 @@ export class UsersController {
 
     // Pre-insert some category
     const categories: CreateCategoryDto[] = [
-      { name: 'Transportation', icon: IconName.BUS, userId: user.id },
-      { name: 'Restaurant', icon: IconName.RESTAURANT, userId: user.id },
-      { name: 'Health', icon: IconName.HEALTH, userId: user.id },
-      { name: 'Clothing', icon: IconName.SHIRT, userId: user.id },
-      { name: 'Shopping', icon: IconName.SHOPPING_CART, userId: user.id },
-      { name: 'Education', icon: IconName.GRADUATION, userId: user.id },
-      { name: 'Bank', icon: IconName.BANK, userId: user.id },
-      { name: 'Travel', icon: IconName.AIRPLANE, userId: user.id },
-      { name: 'Utils', icon: IconName.UTILS, userId: user.id },
+      {
+        name: 'Transportation',
+        icon: IconName.BUS,
+        userId: user.id,
+        type: CategoryType.EXPENSE,
+      },
+      {
+        name: 'Restaurant',
+        icon: IconName.RESTAURANT,
+        userId: user.id,
+        type: CategoryType.EXPENSE,
+      },
+      {
+        name: 'Health',
+        icon: IconName.HEALTH,
+        userId: user.id,
+        type: CategoryType.EXPENSE,
+      },
+      {
+        name: 'Clothing',
+        icon: IconName.SHIRT,
+        userId: user.id,
+        type: CategoryType.EXPENSE,
+      },
+      {
+        name: 'Shopping',
+        icon: IconName.SHOPPING_CART,
+        userId: user.id,
+        type: CategoryType.EXPENSE,
+      },
+      {
+        name: 'Education',
+        icon: IconName.GRADUATION,
+        userId: user.id,
+        type: CategoryType.EXPENSE,
+      },
+      {
+        name: 'Bank',
+        icon: IconName.BANK,
+        userId: user.id,
+        type: CategoryType.EXPENSE,
+      },
+      {
+        name: 'Travel',
+        icon: IconName.AIRPLANE,
+        userId: user.id,
+        type: CategoryType.EXPENSE,
+      },
+      {
+        name: 'Utils',
+        icon: IconName.UTILS,
+        userId: user.id,
+        type: CategoryType.EXPENSE,
+      },
+      {
+        name: 'Bank',
+        icon: IconName.BANK,
+        userId: user.id,
+        type: CategoryType.INCOME,
+      },
     ];
 
     const categoryOrder = [];

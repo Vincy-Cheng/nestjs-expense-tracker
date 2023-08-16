@@ -8,7 +8,9 @@ export async function fetchCategories(): Promise<ICategory[]> {
   return response.data;
 }
 
-export async function updateCategory(category: ICategory): Promise<ICategory> {
+export async function updateCategory(
+  category: Partial<ICategory>,
+): Promise<ICategory> {
   const res = await Axios.patch(`/v1/categories/${category.id}`, {
     icon: category.icon,
     name: category.name,

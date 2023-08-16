@@ -3,11 +3,9 @@ import { ICategory } from '../apis/type';
 import { useSortable } from '@dnd-kit/sortable';
 import { PiDotsSixVerticalBold } from 'react-icons/pi';
 import IconSelector from './IconSelector';
-import { useState } from 'react';
 import CustomSwitch from './Custom/CustomSwitch';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { on } from 'events';
 import { toast } from 'react-toastify';
 import { updateCategory } from '../apis/category';
 
@@ -16,7 +14,7 @@ type CategoryRowProps = {
 };
 
 const CategoryRow = ({
-  category: { id, name, icon, enable },
+  category: { id, name, icon, enable, type },
 }: CategoryRowProps) => {
   const {
     attributes,
@@ -94,9 +92,7 @@ const CategoryRow = ({
       <div className="flex gap-2 items-center">
         <PiDotsSixVerticalBold className="text-base" />
         <IconSelector name={icon} />
-        <p className="text-sm">
-          {name} {id}
-        </p>
+        <p className="text-sm">{name}</p>
       </div>
 
       <CustomSwitch
@@ -108,6 +104,7 @@ const CategoryRow = ({
               icon,
               name,
               enable: !enable,
+              type,
             });
           } catch (error) {}
         }}

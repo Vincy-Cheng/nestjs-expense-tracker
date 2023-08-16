@@ -16,6 +16,7 @@ import {
 import CategoryRow from '../components/CategoryRow';
 import { AxiosError } from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
+import { AiOutlinePlus } from 'react-icons/ai';
 
 type Props = {};
 
@@ -61,11 +62,6 @@ const CategoryPage = (props: Props) => {
       }
       toast('Failed to swap the category', { type: 'error' });
     },
-    onSettled: () => {
-      // Refetch the data to ensure it's up to date
-      // queryClient.invalidateQueries(['user']);
-    },
-    retry: 3,
   });
 
   useDndMonitor({
@@ -80,24 +76,13 @@ const CategoryPage = (props: Props) => {
           const overIndex = sortedCategories.findIndex(
             (item) => item.id === Number(over?.id),
           );
-          const order = arrayMove(sortedCategories, activeIndex, overIndex).map(
-            (item) => item.id,
-          );
+          const order = arrayMove(sortedCategories, activeIndex, overIndex);
 
           updateCategoryOrderMutation.mutateAsync({
             id: user.id,
-            categoryOrder: order,
+            categoryOrder: order.map((item) => item.id),
           });
-          setSortedCategories((items) => {
-            const activeIndex = items.findIndex(
-              (item) => item.id === Number(active.id),
-            );
-            const overIndex = items.findIndex(
-              (item) => item.id === Number(over?.id),
-            );
-
-            return arrayMove(items, activeIndex, overIndex);
-          });
+          setSortedCategories(order);
         } catch (error) {}
       }
     },
@@ -125,19 +110,25 @@ const CategoryPage = (props: Props) => {
       <div className="pb-3">
         <BackButton />
       </div>
+      <div>
+        <AiOutlinePlus className="cursor-pointer hover:bg-info-200 rounded-full active:bg-info-100" />
+        Add New Category
+      </div>
+      <div className="flex gap-2">
+        <SortableContext
+          items={sortedCategories}
+          strategy={verticalListSortingStrategy}
+        >
+          <div className="p-3 flex flex-col gap-3 bg-info-100 rounded-md">
+            {sortedCategories.map((category) => (
+              <div key={category.id}>
+                <CategoryRow category={category} />
+              </div>
+            ))}
+          </div>
+        </SortableContext>
+      </div>
 
-      <SortableContext
-        items={sortedCategories}
-        strategy={verticalListSortingStrategy}
-      >
-        <div className="p-3 flex flex-col gap-3 bg-info-100 rounded-md">
-          {sortedCategories.map((category) => (
-            <div key={category.id}>
-              <CategoryRow category={category} />
-            </div>
-          ))}
-        </div>
-      </SortableContext>
       <ToastContainer />
     </div>
   );

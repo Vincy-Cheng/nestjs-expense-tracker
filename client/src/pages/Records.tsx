@@ -22,7 +22,7 @@ const Records = (props: Props) => {
         return wallets[id];
       }
     }
-  }, [wallets]);
+  }, [id, wallets]);
 
   return (
     <div>
@@ -34,7 +34,7 @@ const Records = (props: Props) => {
             <div>Expense:</div>
             <div>Balance:</div>
           </div>
-          <IoSettingsOutline strokeWidth={1}></IoSettingsOutline>
+          <IoSettingsOutline strokeWidth={1} className="cursor-pointer" />
         </div>
       )}
 

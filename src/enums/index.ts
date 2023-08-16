@@ -1,2 +1,2 @@
 export * from './icon-name.enum';
-export * from './record-type.enum';
+export * from './category-type.enum';

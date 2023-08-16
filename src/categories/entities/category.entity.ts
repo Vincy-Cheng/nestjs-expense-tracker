@@ -12,7 +12,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { IconName } from '../../enums';
+import { IconName, CategoryType } from '../../enums';
 import { Record } from '../../records/entities/record.entity';
 import { User } from '../../users/entities/user.entity';
 
@@ -37,6 +37,12 @@ export class Category extends BaseEntity {
   @ApiProperty()
   @IsBoolean()
   enable: boolean;
+
+  @Column()
+  @ApiProperty({ enum: CategoryType })
+  @IsEnum(CategoryType)
+  @IsNotEmpty()
+  type: CategoryType;
 
   @CreateDateColumn({ type: 'timestamp' })
   @Exclude()

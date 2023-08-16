@@ -17,6 +17,7 @@ export interface ICategory {
   name: string;
   icon: EIconName;
   enable: boolean;
+  type: 'EXPENSE' | 'INCOME';
 }
 export interface LoginResponse {
   access_token: string;

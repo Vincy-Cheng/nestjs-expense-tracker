@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumber } from 'class-validator';
 import {
   BaseEntity,
   Column,
@@ -12,7 +12,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Category } from '../../categories/entities/category.entity';
-import { RecordType } from '../../enums';
 import { Wallet } from '../../wallets/entities/wallet.entity';
 
 @Entity({ name: 'records' })
@@ -26,12 +25,6 @@ export class Record extends BaseEntity {
   @IsNotEmpty()
   @IsNumber()
   price: number;
-
-  @Column()
-  @ApiProperty({ type: RecordType })
-  @IsEnum(RecordType)
-  @IsNotEmpty()
-  recordType: RecordType;
 
   @Column({ length: 500 })
   @ApiProperty()
