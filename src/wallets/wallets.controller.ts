@@ -38,6 +38,7 @@ export class WalletsController {
     @Request() req,
   ): Promise<Wallet> {
     // Validate the user
+    console.log(createWalletDto, req.user);
     const user = await this.usersService.findById(createWalletDto.userId);
 
     if (user.id !== req.user.id) {
