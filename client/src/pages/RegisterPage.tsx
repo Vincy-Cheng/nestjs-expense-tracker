@@ -49,6 +49,14 @@ const RegisterPage = (props: Props) => {
     onSuccess(data, variables, context) {
       setError({ type: 'success', message: 'User is created' });
     },
+    onSettled(data, error, variables, context) {
+      setUserInfo({
+        username: '',
+        password: '',
+        email: '',
+        confirmPassword: '',
+      });
+    },
     retry: 3,
   });
 
@@ -69,7 +77,7 @@ const RegisterPage = (props: Props) => {
 
     if (userInfo.password !== userInfo.confirmPassword) {
       return setError({
-        message: 'Password is not same ',
+        message: 'Passwords do not match!',
         type: 'error',
       });
     }
