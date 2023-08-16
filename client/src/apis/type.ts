@@ -22,3 +22,7 @@ export interface LoginResponse {
   access_token: string;
   user: IUserInfo;
 }
+
+export interface ICreateWallet extends IWallet {
+  userId: number;
+}

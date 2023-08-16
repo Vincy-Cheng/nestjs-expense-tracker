@@ -1,20 +1,32 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { IWallet } from '../apis/type';
+import { ICreateWallet, IWallet } from '../apis/type';
 import CustomModal from '../components/Custom/CustomModal';
 import CustomTextField from '../components/Custom/CustomTextField';
 import CustomSelector from '../components/Custom/CustomSelector';
 import { currencyList } from '../utils';
+import jwt_decode from 'jwt-decode';
 import CustomAlert, { CustomAlertType } from '../components/Custom/CustomAlert';
 import { createWallet, deleteWallet, fetchWallets } from '../apis/wallet';
 import { AxiosError } from 'axios';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { HiOutlineTrash } from 'react-icons/hi';
+import { useAppSelector } from '../hooks';
 
 type WalletPageProps = {};
 
 const WalletPage = ({}: WalletPageProps) => {
   const queryClient = useQueryClient();
+
+  const { access_token } = useAppSelector((state) => state.user);
+
+  const decoded = jwt_decode<{
+    username: string;
+    sub: number;
+    iat: number;
+    exp: number;
+  }>(access_token ?? sessionStorage.getItem('access_token') ?? '');
+
   const [open, setOpen] = useState(false);
 
   const [newWallet, setNewWallet] = useState<{
@@ -32,14 +44,14 @@ const WalletPage = ({}: WalletPageProps) => {
   // Create wallet mutation
   const createWalletMutation = useMutation<
     IWallet,
-    AxiosError<{ error: string; message: string[]; statusCode: number }>,
-    Partial<IWallet>
+    AxiosError<{ error: string; message: string; statusCode: number }>,
+    Partial<ICreateWallet>
   >(createWallet, {
-    onMutate: async (newWallet) => {
+    onMutate: async ({ id, name, currency }) => {
       // Optimistically update the cache
       queryClient.setQueryData<IWallet[]>(['wallets'], (oldData) => {
         if (oldData) {
-          return [...oldData, newWallet as IWallet];
+          return [...oldData, { id, name, currency } as IWallet];
         }
         return oldData;
       });
@@ -62,8 +74,7 @@ const WalletPage = ({}: WalletPageProps) => {
       }
       setErrorMessage({
         type: 'error',
-        message:
-          error.response?.data.message[0] ?? 'Unexpected error from server',
+        message: error.response?.data.message ?? 'Unexpected error from server',
       });
     },
     onSettled: () => {
@@ -104,7 +115,10 @@ const WalletPage = ({}: WalletPageProps) => {
       });
 
       // Call the mutation to create the wallet
-      await createWalletMutation.mutateAsync(wallet);
+      await createWalletMutation.mutateAsync({
+        ...wallet,
+        userId: decoded.sub,
+      });
 
       // The onSuccess callback will automatically update the cache with the actual data
     } catch (error) {
@@ -234,5 +248,4 @@ const WalletPage = ({}: WalletPageProps) => {
     </div>
   );
 };
-
 export default WalletPage;

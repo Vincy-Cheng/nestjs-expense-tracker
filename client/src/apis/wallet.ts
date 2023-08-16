@@ -1,5 +1,5 @@
 import { Axios } from '.';
-import { IWallet } from './type';
+import { ICreateWallet, IWallet } from './type';
 
 export const fetchWallets = async (): Promise<IWallet[]> => {
   const response = await Axios.get('/v1/wallets');
@@ -8,7 +8,7 @@ export const fetchWallets = async (): Promise<IWallet[]> => {
 
 // Create wallet mutation
 export const createWallet = async (
-  newWallet: Partial<IWallet>,
+  newWallet: Partial<ICreateWallet>,
 ): Promise<IWallet> => {
   const response = await Axios.post('/v1/wallets', newWallet);
   return response.data;

@@ -39,6 +39,7 @@ export class WalletsController {
   ): Promise<Wallet> {
     // Validate the user
     const user = await this.usersService.findById(createWalletDto.userId);
+
     if (user.id !== req.user.id) {
       throw new UnauthorizedException('Unable to create category');
     }

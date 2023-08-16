@@ -3,7 +3,7 @@ import BackButton from '../components/BackButton';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import jwt_decode from 'jwt-decode';
 import { ICategory } from '../apis/type';
-import { fetchCategories, updateCategory } from '../apis/category';
+import { fetchCategories } from '../apis/category';
 import { useAppSelector } from '../hooks';
 import { IUserInfo } from '../types';
 import { profile, updateCategoryOrder } from '../apis';
