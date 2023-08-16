@@ -1,4 +1,4 @@
-import { AxiosResponse } from 'axios';
+import { EIconName } from '../common/icon-name.enum';
 import { IUserInfo } from '../types';
 
 export interface IUser {
@@ -15,19 +15,10 @@ export interface IWallet {
 export interface ICategory {
   id: number;
   name: string;
-  icon: string;
+  icon: EIconName;
+  enable: boolean;
 }
-
-export interface ErrorResponse {
-  status: number;
-  error?: AxiosResponse;
-}
-
 export interface LoginResponse {
   access_token: string;
   user: IUserInfo;
-}
-
-export interface RegisterResponse extends ErrorResponse {
-  user?: IUserInfo;
 }
