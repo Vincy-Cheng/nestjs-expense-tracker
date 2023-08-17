@@ -26,11 +26,9 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <DndContext collisionDetection={closestCenter} sensors={sensors}>
-        <Provider store={store}>
-          <RouterProvider router={router} />
-        </Provider>
-      </DndContext>
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>
     </QueryClientProvider>
   );
 }

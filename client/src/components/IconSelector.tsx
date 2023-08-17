@@ -7,6 +7,7 @@ import {
 import { LuCandy } from 'react-icons/lu';
 import { BiCameraMovie, BiSolidDonateHeart } from 'react-icons/bi';
 import {
+  PiAirplaneTiltFill,
   PiAirplaneTiltThin,
   PiBabyThin,
   PiBankThin,
@@ -28,7 +29,6 @@ import {
   PiFaceMaskThin,
   PiFootballThin,
   PiGameControllerThin,
-  PiGraduationCapThin,
   PiHammerThin,
   PiHandbagThin,
   PiHouseThin,
@@ -45,7 +45,6 @@ import {
   PiScissorsThin,
   PiShoppingCartThin,
   PiSyringeThin,
-  PiTShirtThin,
   PiTaxiThin,
   PiTicketThin,
   PiTramThin,
@@ -84,6 +83,7 @@ import {
 import {
   IoBowlingBallOutline,
   IoFastFoodOutline,
+  IoShirtSharp,
   IoWaterSharp,
 } from 'react-icons/io5';
 import { BsCashCoin } from 'react-icons/bs';
@@ -92,6 +92,7 @@ import {
   LiaRunningSolid,
   LiaSwimmerSolid,
 } from 'react-icons/lia';
+import { RiGraduationCapFill } from 'react-icons/ri';
 
 type IconSelectorProps = {
   name: EIconName;
@@ -100,7 +101,7 @@ type IconSelectorProps = {
 const IconSelector = ({ name }: IconSelectorProps) => {
   switch (name) {
     case EIconName.AIRPLANE:
-      return <PiAirplaneTiltThin />;
+      return <PiAirplaneTiltFill />;
     case EIconName.BABY:
       return <PiBabyThin />;
     case EIconName.BAG:
@@ -168,7 +169,7 @@ const IconSelector = ({ name }: IconSelectorProps) => {
     case EIconName.GLASS:
       return <PiEyeglassesThin />;
     case EIconName.GRADUATION:
-      return <PiGraduationCapThin />;
+      return <RiGraduationCapFill />;
     case EIconName.HAMMER:
       return <PiHammerThin />;
     case EIconName.HAT:
@@ -230,7 +231,7 @@ const IconSelector = ({ name }: IconSelectorProps) => {
     case EIconName.SCISSORS:
       return <PiScissorsThin />;
     case EIconName.SHIRT:
-      return <PiTShirtThin />;
+      return <IoShirtSharp />;
     case EIconName.SHOPPING_CART:
       return <PiShoppingCartThin />;
     case EIconName.SNACK:

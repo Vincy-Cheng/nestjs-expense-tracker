@@ -8,13 +8,18 @@ import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { updateCategory } from '../apis/category';
+import clsx from 'clsx';
 
 type CategoryRowProps = {
   category: ICategory;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpenCategory: React.Dispatch<React.SetStateAction<ICategory | null>>;
 };
 
 const CategoryRow = ({
   category: { id, name, icon, enable, type },
+  setOpen,
+  setOpenCategory,
 }: CategoryRowProps) => {
   const {
     attributes,
@@ -83,11 +88,18 @@ const CategoryRow = ({
 
   return (
     <div
-      className="flex justify-between items-center text-4xl text-white rounded-md p-1 bg-info-400"
+      className={clsx(
+        'flex justify-between items-center text-4xl text-white rounded-md p-1',
+        type === 'income' ? 'bg-info-400' : 'bg-rose-400',
+      )}
       ref={setNodeRef}
       style={style}
       {...attributes}
       {...listeners}
+      onClick={() => {
+        setOpen(true);
+        setOpenCategory({ id, name, icon, enable, type });
+      }}
     >
       <div className="flex gap-2 items-center">
         <PiDotsSixVerticalBold className="text-base" />
@@ -111,6 +123,9 @@ const CategoryRow = ({
         size={20}
         enableColor="peer-checked:bg-primary-400"
       />
+      {/* <div className="absolute p-1 rounded-full -right-2 -top-2 bg-rose-200">
+        <BiDotsVerticalRounded size={12} />
+      </div> */}
     </div>
   );
 };

@@ -17,7 +17,7 @@ export interface ICategory {
   name: string;
   icon: EIconName;
   enable: boolean;
-  type: 'EXPENSE' | 'INCOME';
+  type: 'expense' | 'income';
 }
 export interface LoginResponse {
   access_token: string;
@@ -25,5 +25,9 @@ export interface LoginResponse {
 }
 
 export interface ICreateWallet extends IWallet {
+  userId: number;
+}
+
+export interface ICreateCategory extends ICategory {
   userId: number;
 }

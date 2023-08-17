@@ -90,12 +90,6 @@ export class UsersController {
         type: CategoryType.EXPENSE,
       },
       {
-        name: 'Bank',
-        icon: IconName.BANK,
-        userId: user.id,
-        type: CategoryType.EXPENSE,
-      },
-      {
         name: 'Travel',
         icon: IconName.AIRPLANE,
         userId: user.id,
@@ -110,6 +104,12 @@ export class UsersController {
       {
         name: 'Bank',
         icon: IconName.BANK,
+        userId: user.id,
+        type: CategoryType.INCOME,
+      },
+      {
+        name: 'Income',
+        icon: IconName.COIN,
         userId: user.id,
         type: CategoryType.INCOME,
       },

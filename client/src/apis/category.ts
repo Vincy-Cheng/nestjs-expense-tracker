@@ -1,7 +1,12 @@
 import { Axios } from '.';
-import { ICategory } from './type';
+import { ICategory, ICreateCategory } from './type';
 
-export async function addCategory() {}
+export async function addCategory(
+  newCategory: Partial<ICreateCategory>,
+): Promise<ICategory> {
+  const res = await Axios.post('v1/categories', newCategory);
+  return res.data;
+}
 
 export async function fetchCategories(): Promise<ICategory[]> {
   const response = await Axios.get('/v1/categories');
