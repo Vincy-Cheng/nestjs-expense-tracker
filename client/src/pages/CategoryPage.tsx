@@ -26,9 +26,8 @@ import {
 } from '@dnd-kit/sortable';
 import CategoryRow from '../components/category/CategoryRow';
 import { AxiosError } from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { AiOutlinePlus } from 'react-icons/ai';
-import 'react-toastify/dist/ReactToastify.css';
 import { ECategoryType } from '../common/category-type';
 import CategoryModal from '../components/category/CategoryModal';
 import { EIconName } from '../common/icon-name.enum';
@@ -100,7 +99,7 @@ const CategoryPage = (props: Props) => {
     onMutate: async ({ id, name, icon, type, enable }) => {
       // Optimistically update the cache
 
-      await queryClient.setQueryData<IUserInfo>(['user'], (oldData) => {
+      queryClient.setQueryData<IUserInfo>(['user'], (oldData) => {
         if (oldData) {
           return {
             ...oldData,
@@ -110,7 +109,7 @@ const CategoryPage = (props: Props) => {
         return oldData;
       });
 
-      await queryClient.setQueryData<ICategory[]>(['categories'], (oldData) => {
+      queryClient.setQueryData<ICategory[]>(['categories'], (oldData) => {
         if (oldData) {
           return [...oldData, { id, name, icon, type, enable } as ICategory];
         }
@@ -179,10 +178,9 @@ const CategoryPage = (props: Props) => {
             }
           });
         }
-        console.log(oldData);
+
         return oldData;
       });
-
       return {
         previousWallets: queryClient.getQueryData<ICategory[]>(['categories']),
       };
@@ -205,7 +203,9 @@ const CategoryPage = (props: Props) => {
       // Refetch the data to ensure it's up to date
       queryClient.invalidateQueries(['wallets']);
     },
-
+    onSuccess(data, variables, context) {
+      toast('Category is updated!', { type: 'success' });
+    },
     retry: 3,
   });
 
@@ -293,7 +293,13 @@ const CategoryPage = (props: Props) => {
       <div className="pb-3">
         <BackButton />
       </div>
-
+      <div
+        onClick={() => {
+          toast('Category is updated!', { type: 'success' });
+        }}
+      >
+        test
+      </div>
       <div className="flex gap-2 md:flex-row flex-col">
         {Object.values(ECategoryType).map((cType) => (
           <DndContext
@@ -367,7 +373,6 @@ const CategoryPage = (props: Props) => {
           setEditCategory={setEditCategory}
         />
       )}
-      <ToastContainer />
     </div>
   );
 };

@@ -75,7 +75,7 @@ const CategoryRow = ({
 
       if (typedContext.previousCategories) {
         queryClient.setQueryData<ICategory[]>(
-          ['wallets'],
+          ['categories'],
           typedContext.previousCategories,
         );
       }
@@ -83,9 +83,8 @@ const CategoryRow = ({
     },
     onSettled: () => {
       // Refetch the data to ensure it's up to date
-      queryClient.invalidateQueries(['wallets']);
+      queryClient.invalidateQueries(['categories']);
     },
-
     retry: 3,
   });
 

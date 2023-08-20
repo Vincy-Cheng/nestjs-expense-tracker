@@ -1,12 +1,13 @@
 import clsx from 'clsx';
 import React, { useState } from 'react';
-import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { EIconName } from '../../common/icon-name.enum';
 import CustomModal from '../Custom/CustomModal';
 import CustomTextField from '../Custom/CustomTextField';
 import IconSelector from '../IconSelector';
 import { ICategory } from '../../types';
 import { ECategoryType } from '../../common/category-type';
+import { toast } from 'react-toastify';
 
 type CategoryModalProps = {
   open: boolean;
@@ -28,6 +29,13 @@ const CategoryModal = ({
   return (
     <CustomModal setOpen={setOpen}>
       <form onSubmit={calllback}>
+        <div
+          onClick={() => {
+            toast('Category is updated!', { type: 'success' });
+          }}
+        >
+          test
+        </div>
         <div className="text-2xl">
           {editCategory.id === 0
             ? 'Add New Category for ' +

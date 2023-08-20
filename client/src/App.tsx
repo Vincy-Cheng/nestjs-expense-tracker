@@ -4,13 +4,9 @@ import { router } from './routes';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import { store } from './store';
-import {
-  DndContext,
-  MouseSensor,
-  closestCenter,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
+import { MouseSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const queryClient = new QueryClient();
 
@@ -29,6 +25,7 @@ function App() {
       <Provider store={store}>
         <RouterProvider router={router} />
       </Provider>
+      <ToastContainer />
     </QueryClientProvider>
   );
 }
