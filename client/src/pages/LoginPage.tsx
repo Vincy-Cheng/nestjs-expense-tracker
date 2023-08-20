@@ -5,9 +5,10 @@ import { useMutation } from '@tanstack/react-query';
 import { signIn } from '../apis';
 import CustomAlert from '../components/Custom/CustomAlert';
 import CustomTextField from '../components/Custom/CustomTextField';
-import { LoginResponse, IUser } from '../apis/type';
+
 import { AxiosError } from 'axios';
 import { setIsSignedIn } from '../store/userSlice';
+import { LoginResponse, IUser } from '../types';
 
 type Props = {};
 

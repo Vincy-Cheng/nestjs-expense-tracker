@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import CustomAlert, { CustomAlertType } from '../components/Custom/CustomAlert';
-import { IUser } from '../apis/type';
 import { useMutation } from '@tanstack/react-query';
 import { register } from '../apis';
 import CustomTextField from '../components/Custom/CustomTextField';
-import { IUserInfo } from '../types';
+import { IUser, IUserInfo } from '../types';
 import { AxiosError } from 'axios';
 
 type Props = {};

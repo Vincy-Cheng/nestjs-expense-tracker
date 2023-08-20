@@ -1,5 +1,5 @@
 import { Axios } from '.';
-import { ICreateWallet, IWallet } from './type';
+import { IWallet, ICreateWallet } from '../types';
 
 export const fetchWallets = async (): Promise<IWallet[]> => {
   const response = await Axios.get('/v1/wallets');

@@ -1,9 +1,9 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo } from 'react';
-import { IWallet } from '../apis/type';
 import { fetchWallets } from '../apis/wallet';
 import { useAppSelector } from '../hooks';
 import { IoSettingsOutline } from 'react-icons/io5';
+import { IWallet } from '../types';
 
 type Props = {};
 

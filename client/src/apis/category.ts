@@ -1,5 +1,5 @@
 import { Axios } from '.';
-import { ICategory, ICreateCategory } from './type';
+import { ICategory, ICreateCategory } from '../types';
 
 export async function addCategory(
   newCategory: Partial<ICreateCategory>,

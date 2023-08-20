@@ -1,7 +1,6 @@
 import axios from 'axios';
-import { LoginResponse, IUser } from './type';
 import { NewUser } from '../pages/RegisterPage';
-import { IUserInfo } from '../types';
+import { IUser, IUserInfo, LoginResponse } from '../types';
 
 export const Axios = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,

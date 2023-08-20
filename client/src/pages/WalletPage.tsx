@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { ICreateWallet, IWallet } from '../apis/type';
+
 import CustomModal from '../components/Custom/CustomModal';
 import CustomTextField from '../components/Custom/CustomTextField';
 import CustomSelector from '../components/Custom/CustomSelector';
@@ -12,6 +12,7 @@ import { AxiosError } from 'axios';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { HiOutlineTrash } from 'react-icons/hi';
 import { useAppSelector } from '../hooks';
+import { ICreateWallet, IWallet } from '../types';
 
 type WalletPageProps = {};
 

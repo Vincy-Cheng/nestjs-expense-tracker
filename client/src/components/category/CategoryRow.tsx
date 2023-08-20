@@ -1,26 +1,29 @@
 import { CSS } from '@dnd-kit/utilities';
-import { ICategory } from '../apis/type';
 import { useSortable } from '@dnd-kit/sortable';
 import { PiDotsSixVerticalBold } from 'react-icons/pi';
-import IconSelector from './IconSelector';
-import CustomSwitch from './Custom/CustomSwitch';
+import IconSelector from '../IconSelector';
+import CustomSwitch from '../Custom/CustomSwitch';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
-import { updateCategory } from '../apis/category';
+import { updateCategory } from '../../apis/category';
 import clsx from 'clsx';
+import { ICategory } from '../../types';
+import { useRef } from 'react';
 
 type CategoryRowProps = {
   category: ICategory;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setOpenCategory: React.Dispatch<React.SetStateAction<ICategory | null>>;
+  setEditCategory: React.Dispatch<React.SetStateAction<ICategory>>;
 };
 
 const CategoryRow = ({
   category: { id, name, icon, enable, type },
   setOpen,
-  setOpenCategory,
+  setEditCategory,
 }: CategoryRowProps) => {
+  const enableRef = useRef<HTMLSpanElement>(null);
+
   const {
     attributes,
     listeners,
@@ -96,9 +99,14 @@ const CategoryRow = ({
       style={style}
       {...attributes}
       {...listeners}
-      onClick={() => {
-        setOpen(true);
-        setOpenCategory({ id, name, icon, enable, type });
+      onClick={(event) => {
+        if (
+          enableRef.current &&
+          !enableRef.current.contains(event.target as Node)
+        ) {
+          setOpen(true);
+          setEditCategory({ id, name, icon, enable, type });
+        }
       }}
     >
       <div className="flex gap-2 items-center">
@@ -107,25 +115,24 @@ const CategoryRow = ({
         <p className="text-sm">{name}</p>
       </div>
 
-      <CustomSwitch
-        on={enable}
-        toggle={async () => {
-          try {
-            await updateCategoryMutation.mutateAsync({
-              id,
-              icon,
-              name,
-              enable: !enable,
-              type,
-            });
-          } catch (error) {}
-        }}
-        size={20}
-        enableColor="peer-checked:bg-primary-400"
-      />
-      {/* <div className="absolute p-1 rounded-full -right-2 -top-2 bg-rose-200">
-        <BiDotsVerticalRounded size={12} />
-      </div> */}
+      <span ref={enableRef}>
+        <CustomSwitch
+          on={enable}
+          toggle={async () => {
+            try {
+              await updateCategoryMutation.mutateAsync({
+                id,
+                icon,
+                name,
+                enable: !enable,
+                type,
+              });
+            } catch (error) {}
+          }}
+          size={20}
+          enableColor="peer-checked:bg-primary-400"
+        />
+      </span>
     </div>
   );
 };

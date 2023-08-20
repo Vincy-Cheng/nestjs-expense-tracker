@@ -4,7 +4,7 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 
 type CustomTextFieldProps = {
   type: string;
-  name: string;
+  name?: string;
   value: string;
   callbackAction: (event: React.ChangeEvent<HTMLInputElement>) => void;
   visibleControl?: boolean;
@@ -23,7 +23,8 @@ const CustomTextField = ({
 }: CustomTextFieldProps) => {
   return (
     <div className="flex flex-col gap-2">
-      <div>{name}: </div>
+      {name && <div>{name}: </div>}
+
       <div
         className={clsx('border border-info-600 rounded-md px-2', {
           'flex justify-between items-center': visibleControl,

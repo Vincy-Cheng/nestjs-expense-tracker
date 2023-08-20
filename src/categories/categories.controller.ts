@@ -38,7 +38,18 @@ export class CategoriesController {
     if (user.id !== req.user.id) {
       throw new UnauthorizedException('Unable to create new category');
     }
-    return await this.categoriesService.create(createCategoryDto, user);
+    const category = await this.categoriesService.create(
+      createCategoryDto,
+      user,
+    );
+
+    // Update the category order
+    await this.usersService.updateCategoryOrder({
+      id: user.id,
+      categoryOrder: [...user.categoryOrder, category.id],
+    });
+
+    return category;
   }
 
   @Get()

@@ -2,10 +2,9 @@ import { useEffect, useState } from 'react';
 import BackButton from '../components/BackButton';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import jwt_decode from 'jwt-decode';
-import { ICategory, ICreateCategory } from '../apis/type';
-import { addCategory, fetchCategories } from '../apis/category';
+import { addCategory, fetchCategories, updateCategory } from '../apis/category';
 import { useAppSelector } from '../hooks';
-import { IUserInfo } from '../types';
+import { ICategory, ICreateCategory, IUserInfo } from '../types';
 import { profile, updateCategoryOrder } from '../apis';
 import {
   DndContext,
@@ -25,13 +24,14 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import CategoryRow from '../components/CategoryRow';
+import CategoryRow from '../components/category/CategoryRow';
 import { AxiosError } from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import { AiOutlinePlus } from 'react-icons/ai';
-import CustomModal from '../components/Custom/CustomModal';
-import CustomTextField from '../components/Custom/CustomTextField';
 import 'react-toastify/dist/ReactToastify.css';
+import { ECategoryType } from '../common/category-type';
+import CategoryModal from '../components/category/CategoryModal';
+import { EIconName } from '../common/icon-name.enum';
 
 type Props = {};
 
@@ -39,6 +39,20 @@ const CategoryPage = (props: Props) => {
   const queryClient = useQueryClient();
 
   const { access_token } = useAppSelector((state) => state.user);
+
+  const [sortedCategories, setSortedCategories] = useState<ICategory[]>([]);
+
+  const [activeCategory, setActiveCategory] = useState<ICategory | null>(null);
+
+  const [open, setOpen] = useState<boolean>(false);
+
+  const [editCategory, setEditCategory] = useState<ICategory>({
+    id: 0,
+    name: '',
+    enable: true,
+    type: ECategoryType.EXPENSE,
+    icon: EIconName.MONEY,
+  });
 
   const decoded = jwt_decode<{
     username: string;
@@ -55,14 +69,6 @@ const CategoryPage = (props: Props) => {
   const { data: user } = useQuery<IUserInfo>(['user', decoded.sub], () =>
     profile(decoded.sub),
   );
-
-  const [sortedCategories, setSortedCategories] = useState<ICategory[]>([]);
-
-  const [activeCategory, setActiveCategory] = useState<ICategory | null>(null);
-
-  const [openCategory, setOpenCategory] = useState<ICategory | null>(null);
-
-  const [open, setOpen] = useState<boolean>(false);
 
   // Update category order mutation
   const updateCategoryOrderMutation = useMutation<
@@ -93,10 +99,87 @@ const CategoryPage = (props: Props) => {
   >(addCategory, {
     onMutate: async ({ id, name, icon, type, enable }) => {
       // Optimistically update the cache
-      queryClient.setQueryData<ICategory[]>(['categories'], (oldData) => {
+
+      await queryClient.setQueryData<IUserInfo>(['user'], (oldData) => {
+        if (oldData) {
+          return {
+            ...oldData,
+            categoryOrder: [...oldData.categoryOrder, id],
+          } as IUserInfo;
+        }
+        return oldData;
+      });
+
+      await queryClient.setQueryData<ICategory[]>(['categories'], (oldData) => {
         if (oldData) {
           return [...oldData, { id, name, icon, type, enable } as ICategory];
         }
+        return oldData;
+      });
+
+      return {
+        previousCategories: queryClient.getQueryData<ICategory[]>([
+          'categories',
+        ]),
+        previousUser: queryClient.getQueryData<IUserInfo>(['user']),
+      };
+    },
+    onError: (error, variables, context) => {
+      // Revert the cache to the previous state on error
+      const typedContext = context as {
+        previousCategories: ICategory[] | undefined;
+        previousUser: IUserInfo | undefined;
+      };
+
+      if (typedContext.previousCategories) {
+        queryClient.setQueryData<ICategory[]>(
+          ['catergoies'],
+          typedContext.previousCategories,
+        );
+      }
+
+      if (typedContext.previousUser) {
+        queryClient.setQueryData<IUserInfo>(
+          ['user'],
+          typedContext.previousUser,
+        );
+      }
+      toast(error.response?.data.message ?? 'Unexpected error from server', {
+        type: 'error',
+      });
+    },
+    onSettled: () => {
+      // Refetch the data to ensure it's up to date
+      queryClient.invalidateQueries(['categories']);
+      queryClient.invalidateQueries(['user']);
+    },
+    onSuccess(data, variables, context) {
+      toast(`Category is created\nName: ${data.name}\nType:${data.type}`, {
+        type: 'success',
+      });
+    },
+    retry: 3,
+  });
+
+  // Update category mutation
+  const updateCategoryMutation = useMutation<
+    ICategory,
+    AxiosError<{ error: string; message: string; statusCode: number }>,
+    ICategory
+  >(updateCategory, {
+    onMutate: async (newCategory) => {
+      // Optimistically update the cache
+      queryClient.setQueryData<ICategory[]>(['categories'], (oldData) => {
+        if (oldData) {
+          oldData.forEach((old) => {
+            if (old.id === newCategory.id) {
+              old.icon = newCategory.icon;
+              old.name = newCategory.name;
+              old.enable = newCategory.enable;
+            }
+          });
+        }
+        console.log(oldData);
         return oldData;
       });
 
@@ -116,21 +199,30 @@ const CategoryPage = (props: Props) => {
           typedContext.previousCategories,
         );
       }
-      toast(error.response?.data.message ?? 'Unexpected error from server', {
-        type: 'error',
-      });
+      toast('Failed to enable the category', { type: 'error' });
     },
     onSettled: () => {
       // Refetch the data to ensure it's up to date
-      queryClient.invalidateQueries(['categories']);
+      queryClient.invalidateQueries(['wallets']);
     },
-    onSuccess(data, variables, context) {
-      toast(`Category is created\nName: ${data.name}\nType:${data.type}`, {
-        type: 'success',
-      });
-    },
+
     retry: 3,
   });
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    try {
+      if (editCategory.id === 0) {
+        // Create
+        if (editCategory.name && editCategory.icon && editCategory.type) {
+          await createCategoryMutation.mutateAsync(editCategory);
+        }
+      } else {
+        // Update
+        await updateCategoryMutation.mutateAsync(editCategory);
+      }
+    } catch (error) {}
+  };
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -194,7 +286,6 @@ const CategoryPage = (props: Props) => {
         return sorted;
       });
     }
-    console.log(sortedCategories);
   }, [categories, user]);
 
   return (
@@ -202,117 +293,79 @@ const CategoryPage = (props: Props) => {
       <div className="pb-3">
         <BackButton />
       </div>
-      <div
-        className="w-fit flex gap-2 items-center py-2 my-2 rounded-md border border-dashed border-info-300 cursor-pointer hover:bg-primary-100 active:bg-primary-50"
-        onClick={() => {
-          setOpen(true);
-          setOpenCategory(null);
-        }}
-      >
-        <div className="p-1">
-          <AiOutlinePlus />
-        </div>
-        <p className="px-2">Add New Category</p>
-      </div>
+
       <div className="flex gap-2 md:flex-row flex-col">
-        <DndContext
-          collisionDetection={closestCenter}
-          sensors={sensors}
-          onDragEnd={handleDragEnd}
-          onDragStart={handleDragStart}
-        >
-          <SortableContext
-            items={sortedCategories}
-            strategy={verticalListSortingStrategy}
+        {Object.values(ECategoryType).map((cType) => (
+          <DndContext
+            key={cType}
+            collisionDetection={closestCenter}
+            sensors={sensors}
+            onDragEnd={handleDragEnd}
+            onDragStart={handleDragStart}
           >
             <div className="p-3 flex flex-col gap-3 bg-info-100 rounded-md flex-1">
-              {sortedCategories
-                .filter((sorted) => sorted.type === 'expense')
-                .map((category) => (
-                  <div key={category.id}>
-                    <CategoryRow
-                      category={category}
-                      setOpen={setOpen}
-                      setOpenCategory={setOpenCategory}
-                    />
+              <div className="flex justify-between items-center">
+                <p className="text-lg">
+                  {cType.charAt(0).toUpperCase() + cType.slice(1)}
+                </p>
+
+                <div
+                  className=" flex gap-2 items-center p-1 rounded-md border border-dashed border-info-300 cursor-pointer hover:bg-primary-100 active:bg-primary-50"
+                  onClick={() => {
+                    setEditCategory((prev) => {
+                      return { ...prev, type: cType, name: '', id: 0 };
+                    });
+                    setOpen(true);
+                  }}
+                >
+                  <div className="p-1">
+                    <AiOutlinePlus />
                   </div>
-                ))}
+                  <p className="px-2">Add New Category</p>
+                </div>
+              </div>
+
+              <SortableContext
+                items={sortedCategories}
+                strategy={verticalListSortingStrategy}
+              >
+                {sortedCategories
+                  .filter((sorted) => sorted.type === cType)
+                  .map((category) => (
+                    <div key={category.id}>
+                      <CategoryRow
+                        category={category}
+                        setOpen={setOpen}
+                        setEditCategory={setEditCategory}
+                      />
+                    </div>
+                  ))}
+              </SortableContext>
             </div>
-          </SortableContext>
-          <DragOverlay>
-            {activeCategory ? (
-              <CategoryRow
-                category={activeCategory}
-                setOpen={setOpen}
-                setOpenCategory={setOpenCategory}
-              />
-            ) : null}
-          </DragOverlay>
-        </DndContext>
-        <DndContext
-          collisionDetection={closestCenter}
-          sensors={sensors}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={sortedCategories}
-            strategy={verticalListSortingStrategy}
-          >
-            <div className="p-3 flex flex-col gap-3 bg-info-100 rounded-md flex-1">
-              {sortedCategories
-                .filter((sorted) => sorted.type === 'income')
-                .map((category) => (
-                  <div key={category.id}>
-                    <CategoryRow
-                      category={category}
-                      setOpen={setOpen}
-                      setOpenCategory={setOpenCategory}
-                    />
-                  </div>
-                ))}
-            </div>
-          </SortableContext>
-        </DndContext>
+
+            <DragOverlay>
+              {activeCategory ? (
+                <CategoryRow
+                  category={activeCategory}
+                  setOpen={setOpen}
+                  setEditCategory={setEditCategory}
+                />
+              ) : null}
+            </DragOverlay>
+          </DndContext>
+        ))}
       </div>
 
       {open && (
-        <CustomModal setOpen={setOpen}>
-          <div>
-            {openCategory ? (
-              <div>{openCategory.name}</div>
-            ) : (
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  toast('test', { type: 'error' });
-                }}
-              >
-                <div className="text-2xl">Add New Category</div>
-                {/* <CustomTextField
-                type={'text'}
-                name={'Name'}
-                value={newWallet.name}
-                callbackAction={(event) => {
-                  setNewWallet((prev) => {
-                    return {
-                      ...prev,
-                      name: event.target.value,
-                    };
-                  });
-                }}
-              /> */}
-                <div className="flex justify-end">
-                  <button
-                    className="bg-info-400 w-fit p-1 rounded-md text-white hover:bg-info-300 cursor-pointer active:bg-info-500 select-none"
-                    type="submit"
-                  >
-                    Create
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
-        </CustomModal>
+        <CategoryModal
+          open={open}
+          setOpen={setOpen}
+          calllback={(event) => {
+            handleSubmit(event);
+          }}
+          editCategory={editCategory}
+          setEditCategory={setEditCategory}
+        />
       )}
       <ToastContainer />
     </div>
