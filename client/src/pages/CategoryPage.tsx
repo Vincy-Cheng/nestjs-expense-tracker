@@ -364,7 +364,6 @@ const CategoryPage = (props: Props) => {
 
       {open && (
         <CategoryModal
-          open={open}
           setOpen={setOpen}
           calllback={(event) => {
             handleSubmit(event);

@@ -7,10 +7,8 @@ import CustomTextField from '../Custom/CustomTextField';
 import IconSelector from '../IconSelector';
 import { ICategory } from '../../types';
 import { ECategoryType } from '../../common/category-type';
-import { toast } from 'react-toastify';
 
 type CategoryModalProps = {
-  open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   editCategory: ICategory;
   setEditCategory: React.Dispatch<React.SetStateAction<ICategory>>;
@@ -18,7 +16,6 @@ type CategoryModalProps = {
 };
 
 const CategoryModal = ({
-  open,
   setOpen,
   calllback,
   editCategory,
@@ -29,13 +26,6 @@ const CategoryModal = ({
   return (
     <CustomModal setOpen={setOpen}>
       <form onSubmit={calllback}>
-        <div
-          onClick={() => {
-            toast('Category is updated!', { type: 'success' });
-          }}
-        >
-          test
-        </div>
         <div className="text-2xl">
           {editCategory.id === 0
             ? 'Add New Category for ' +
