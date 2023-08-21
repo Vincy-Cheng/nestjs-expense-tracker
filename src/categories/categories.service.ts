@@ -14,13 +14,15 @@ export class CategoriesService {
   ) {}
 
   async create(createCategoryDto: CreateCategoryDto, user: User) {
-    return await this.categoryRepository.save({
+    const category = await this.categoryRepository.create({
       name: createCategoryDto.name,
       icon: createCategoryDto.icon,
       user: user,
       enable: true,
       type: createCategoryDto.type,
     });
+
+    return await this.categoryRepository.save(category);
   }
 
   async findAll(userId: number) {

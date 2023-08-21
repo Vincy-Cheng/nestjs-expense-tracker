@@ -13,11 +13,13 @@ export class WalletsService {
   ) {}
 
   async create(createWalletDto: CreateWalletDto, user: User) {
-    return await this.walletRepository.save({
+    const wallet = await this.walletRepository.create({
       name: createWalletDto.name,
       currency: createWalletDto.currency,
       user: user,
     });
+
+    return await this.walletRepository.save(wallet);
   }
 
   async findAll(userId: number) {

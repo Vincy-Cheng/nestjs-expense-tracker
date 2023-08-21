@@ -23,15 +23,13 @@ export class UsersService {
     const salt = await bcrypt.genSalt();
     const hash = await bcrypt.hash(createUserDto.password, salt);
 
-    return await this.userRepository.save({
+    const user = await this.userRepository.create({
       username: createUserDto.username,
       email: createUserDto.email,
       password: hash,
     });
-  }
 
-  findAll() {
-    return `This action returns all users`;
+    return await this.userRepository.save(user);
   }
 
   async findByUsername(username): Promise<User | undefined> {
