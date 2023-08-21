@@ -1,150 +1,29 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useRef, useState } from 'react';
 
-import CustomModal from '../components/Custom/CustomModal';
-import CustomTextField from '../components/Custom/CustomTextField';
-import CustomSelector from '../components/Custom/CustomSelector';
-import { currencyList } from '../utils';
-import jwt_decode from 'jwt-decode';
-import CustomAlert, { CustomAlertType } from '../components/Custom/CustomAlert';
-import { createWallet, deleteWallet, fetchWallets } from '../apis/wallet';
-import { AxiosError } from 'axios';
+import { fetchWallets } from '../apis/wallet';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { HiOutlineTrash } from 'react-icons/hi';
-import { useAppSelector } from '../hooks';
-import { ICreateWallet, IWallet } from '../types';
+
+import { IWallet } from '../types';
+import WalletModal from '../components/wallet/WalletModal';
 
 type WalletPageProps = {};
 
 const WalletPage = ({}: WalletPageProps) => {
-  const queryClient = useQueryClient();
-
-  const { access_token } = useAppSelector((state) => state.user);
-
-  const decoded = jwt_decode<{
-    username: string;
-    sub: number;
-    iat: number;
-    exp: number;
-  }>(access_token ?? sessionStorage.getItem('access_token') ?? '');
-
   const [open, setOpen] = useState(false);
 
-  const [newWallet, setNewWallet] = useState<{
-    name: string;
-    currency: string;
-  }>({ name: '', currency: '' });
+  const [editWallet, setEditWallet] = useState<IWallet>({
+    id: 0,
+    name: '',
+    currency: '',
+  });
 
-  const [errorMessage, setErrorMessage] = useState<{
-    message: string;
-    type: CustomAlertType;
-  }>({ message: '', type: 'warning' });
+  const [type, setType] = useState<'Create' | 'Edit' | 'Delete'>('Create');
+
+  const trashRef = useRef<HTMLDivElement>(null);
 
   const { data: wallets } = useQuery<IWallet[]>(['wallets'], fetchWallets);
-
-  // Create wallet mutation
-  const createWalletMutation = useMutation<
-    IWallet,
-    AxiosError<{ error: string; message: string; statusCode: number }>,
-    Partial<ICreateWallet>
-  >(createWallet, {
-    onMutate: async ({ id, name, currency }) => {
-      // Optimistically update the cache
-      queryClient.setQueryData<IWallet[]>(['wallets'], (oldData) => {
-        if (oldData) {
-          return [...oldData, { id, name, currency } as IWallet];
-        }
-        return oldData;
-      });
-
-      return {
-        previousWallets: queryClient.getQueryData<IWallet[]>(['wallets']),
-      };
-    },
-    onError: (error, variables, context) => {
-      // Revert the cache to the previous state on error
-      const typedContext = context as {
-        previousWallets: IWallet[] | undefined;
-      };
-
-      if (typedContext.previousWallets) {
-        queryClient.setQueryData<IWallet[]>(
-          ['wallets'],
-          typedContext.previousWallets,
-        );
-      }
-      setErrorMessage({
-        type: 'error',
-        message: error.response?.data.message ?? 'Unexpected error from server',
-      });
-    },
-    onSettled: () => {
-      // Refetch the data to ensure it's up to date
-      queryClient.invalidateQueries(['wallets']);
-    },
-    onSuccess(data, variables, context) {
-      setErrorMessage({
-        type: 'success',
-        message: `Wallet is created\nName: ${data.name}\nCurrency:${data.currency}`,
-      });
-    },
-    retry: 3,
-  });
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const wallet: Partial<IWallet> = {
-      ...newWallet,
-    };
-
-    try {
-      // Fetch the current data from the cache
-      const oldData = queryClient.getQueryData<IWallet[]>(['wallets']);
-
-      // Optimistically update the cache
-      const optimisticWallet: IWallet = {
-        id: Date.now(), // Use a temporary ID
-        name: wallet.name ?? newWallet.name,
-        currency: wallet.currency ?? newWallet.currency,
-      };
-
-      queryClient.setQueryData<IWallet[]>(['wallets'], (prevData) => {
-        if (prevData) {
-          return [...prevData, optimisticWallet];
-        }
-        return [optimisticWallet];
-      });
-
-      // Call the mutation to create the wallet
-      await createWalletMutation.mutateAsync({
-        ...wallet,
-        userId: decoded.sub,
-      });
-
-      // The onSuccess callback will automatically update the cache with the actual data
-    } catch (error) {
-      console.error('Error creating wallet:', error);
-      // Handle error here and set appropriate error message if needed
-    } finally {
-      setNewWallet({ name: '', currency: '' });
-    }
-  };
-
-  const removeWalletMutation = useMutation(deleteWallet, {
-    onError(error, variables, context) {},
-    onMutate: async (variables) => {
-      queryClient.setQueryData<IWallet[]>(['wallets'], (oldData) => {
-        if (oldData) {
-          return oldData.filter((prev) => prev.id !== variables);
-        }
-        return oldData;
-      });
-
-      return {
-        previousWallets: queryClient.getQueryData<IWallet[]>(['wallets']),
-      };
-    },
-  });
 
   return (
     <div>
@@ -156,27 +35,43 @@ const WalletPage = ({}: WalletPageProps) => {
               className="cursor-pointer "
               onClick={() => {
                 setOpen(true);
-                setErrorMessage({ type: 'warning', message: '' });
+                setType('Create');
+                setEditWallet({ id: 0, name: '', currency: '' });
               }}
             />
           </div>
         </div>
         {wallets && (
-          <div className="grid grid-flow-col overflow-x-auto grid-rows-2 py-2 gap-2 w-fit">
+          <div className="grid grid-flow-col overflow-x-auto grid-rows-2 py-2 gap-2 w-fit p-2 transition-all duration-300">
             {wallets.map(({ id, name, currency }) => (
               <div
                 key={id}
-                className="rounded-md bg-amber-100 p-3 relative flex flex-col gap-3 w-[200px]"
+                className="rounded-md bg-amber-100 p-3 relative flex flex-col gap-3 w-[200px] hover:scale-105 cursor-pointer transition-all duration-300"
+                onClick={(event) => {
+                  if (
+                    trashRef.current &&
+                    !trashRef.current.contains(event.target as Node)
+                  ) {
+                    setOpen(true);
+                    setType('Edit');
+                    setEditWallet((prev) => {
+                      return { ...prev, id, name, currency };
+                    });
+                  }
+                }}
               >
                 <span className="absolute font-semibold text-amber-500 text-opacity-10 text-5xl sm:text-7xl  right-1 bottom-1">
                   {currency}
                 </span>
                 <div
                   className="absolute text-zinc-400 right-1 cursor-pointer hover:bg-zinc-200 hover:bg-opacity-50 rounded-full p-1 active:bg-zinc-300 active:bg-opacity-50"
-                  onClick={async () => {
-                    try {
-                      await removeWalletMutation.mutateAsync(id);
-                    } catch (error) {}
+                  ref={trashRef}
+                  onClick={() => {
+                    setOpen(true);
+                    setType('Delete');
+                    setEditWallet((prev) => {
+                      return { ...prev, id };
+                    });
                   }}
                 >
                   <HiOutlineTrash strokeWidth={1} />
@@ -194,57 +89,14 @@ const WalletPage = ({}: WalletPageProps) => {
           </div>
         )}
       </div>
+
       {open && (
-        <CustomModal setOpen={setOpen}>
-          <div>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-              <div className="text-2xl">Add New Wallet</div>
-              {createWalletMutation.isLoading && 'Creating...'}
-              {errorMessage.message && (
-                <CustomAlert
-                  type={errorMessage.type}
-                  content={errorMessage.message}
-                />
-              )}
-
-              <CustomTextField
-                type={'text'}
-                name={'Name'}
-                value={newWallet.name}
-                callbackAction={(event) => {
-                  setNewWallet((prev) => {
-                    return {
-                      ...prev,
-                      name: event.target.value,
-                    };
-                  });
-                }}
-              />
-
-              <CustomSelector
-                title={'Currency'}
-                options={currencyList}
-                value={newWallet.currency}
-                callbackAction={(option) => {
-                  setNewWallet((prev) => {
-                    return { ...prev, currency: option };
-                  });
-                }}
-                filter
-                placeholder="ISO Code of currency"
-              />
-
-              <div className="flex justify-end">
-                <button
-                  className="bg-info-400 w-fit p-1 rounded-md text-white hover:bg-info-300 cursor-pointer active:bg-info-500 select-none"
-                  type="submit"
-                >
-                  Create
-                </button>
-              </div>
-            </form>
-          </div>
-        </CustomModal>
+        <WalletModal
+          type={type}
+          editWallet={editWallet}
+          setOpen={setOpen}
+          setEditWallet={setEditWallet}
+        />
       )}
     </div>
   );

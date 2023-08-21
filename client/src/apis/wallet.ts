@@ -16,7 +16,10 @@ export const createWallet = async (
 
 export async function fetchWallet(id: number) {}
 
-export async function updateWallet() {}
+export async function updateWallet(wallet: Partial<IWallet>): Promise<IWallet> {
+  const response = await Axios.patch(`/v1/categories/${wallet.id}`, { wallet });
+  return response.data;
+}
 
 export async function deleteWallet(id: number) {
   const url = `v1/wallets/${id}`;

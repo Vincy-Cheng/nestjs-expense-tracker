@@ -79,7 +79,7 @@ const CategoryRow = ({
           typedContext.previousCategories,
         );
       }
-      toast('Failed to enable the category', { type: 'error' });
+      toast(error.response?.data.message, { type: 'error' });
     },
     onSettled: () => {
       // Refetch the data to ensure it's up to date
