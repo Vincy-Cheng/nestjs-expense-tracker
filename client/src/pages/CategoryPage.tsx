@@ -156,6 +156,13 @@ const CategoryPage = (props: Props) => {
       toast(`Category is created\nName: ${data.name}\nType:${data.type}`, {
         type: 'success',
       });
+      setEditCategory({
+        id: 0,
+        name: '',
+        type: data.type,
+        enable: true,
+        icon: EIconName.MONEY,
+      });
     },
     retry: 3,
   });
@@ -365,7 +372,7 @@ const CategoryPage = (props: Props) => {
       {open && (
         <CategoryModal
           setOpen={setOpen}
-          calllback={(event) => {
+          callback={(event) => {
             handleSubmit(event);
           }}
           editCategory={editCategory}

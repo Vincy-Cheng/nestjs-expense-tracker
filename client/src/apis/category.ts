@@ -24,3 +24,11 @@ export async function updateCategory(
 
   return res.data;
 }
+
+export async function deleteCategory(id: number) {
+  const url = `v1/categories/${id}`;
+
+  const response = await Axios.delete(url);
+
+  return response.data;
+}

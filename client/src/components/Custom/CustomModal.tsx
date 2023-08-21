@@ -1,11 +1,13 @@
+import clsx from 'clsx';
 import React, { ReactElement, useRef } from 'react';
 import { GrClose } from 'react-icons/gr';
 type CustomModalProps = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   children: ReactElement;
+  size?: 'Large' | 'Medium' | 'Small';
 };
 
-const CustomModal = ({ children, setOpen }: CustomModalProps) => {
+const CustomModal = ({ children, setOpen, size }: CustomModalProps) => {
   const modalContentRef = useRef<HTMLDivElement>(null);
   return (
     <div
@@ -20,7 +22,10 @@ const CustomModal = ({ children, setOpen }: CustomModalProps) => {
       }}
     >
       <div
-        className="modal-content bg-white rounded-md m-auto p-5 shadow w-4/5 min-w-min"
+        className={clsx(
+          'modal-content bg-white rounded-md m-auto p-5 shadow min-w-min',
+          size === 'Small' ? 'w-1/4' : size === 'Medium' ? 'w-1/2' : 'w-4/5',
+        )}
         ref={modalContentRef}
       >
         <div
