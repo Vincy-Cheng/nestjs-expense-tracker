@@ -140,23 +140,6 @@ const WalletModal = ({
     };
     try {
       if (type === 'Create') {
-        // Fetch the current data from the cache
-        // const oldData = queryClient.getQueryData<IWallet[]>(['wallets']);
-
-        // // Optimistically update the cache
-        // const optimisticWallet: IWallet = {
-        //   id: Date.now(), // Use a temporary ID
-        //   name: wallet.name ?? editWallet.name,
-        //   currency: wallet.currency ?? editWallet.currency,
-        // };
-
-        // queryClient.setQueryData<IWallet[]>(['wallets'], (prevData) => {
-        //   if (prevData) {
-        //     return [...prevData, optimisticWallet];
-        //   }
-        //   return [optimisticWallet];
-        // });
-
         // Call the mutation to create the wallet
         await createWalletMutation.mutateAsync({
           ...wallet,

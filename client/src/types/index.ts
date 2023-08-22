@@ -20,6 +20,12 @@ export interface ICategory {
   enable: boolean;
   type: TCategoryType;
 }
+
+export interface IRecord {
+  id: number;
+  price: number;
+  remarks: string;
+}
 export interface LoginResponse {
   access_token: string;
   user: IUserInfo;
@@ -32,6 +38,7 @@ export interface ICreateWallet extends IWallet {
 export interface ICreateCategory extends ICategory {
   userId: number;
 }
+
 export interface IUserInfo {
   id: number;
   username: string;

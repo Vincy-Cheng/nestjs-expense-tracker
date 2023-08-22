@@ -24,7 +24,7 @@ const Layout = ({ children, mode }: LayoutProps) => {
         )}
       >
         <Header />
-        <div className="rounded-lg grow">{children}</div>
+        <div className="rounded-lg flex-1">{children}</div>
       </div>
     </div>
   );
