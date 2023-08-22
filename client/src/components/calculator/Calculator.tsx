@@ -1,7 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import KeyButton from './KeyButton';
 import clsx from 'clsx';
-import { evaluate } from 'mathjs';
 
 type CalculatorProps = {
   callback: (value: string) => void;
