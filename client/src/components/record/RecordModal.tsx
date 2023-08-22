@@ -18,6 +18,7 @@ const RecordModal = ({
   setEditRecord,
 }: RecordModalProps) => {
   const [value, setValue] = useState<string>('');
+
   const updateCalc = (key: string) => {
     console.log(key);
     if (key === '=') {
@@ -46,7 +47,7 @@ const RecordModal = ({
 
   useEffect(() => {
     const keyListener = (event: KeyboardEvent) => {
-      const reg = /\d|\/|\*|-\+|\./g;
+      const reg = /\d|\/|\*|-|+++\+|\./g;
 
       if (event.key === 'Backspace') {
         return updateCalc('DE');
@@ -55,6 +56,7 @@ const RecordModal = ({
       if (event.key === 'Enter') {
         return updateCalc('=');
       }
+
       if (reg.test(event.key)) {
         return updateCalc(event.key);
       }
