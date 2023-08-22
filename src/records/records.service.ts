@@ -1,26 +1,48 @@
 import { Injectable } from '@nestjs/common';
 import { CreateRecordDto } from './dto/create-record.dto';
 import { UpdateRecordDto } from './dto/update-record.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Record } from './entities/record.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class RecordsService {
-  create(createRecordDto: CreateRecordDto) {
-    return 'This action adds a new record';
+  constructor(
+    @InjectRepository(Record)
+    private readonly recordRepository: Repository<Record>,
+  ) {}
+
+  async create(createRecordDto: CreateRecordDto) {
+    const record = await this.recordRepository.create({
+      price: createRecordDto.price,
+      remarks: createRecordDto.remarks,
+      wallet: createRecordDto.wallet,
+      category: createRecordDto.category,
+    });
+
+    return await this.recordRepository.save(record);
   }
 
-  findAll() {
-    return `This action returns all records`;
+  async findAll() {
+    // return await this.recordRepository
+    //   .createQueryBuilder('record')
+    //   .leftJoin('record.wallet', 'wallet')
+    //   .where('wallet.id = :id', { id: wallet.id });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} record`;
+  async findOne(id: number) {
+    return await this.recordRepository.findOne({ where: { id } });
   }
 
-  update(id: number, updateRecordDto: UpdateRecordDto) {
-    return `This action updates a #${id} record`;
+  async update(id: number, updateRecordDto: UpdateRecordDto) {
+    return await this.recordRepository.save({
+      id: id,
+      price: updateRecordDto.price,
+      remarks: updateRecordDto.remarks,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} record`;
+  async remove(id: number) {
+    return await this.recordRepository.softDelete(id);
   }
 }
