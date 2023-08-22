@@ -3,6 +3,7 @@ import { IWallet, ICreateWallet } from '../types';
 
 export const fetchWallets = async (): Promise<IWallet[]> => {
   const response = await Axios.get('/v1/wallets');
+
   return response.data;
 };
 
@@ -17,7 +18,11 @@ export const createWallet = async (
 export async function fetchWallet(id: number) {}
 
 export async function updateWallet(wallet: Partial<IWallet>): Promise<IWallet> {
-  const response = await Axios.patch(`/v1/categories/${wallet.id}`, { wallet });
+  console.log(wallet);
+  const response = await Axios.patch(`/v1/wallets/${wallet.id}`, {
+    name: wallet.name,
+    currency: wallet.currency,
+  });
   return response.data;
 }
 

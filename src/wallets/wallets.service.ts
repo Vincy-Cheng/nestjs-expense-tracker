@@ -23,17 +23,22 @@ export class WalletsService {
   }
 
   async findAll(userId: number) {
-    return await this.walletRepository.find({
-      where: {
-        user: {
-          id: userId,
-        },
-      },
-    });
+    const query = this.walletRepository
+      .createQueryBuilder('wallet')
+      .leftJoinAndSelect('wallet.records', 'records')
+      .leftJoin('wallet.user', 'user')
+      .where('user.id = :id', { id: userId });
+
+    return await query.getMany();
   }
 
   async findOne(id: number): Promise<Wallet> {
-    return await this.walletRepository.findOne({ where: { id } });
+    const query = await this.walletRepository
+      .createQueryBuilder('wallet')
+      .leftJoinAndSelect('wallet.records', 'records')
+      .where('wallet.id = :id', { id });
+
+    return await query.getOne();
   }
 
   async update(id: number, updateWalletDto: UpdateWalletDto) {

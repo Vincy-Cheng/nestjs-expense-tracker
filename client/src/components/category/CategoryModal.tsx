@@ -67,7 +67,9 @@ const CategoryModal = ({
       };
     },
     onSuccess(data, variables, context) {
-      toast(`${data.name} is delete`, { type: 'info' });
+      toast(`${editCategory.name} is delete`, { type: 'info' });
+      setOpenDelete(false);
+      setOpen(false);
     },
   });
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import CustomModal from '../Custom/CustomModal';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createWallet, deleteWallet } from '../../apis/wallet';
+import { createWallet, deleteWallet, updateWallet } from '../../apis/wallet';
 import { ICreateWallet, IWallet } from '../../types';
 import { currencyList } from '../../utils';
 import CustomSelector from '../Custom/CustomSelector';
@@ -86,7 +86,7 @@ const WalletModal = ({
     IWallet,
     AxiosError<{ error: string; message: string; statusCode: number }>,
     IWallet
-  >(createWallet, {
+  >(updateWallet, {
     onMutate: async ({ id, name, currency }) => {
       // Optimistically update the cache
       queryClient.setQueryData<IWallet[]>(['wallets'], (oldData) => {
@@ -128,6 +128,7 @@ const WalletModal = ({
         `Wallet is updated\nName: ${data.name}\nCurrency:${data.currency}`,
         { type: 'success' },
       );
+      setOpen(false);
     },
     retry: 3,
   });
@@ -140,21 +141,21 @@ const WalletModal = ({
     try {
       if (type === 'Create') {
         // Fetch the current data from the cache
-        const oldData = queryClient.getQueryData<IWallet[]>(['wallets']);
+        // const oldData = queryClient.getQueryData<IWallet[]>(['wallets']);
 
-        // Optimistically update the cache
-        const optimisticWallet: IWallet = {
-          id: Date.now(), // Use a temporary ID
-          name: wallet.name ?? editWallet.name,
-          currency: wallet.currency ?? editWallet.currency,
-        };
+        // // Optimistically update the cache
+        // const optimisticWallet: IWallet = {
+        //   id: Date.now(), // Use a temporary ID
+        //   name: wallet.name ?? editWallet.name,
+        //   currency: wallet.currency ?? editWallet.currency,
+        // };
 
-        queryClient.setQueryData<IWallet[]>(['wallets'], (prevData) => {
-          if (prevData) {
-            return [...prevData, optimisticWallet];
-          }
-          return [optimisticWallet];
-        });
+        // queryClient.setQueryData<IWallet[]>(['wallets'], (prevData) => {
+        //   if (prevData) {
+        //     return [...prevData, optimisticWallet];
+        //   }
+        //   return [optimisticWallet];
+        // });
 
         // Call the mutation to create the wallet
         await createWalletMutation.mutateAsync({
@@ -187,6 +188,13 @@ const WalletModal = ({
       return {
         previousWallets: queryClient.getQueryData<IWallet[]>(['wallets']),
       };
+    },
+    onSuccess(data, variables, context) {
+      toast(
+        `Wallet is deleted.\nName: ${data.name}\nCurrency:${data.currency}`,
+        { type: 'info' },
+      );
+      setOpen(false);
     },
   });
 
