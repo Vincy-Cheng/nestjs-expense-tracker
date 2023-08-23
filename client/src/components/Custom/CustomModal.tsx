@@ -11,7 +11,7 @@ const CustomModal = ({ children, setOpen, size }: CustomModalProps) => {
   const modalContentRef = useRef<HTMLDivElement>(null);
   return (
     <div
-      className="modal fixed w-full h-full bg-zinc-900 bg-opacity-40 overflow-auto top-0 left-0 z-50 flex justify-center items-center p-5"
+      className="modal fixed w-full h-full bg-zinc-900 bg-opacity-40 overflow-auto top-0 left-0 z-50 flex items-center p-5"
       onClick={(event) => {
         if (
           modalContentRef &&
@@ -23,7 +23,7 @@ const CustomModal = ({ children, setOpen, size }: CustomModalProps) => {
     >
       <div
         className={clsx(
-          'modal-content bg-white rounded-md m-auto p-5 shadow min-w-min',
+          'modal-content bg-white rounded-md m-auto p-5 shadow overflow-auto min-w-min',
           size === 'Small' ? 'w-1/4' : size === 'Medium' ? 'w-1/2' : 'w-4/5',
         )}
         ref={modalContentRef}
