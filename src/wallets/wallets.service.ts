@@ -26,6 +26,7 @@ export class WalletsService {
     const query = this.walletRepository
       .createQueryBuilder('wallet')
       .leftJoinAndSelect('wallet.records', 'records')
+      .leftJoinAndSelect('records.category', 'category')
       .leftJoin('wallet.user', 'user')
       .where('user.id = :id', { id: userId });
 

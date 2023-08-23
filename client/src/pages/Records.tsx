@@ -3,7 +3,12 @@ import { useMemo, useState } from 'react';
 import { fetchWallets } from '../apis/wallet';
 import { useAppSelector } from '../hooks';
 import { IoSettingsOutline } from 'react-icons/io5';
-import { IRecord, IWallet } from '../types';
+import {
+  ICategory,
+  IRecord,
+  IWallet,
+  IWalletRecordWithCategory,
+} from '../types';
 import { AiOutlinePlus } from 'react-icons/ai';
 import RecordModal from '../components/record/RecordModal';
 import { DateTime } from 'luxon';
@@ -17,10 +22,13 @@ const Records = (props: Props) => {
     id: 0,
     price: 0,
     remarks: '',
-    date: DateTime.now().toFormat('yyyy-LL-dd'),
+    date: DateTime.now().toISO() ?? DateTime.now().toFormat('yyyy-LL-dd'),
   });
 
-  const { data: wallets } = useQuery<IWallet[]>(['wallets'], fetchWallets);
+  const { data: wallets } = useQuery<IWalletRecordWithCategory[]>(
+    ['wallets'],
+    fetchWallets,
+  );
 
   const { id } = useAppSelector((state) => state.wallet);
 
@@ -34,15 +42,38 @@ const Records = (props: Props) => {
     }
   }, [id, wallets]);
 
+  const { income, expense, total } = useMemo(() => {
+    const walletExpense =
+      favWallet?.records?.reduce((i, w) => {
+        if (w.category.type === 'expense') {
+          i -= w.price;
+        }
+        return i;
+      }, 0) ?? 0;
+    const walletIncome =
+      favWallet?.records?.reduce((i, w) => {
+        if (w.category.type === 'income') {
+          i += w.price;
+        }
+        return i;
+      }, 0) ?? 0;
+
+    return {
+      income: walletIncome,
+      expense: walletExpense,
+      total: walletExpense + walletIncome,
+    };
+  }, [favWallet]);
+
   return (
     <div className="relative h-full">
       {favWallet && (
         <div className="bg-primary-200 p-1 rounded-md flex justify-between">
           <div>
             <div>{favWallet.name}</div>
-            <div>Income:</div>
-            <div>Expense:</div>
-            <div>Balance:</div>
+            <div>Income: {income}</div>
+            <div>Expense: {expense}</div>
+            <div>Balance: {total}</div>
           </div>
           <IoSettingsOutline strokeWidth={1} className="cursor-pointer" />
         </div>
@@ -55,6 +86,12 @@ const Records = (props: Props) => {
         }}
       >
         <AiOutlinePlus />
+      </div>
+
+      <div>
+        {favWallet?.records.map((record) => (
+          <div key={record.id}>{record.price}</div>
+        ))}
       </div>
 
       {open && (

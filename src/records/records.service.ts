@@ -18,6 +18,7 @@ export class RecordsService {
       remarks: createRecordDto.remarks,
       wallet: createRecordDto.wallet,
       category: createRecordDto.category,
+      date: createRecordDto.date,
     });
 
     return await this.recordRepository.save(record);

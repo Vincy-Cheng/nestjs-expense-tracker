@@ -69,7 +69,6 @@ const RecordModal = ({
   );
 
   const updateCalc = (key: string) => {
-    console.log(key);
     if (key === '=') {
       return setValue((prev) => {
         try {
@@ -137,9 +136,26 @@ const RecordModal = ({
     retry: 3,
   });
 
-  const handleSubmit = () => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     try {
-      // await createRecordMutation.mutateAsync({})
+      if (!editRecord.price) {
+        return toast('Please input the expense/income', { type: 'warning' });
+      }
+
+      if (!wallet) {
+        return toast('There is no wallet is selected', { type: 'warning' });
+      }
+
+      if (!selectedCategory) {
+        return toast('Please select the category', { type: 'warning' });
+      }
+
+      await createRecordMutation.mutateAsync({
+        ...editRecord,
+        wallet: wallet,
+        category: selectedCategory,
+      });
     } catch (error) {}
   };
 
@@ -191,7 +207,7 @@ const RecordModal = ({
 
   return (
     <CustomModal setOpen={setOpen} size="Medium">
-      <form className="w-full">
+      <form className="w-full" onSubmit={handleSubmit}>
         <p className="text-2xl pb-2">
           New {categoryType.charAt(0).toUpperCase() + categoryType.slice(1)}
         </p>

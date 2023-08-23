@@ -27,6 +27,13 @@ export interface IRecord {
   remarks: string;
   date: string;
 }
+
+interface IRecordWIthCategory extends IRecord {
+  category: ICategory;
+}
+export interface IWalletRecordWithCategory extends IWallet {
+  records: IRecordWIthCategory[];
+}
 export interface LoginResponse {
   access_token: string;
   user: IUserInfo;

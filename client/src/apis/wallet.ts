@@ -1,7 +1,7 @@
 import { Axios } from '.';
-import { IWallet, ICreateWallet } from '../types';
+import { IWallet, ICreateWallet, IWalletRecordWithCategory } from '../types';
 
-export const fetchWallets = async (): Promise<IWallet[]> => {
+export const fetchWallets = async (): Promise<IWalletRecordWithCategory[]> => {
   const response = await Axios.get('/v1/wallets');
 
   return response.data;
