@@ -47,7 +47,7 @@ const RecordModal = ({
 
   useEffect(() => {
     const keyListener = (event: KeyboardEvent) => {
-      const reg = /\d|\/|\*|-|+++\+|\./g;
+      const reg = /\d|\/|\*|-|\+|\./g;
 
       if (event.key === 'Backspace') {
         return updateCalc('DE');
