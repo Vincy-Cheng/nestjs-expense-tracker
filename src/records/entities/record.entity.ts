@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsDateString, IsNotEmpty, IsNumber } from 'class-validator';
 import {
   BaseEntity,
   Column,
@@ -25,6 +25,12 @@ export class Record extends BaseEntity {
   @IsNotEmpty()
   @IsNumber()
   price: number;
+
+  @Column({ type: 'date' })
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsDateString()
+  date: Date;
 
   @Column({ length: 500 })
   @ApiProperty()
