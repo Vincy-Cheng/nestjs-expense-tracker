@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { fetchWallets } from '../apis/wallet';
 import { useAppSelector } from '../hooks';
@@ -6,6 +6,7 @@ import { IoSettingsOutline } from 'react-icons/io5';
 import { IRecord, IWallet } from '../types';
 import { AiOutlinePlus } from 'react-icons/ai';
 import RecordModal from '../components/record/RecordModal';
+import { DateTime } from 'luxon';
 
 type Props = {};
 
@@ -16,9 +17,8 @@ const Records = (props: Props) => {
     id: 0,
     price: 0,
     remarks: '',
+    date: DateTime.now().toFormat('yyyy-LL-dd'),
   });
-
-  const queryClient = useQueryClient();
 
   const { data: wallets } = useQuery<IWallet[]>(['wallets'], fetchWallets);
 

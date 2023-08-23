@@ -25,6 +25,7 @@ export interface IRecord {
   id: number;
   price: number;
   remarks: string;
+  date: string;
 }
 export interface LoginResponse {
   access_token: string;
@@ -37,6 +38,11 @@ export interface ICreateWallet extends IWallet {
 
 export interface ICreateCategory extends ICategory {
   userId: number;
+}
+
+export interface ICreateRecord extends IRecord {
+  wallet: IWallet;
+  category: ICategory;
 }
 
 export interface IUserInfo {

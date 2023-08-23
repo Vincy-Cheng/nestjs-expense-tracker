@@ -1,8 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import CustomModal from '../Custom/CustomModal';
-import { IRecord, IWallet } from '../../types';
+import {
+  ICategory,
+  ICreateRecord,
+  IRecord,
+  IUserInfo,
+  IWallet,
+} from '../../types';
 import Calculator from '../calculator/Calculator';
 import { evaluate } from 'mathjs';
+import CustomTextField from '../Custom/CustomTextField';
+import { createRecord } from '../../apis/record';
+import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
+import { toast } from 'react-toastify';
+import { fetchCategories } from '../../apis/category';
+import jwt_decode from 'jwt-decode';
+import { profile } from '../../apis';
+import { useAppSelector } from '../../hooks';
+import { ECategoryType } from '../../common/category-type';
+import clsx from 'clsx';
+import CategorySelector from './CategorySelector';
+import IconSelector from '../IconSelector';
 
 type RecordModalProps = {
   wallet: IWallet | undefined;
@@ -18,6 +37,36 @@ const RecordModal = ({
   setEditRecord,
 }: RecordModalProps) => {
   const [value, setValue] = useState<string>('');
+
+  const [sortedCategories, setSortedCategories] = useState<ICategory[]>([]);
+
+  const [categoryType, setCategoryType] = useState<ECategoryType>(
+    ECategoryType.EXPENSE,
+  );
+
+  const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(
+    null,
+  );
+
+  const { access_token } = useAppSelector((state) => state.user);
+
+  const queryClient = useQueryClient();
+
+  const decoded = jwt_decode<{
+    username: string;
+    sub: number;
+    iat: number;
+    exp: number;
+  }>(access_token ?? sessionStorage.getItem('access_token') ?? '');
+
+  const { data: categories } = useQuery<ICategory[]>(
+    ['categories'],
+    fetchCategories,
+  );
+
+  const { data: user } = useQuery<IUserInfo>(['user', decoded.sub], () =>
+    profile(decoded.sub),
+  );
 
   const updateCalc = (key: string) => {
     console.log(key);
@@ -43,6 +92,55 @@ const RecordModal = ({
     }
 
     setValue((prev) => prev.concat(key));
+  };
+
+  // Create record mutation
+  const createRecordMutation = useMutation<
+    IRecord,
+    AxiosError<{ error: string; message: string; statusCode: number }>,
+    ICreateRecord
+  >(createRecord, {
+    // onMutate: async ({ id, price, remarks }) => {
+    //   // Optimistically update the cache
+    //   queryClient.setQueryData<IRecord[]>(['records'], (oldData) => {
+    //     if (oldData) {
+    //       return [...oldData, { id, price, remarks } as IRecord];
+    //     }
+    //     return oldData;
+    //   });
+
+    //   return {
+    //     previousRecords: queryClient.getQueryData<IRecord[]>(['records']),
+    //   };
+    // },
+    // onError: (error, variables, context) => {
+    //   // Revert the cache to the previous state on error
+    //   const typedContext = context as {
+    //     previousRecords: IRecord[] | undefined;
+    //   };
+
+    //   if (typedContext.previousRecords) {
+    //     queryClient.setQueryData<IRecord[]>(
+    //       ['records'],
+    //       typedContext.previousRecords,
+    //     );
+    //   }
+    //   toast(error.response?.data.message, { type: 'error' });
+    // },
+    // onSettled: () => {
+    //   // Refetch the data to ensure it's up to date
+    //   queryClient.invalidateQueries(['records']);
+    // },
+    onSuccess(data, variables, context) {
+      toast(`Record is added`, { type: 'success' });
+    },
+    retry: 3,
+  });
+
+  const handleSubmit = () => {
+    try {
+      // await createRecordMutation.mutateAsync({})
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -74,16 +172,98 @@ const RecordModal = ({
     };
   }, [value]);
 
+  useEffect(() => {
+    if (categories && user) {
+      setSortedCategories((prev) => {
+        let sorted: ICategory[] = [];
+        user.categoryOrder.forEach((id) => {
+          const n = categories.filter((category) => category.id === Number(id));
+
+          if (n.length > 0) {
+            sorted.push(...n);
+          }
+        });
+
+        return sorted;
+      });
+    }
+  }, [categories, user]);
+
   return (
     <CustomModal setOpen={setOpen} size="Medium">
-      <form>
-        New Expense
-        <div>Remarks</div>
-        <div className="bg-zinc-50 rounded-md p-2">
-          <div className="border border-info-300 text-lg rounded-md p-1 text-right truncate overflow-auto mb-2">
-            {/* <span>{wallet && wallet.currency}</span> */}
-            <span>{value.length > 0 ? value : 0}</span>
+      <form className="w-full">
+        <p className="text-2xl pb-2">
+          New {categoryType.charAt(0).toUpperCase() + categoryType.slice(1)}
+        </p>
+        <CategorySelector
+          categoryType={categoryType}
+          toggle={(type) => {
+            setCategoryType(type);
+          }}
+        />
+        {/* Category */}
+        <div
+          className={clsx(
+            'rounded-md my-2 w-full overflow-auto',
+            categoryType === ECategoryType.EXPENSE
+              ? 'bg-rose-50'
+              : 'bg-info-50',
+          )}
+        >
+          <div
+            className={clsx(
+              'grid grid-flow-col overflow-x-auto grid-rows-3 w-fit gap-2 p-1',
+            )}
+          >
+            {sortedCategories
+              .filter((sorted) => sorted.type === categoryType)
+              .map((category) => (
+                <div
+                  className={clsx(
+                    'rounded-md p-1 shadow cursor-pointer flex gap-2 items-center',
+                    {
+                      'bg-rose-400 text-rose-50 shadow-rose-300 hover:bg-rose-300 active:bg-rose-400':
+                        categoryType === ECategoryType.EXPENSE &&
+                        selectedCategory?.id === category.id,
+                    },
+
+                    {
+                      'bg-rose-100 text-rose-400 shadow-rose-300 hover:bg-rose-200 active:bg-rose-100':
+                        categoryType === ECategoryType.EXPENSE &&
+                        selectedCategory?.id !== category.id,
+                    },
+
+                    {
+                      'bg-info-400 text-info-50 shadow-info-300 hover:bg-info-300 active:bg-info-100':
+                        categoryType === ECategoryType.INCOME &&
+                        selectedCategory?.id === category.id,
+                    },
+                    {
+                      'bg-info-100 text-info-400 shadow-info-300 hover:bg-info-200 active:bg-info-100':
+                        categoryType === ECategoryType.INCOME &&
+                        selectedCategory?.id !== category.id,
+                    },
+                  )}
+                  key={category.id}
+                  onClick={() => {
+                    setSelectedCategory(category);
+                  }}
+                >
+                  <IconSelector name={category.icon} />
+                  <span>{category.name}</span>
+                </div>
+              ))}
           </div>
+        </div>
+
+        <div className="relative bg-info-100 text-lg rounded-md p-1 text-right truncate overflow-auto mb-2">
+          <span className="absolute left-1 text-info-600 opacity-30 font-semibold">
+            {wallet && wallet.currency}
+          </span>
+          <span>{value.length > 0 ? value : 0}</span>
+        </div>
+
+        <div className="bg-zinc-50 rounded-md p-2">
           {/* Calculator */}
           <Calculator
             callback={(key) => {
@@ -91,7 +271,30 @@ const RecordModal = ({
             }}
           />
         </div>
-        <div>{/* Submit button and choose continue or close */}</div>
+        <div className="py-2">
+          <CustomTextField
+            type={'text'}
+            name="Remarks"
+            value={editRecord.remarks}
+            callbackAction={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setEditRecord((prev) => {
+                return {
+                  ...prev,
+                  remarks: event.target.value,
+                };
+              });
+            }}
+          />
+        </div>
+        {/* Submit button and choose continue or close */}
+        <div className="flex justify-end py-2">
+          <button
+            className="bg-info-400 w-fit p-1 rounded-md text-white hover:bg-info-300 cursor-pointer active:bg-info-500 select-none"
+            type="submit"
+          >
+            {editRecord.id === 0 ? 'Create' : 'Update'}
+          </button>
+        </div>
       </form>
     </CustomModal>
   );

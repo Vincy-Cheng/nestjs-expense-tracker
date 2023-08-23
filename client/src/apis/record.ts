@@ -1,9 +1,7 @@
 import { Axios } from '.';
-import { IRecord } from '../types';
+import { ICreateRecord, IRecord } from '../types';
 
-export async function createRecord(
-  newRecord: Partial<IRecord>,
-): Promise<IRecord> {
+export async function createRecord(newRecord: ICreateRecord): Promise<IRecord> {
   const res = await Axios.post('/v1/records', { newRecord });
 
   return res.data;
