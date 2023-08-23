@@ -19,9 +19,12 @@ const Calculator = ({ callback }: CalculatorProps) => {
         {keyboardKey.flat().map((key, index) => (
           <button
             key={index}
-            className={clsx('bg-info-100 rounded-md py-2', {
-              'col-span-2': key === 'AC' || key === '=',
-            })}
+            className={clsx(
+              'bg-info-100 rounded-md py-2 hover:bg-info-200 active:bg-info-100',
+              {
+                'col-span-2': key === 'AC' || key === '=',
+              },
+            )}
             onClick={() => {
               callback(key);
             }}
