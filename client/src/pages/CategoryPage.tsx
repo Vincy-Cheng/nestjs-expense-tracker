@@ -254,7 +254,6 @@ const CategoryPage = (props: Props) => {
   };
 
   const handleDragStart = (event: DragStartEvent) => {
-    // console.log(event);
     const category = categories?.find((c) => c.id === event.active.id);
     if (category) {
       setActiveCategory(category);
@@ -316,7 +315,7 @@ const CategoryPage = (props: Props) => {
             onDragEnd={handleDragEnd}
             onDragStart={handleDragStart}
           >
-            <div className="p-3 flex flex-col gap-3 bg-info-100 rounded-md flex-1">
+            <div className="p-3 flex flex-col gap-3 bg-info-100 rounded-md flex-1 h-full">
               <div className="flex justify-between items-center">
                 <p className="text-lg">
                   {cType.charAt(0).toUpperCase() + cType.slice(1)}
