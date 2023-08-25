@@ -6,6 +6,7 @@ import {
   IRecord,
   IUserInfo,
   IWallet,
+  IWalletRecordWithCategory,
 } from '../../types';
 import Calculator from '../calculator/Calculator';
 import { evaluate } from 'mathjs';
@@ -99,37 +100,57 @@ const RecordModal = ({
     AxiosError<{ error: string; message: string; statusCode: number }>,
     ICreateRecord
   >(createRecord, {
-    // onMutate: async ({ id, price, remarks }) => {
-    //   // Optimistically update the cache
-    //   queryClient.setQueryData<IRecord[]>(['records'], (oldData) => {
-    //     if (oldData) {
-    //       return [...oldData, { id, price, remarks } as IRecord];
-    //     }
-    //     return oldData;
-    //   });
+    onMutate: async ({ id, price, remarks, date }) => {
+      // Optimistically update the cache
 
-    //   return {
-    //     previousRecords: queryClient.getQueryData<IRecord[]>(['records']),
-    //   };
-    // },
-    // onError: (error, variables, context) => {
-    //   // Revert the cache to the previous state on error
-    //   const typedContext = context as {
-    //     previousRecords: IRecord[] | undefined;
-    //   };
+      queryClient.setQueryData<IWalletRecordWithCategory[]>(
+        ['wallets'],
+        (oldData) => {
+          if (oldData) {
+            const walletIndex = oldData.findIndex(
+              (old) => old.id === wallet?.id,
+            );
 
-    //   if (typedContext.previousRecords) {
-    //     queryClient.setQueryData<IRecord[]>(
-    //       ['records'],
-    //       typedContext.previousRecords,
-    //     );
-    //   }
-    //   toast(error.response?.data.message, { type: 'error' });
-    // },
-    // onSettled: () => {
-    //   // Refetch the data to ensure it's up to date
-    //   queryClient.invalidateQueries(['records']);
-    // },
+            if (walletIndex && selectedCategory) {
+              const record = {
+                id,
+                price,
+                remarks,
+                date,
+                category: selectedCategory,
+              };
+              oldData[walletIndex].records.push(record);
+            }
+          }
+
+          return oldData;
+        },
+      );
+
+      return {
+        previousWallets: queryClient.getQueryData<IWalletRecordWithCategory[]>([
+          'wallets',
+        ]),
+      };
+    },
+    onError: (error, variables, context) => {
+      // Revert the cache to the previous state on error
+      const typedContext = context as {
+        previousWallets: IWalletRecordWithCategory[] | undefined;
+      };
+
+      if (typedContext.previousWallets) {
+        queryClient.setQueryData<IWalletRecordWithCategory[]>(
+          ['wallets'],
+          typedContext.previousWallets,
+        );
+      }
+      toast(error.response?.data.message, { type: 'error' });
+    },
+    onSettled: () => {
+      // Refetch the data to ensure it's up to date
+      queryClient.invalidateQueries(['wallets']);
+    },
     onSuccess(data, variables, context) {
       toast(`Record is added`, { type: 'success' });
     },
