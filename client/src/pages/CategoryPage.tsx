@@ -314,6 +314,7 @@ const CategoryPage = (props: Props) => {
             sensors={sensors}
             onDragEnd={handleDragEnd}
             onDragStart={handleDragStart}
+            autoScroll
           >
             <div className="p-3 flex flex-col gap-3 bg-info-100 rounded-md flex-1 h-full">
               <div className="flex justify-between items-center">

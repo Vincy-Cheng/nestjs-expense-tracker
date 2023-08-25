@@ -323,10 +323,19 @@ const RecordModal = ({
             }}
           />
         </div>
+
         {/* Submit button and choose continue or close */}
-        <div className="flex justify-end py-2">
+        <div className="flex justify-end py-2 items-center gap-2">
           <button
             className="bg-info-400 w-fit p-1 rounded-md text-white hover:bg-info-300 cursor-pointer active:bg-info-500 select-none"
+            type="button"
+          >
+            {editRecord.id === 0
+              ? 'Create and Continue'
+              : 'Update and Continue'}
+          </button>
+          <button
+            className="bg-rose-400 w-fit p-1 rounded-md text-white hover:bg-rose-300 cursor-pointer active:bg-rose-500 select-none"
             type="submit"
           >
             {editRecord.id === 0 ? 'Create' : 'Update'}

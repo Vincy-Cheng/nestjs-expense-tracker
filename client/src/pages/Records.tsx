@@ -1,17 +1,16 @@
 import { useQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { fetchWallets } from '../apis/wallet';
-import { useAppSelector } from '../hooks';
+import { useAppDispatch, useAppSelector } from '../hooks';
 import { IoSettingsOutline } from 'react-icons/io5';
-import {
-  ICategory,
-  IRecord,
-  IWallet,
-  IWalletRecordWithCategory,
-} from '../types';
+import { IRecord, IWalletRecordWithCategory } from '../types';
 import { AiOutlinePlus } from 'react-icons/ai';
 import RecordModal from '../components/record/RecordModal';
 import { DateTime } from 'luxon';
+import IconSelector from '../components/IconSelector';
+import clsx from 'clsx';
+import * as _ from 'lodash';
+import CustomAccordion from '../components/Custom/CustomAccordion';
 
 type Props = {};
 
@@ -30,6 +29,8 @@ const Records = (props: Props) => {
     fetchWallets,
   );
 
+  const dispatch = useAppDispatch();
+
   const { id } = useAppSelector((state) => state.wallet);
 
   const favWallet = useMemo(() => {
@@ -42,7 +43,7 @@ const Records = (props: Props) => {
     }
   }, [id, wallets]);
 
-  const { income, expense, total } = useMemo(() => {
+  const { income, expense, total, dateRecords } = useMemo(() => {
     const walletExpense =
       favWallet?.records?.reduce((i, w) => {
         if (w.category.type === 'expense') {
@@ -58,10 +59,13 @@ const Records = (props: Props) => {
         return i;
       }, 0) ?? 0;
 
+    const dateRecords = _.groupBy(favWallet?.records, 'date');
+
     return {
       income: walletIncome,
       expense: walletExpense,
       total: walletExpense + walletIncome,
+      dateRecords,
     };
   }, [favWallet]);
 
@@ -75,7 +79,15 @@ const Records = (props: Props) => {
             <div>Expense: {expense}</div>
             <div>Balance: {total}</div>
           </div>
-          <IoSettingsOutline strokeWidth={1} className="cursor-pointer" />
+          <div
+            className="rounded-full p-1 hover:bg-primary-300 active:bg-primary-100"
+            onClick={() => {
+              // Update the fav wallet
+              // update the dispatch -> local storage
+            }}
+          >
+            <IoSettingsOutline strokeWidth={1} className="cursor-pointer" />
+          </div>
         </div>
       )}
 
@@ -88,9 +100,53 @@ const Records = (props: Props) => {
         <AiOutlinePlus />
       </div>
 
-      <div>
-        {favWallet?.records.map((record) => (
-          <div key={record.id}>{record.price}</div>
+      <div className="bg-primary-100 rounded-md p-2 mt-1">
+        {Object.entries(dateRecords).map((date, index) => (
+          <CustomAccordion header={date[0]}>
+            <div>
+              {date[1].map((record) => (
+                <div key={record.id}>
+                  <div
+                    className={clsx(
+                      'flex items-center gap-2',
+                      record.category.type === 'expense'
+                        ? 'text-rose-400'
+                        : 'text-info-400',
+                    )}
+                  >
+                    <IconSelector name={record.category.icon} />
+                    <span>{record.category.name}</span>
+                    <span>{record.remarks}</span>
+                  </div>
+
+                  <span>{record.price}</span>
+                </div>
+              ))}
+            </div>
+          </CustomAccordion>
+          // <div key={`date-record-${date[0]}`}>
+          //   <span>{date[0]}</span>
+          //   <div>
+          //     {date[1].map((record) => (
+          //       <div key={record.id}>
+          //         <div
+          //           className={clsx(
+          //             'flex items-center gap-2',
+          //             record.category.type === 'expense'
+          //               ? 'text-rose-400'
+          //               : 'text-info-400',
+          //           )}
+          //         >
+          //           <IconSelector name={record.category.icon} />
+          //           <span>{record.category.name}</span>
+          //           <span>{record.remarks}</span>
+          //         </div>
+
+          //         <span>{record.price}</span>
+          //       </div>
+          //     ))}
+          //   </div>
+          // </div>
         ))}
       </div>
 
