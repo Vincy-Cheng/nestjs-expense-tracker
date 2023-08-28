@@ -10,10 +10,12 @@ module.exports = {
       lg: '1200px',
       xl: '1536px',
     },
-
     extend: {
       fontFamily: {
         Barlow: ['Barlow', 'sans-serif'],
+      },
+      transitionProperty: {
+        height: 'height',
       },
       colors: {
         primary: {

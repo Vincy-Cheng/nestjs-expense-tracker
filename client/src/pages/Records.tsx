@@ -124,29 +124,6 @@ const Records = (props: Props) => {
               ))}
             </div>
           </CustomAccordion>
-          // <div key={`date-record-${date[0]}`}>
-          //   <span>{date[0]}</span>
-          //   <div>
-          //     {date[1].map((record) => (
-          //       <div key={record.id}>
-          //         <div
-          //           className={clsx(
-          //             'flex items-center gap-2',
-          //             record.category.type === 'expense'
-          //               ? 'text-rose-400'
-          //               : 'text-info-400',
-          //           )}
-          //         >
-          //           <IconSelector name={record.category.icon} />
-          //           <span>{record.category.name}</span>
-          //           <span>{record.remarks}</span>
-          //         </div>
-
-          //         <span>{record.price}</span>
-          //       </div>
-          //     ))}
-          //   </div>
-          // </div>
         ))}
       </div>
 
