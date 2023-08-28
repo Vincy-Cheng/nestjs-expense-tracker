@@ -45,11 +45,11 @@ const CustomAccordion = ({
       </div>
 
       <div
-        className={clsx(
-          'overflow-x-auto overflow-y-hidden transition-height duration-500 ease-in-out ',
-          open ? 'h-screen' : 'h-0',
-        )}
-        style={{ maxHeight: contentHeight }}
+        // transition animation need to be first, CSS issue
+        className={
+          'transition-[max-height] duration-500 ease-in-out overflow-x-auto overflow-y-hidden'
+        }
+        style={{ maxHeight: open ? contentHeight : 0 }}
         ref={childRef}
       >
         {children}

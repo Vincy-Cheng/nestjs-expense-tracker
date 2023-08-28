@@ -129,7 +129,7 @@ const CategoryRow = ({
             } catch (error) {}
           }}
           size={20}
-          enableColor="peer-checked:bg-primary-400"
+          enableColor="peer-checked:bg-primary-300"
         />
       </span>
     </div>

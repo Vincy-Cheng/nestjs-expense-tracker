@@ -72,7 +72,7 @@ const Records = (props: Props) => {
   return (
     <div className="relative h-full">
       {favWallet && (
-        <div className="bg-primary-200 p-1 rounded-md flex justify-between">
+        <div className="bg-primary-500 p-1 rounded-md flex justify-between text-white">
           <div>
             <div>{favWallet.name}</div>
             <div>Income: {income}</div>
