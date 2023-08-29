@@ -36,8 +36,13 @@ const CustomAccordion = ({
   return (
     <div
       className={clsx('p-2 rounded w-full shadow flex flex-col', customClass)}
-      onClick={() => {
-        setOpen((prev) => !prev);
+      onClick={(event) => {
+        if (
+          childRef.current &&
+          !childRef.current.contains(event.target as Node)
+        ) {
+          setOpen((prev) => !prev);
+        }
       }}
     >
       <div
