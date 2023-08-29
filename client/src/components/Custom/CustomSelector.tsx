@@ -53,7 +53,7 @@ const CustomSelector = ({
       </div>
       <ul
         className={clsx(
-          'bg-white mt-2 max-h-40 text-info-700 overflow-y-auto overflow-x-hidden z-50 absolute break-words rounded-sm transition-all duration-300',
+          'bg-white mt-2 max-h-40 text-info-700 overflow-y-auto overflow-x-hidden z-50 absolute break-words rounded-sm transition-all duration-300 shadow',
           open ? 'visible' : 'hidden',
         )}
         ref={selectRef}

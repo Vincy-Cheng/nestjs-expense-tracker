@@ -18,11 +18,16 @@ import { toast } from 'react-toastify';
 import { fetchCategories } from '../../apis/category';
 import jwt_decode from 'jwt-decode';
 import { profile } from '../../apis';
-import { useAppSelector } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { ECategoryType } from '../../common/category-type';
 import clsx from 'clsx';
 import CategorySelector from './CategorySelector';
 import IconSelector from '../IconSelector';
+import { DateTime } from 'luxon';
+import DatePicker from 'react-datepicker';
+import { fetchWallets } from '../../apis/wallet';
+import CustomSelector from '../Custom/CustomSelector';
+import { updateFavWallet } from '../../store/walletSlice';
 
 type RecordModalProps = {
   wallet: IWallet | undefined;
@@ -67,6 +72,11 @@ const RecordModal = ({
 
   const { data: user } = useQuery<IUserInfo>(['user', decoded.sub], () =>
     profile(decoded.sub),
+  );
+
+  const { data: wallets } = useQuery<IWalletRecordWithCategory[]>(
+    ['wallets'],
+    fetchWallets,
   );
 
   const updateCalc = (key: string) => {
@@ -153,11 +163,21 @@ const RecordModal = ({
     },
     onSuccess(data, variables, context) {
       toast(`Record is added`, { type: 'success' });
+      setEditRecord({
+        id: 0,
+        price: 0,
+        remarks: '',
+        date: DateTime.now().toISO() ?? DateTime.now().toFormat('yyyy-LL-dd'),
+      });
+      updateCalc('AC');
     },
     retry: 3,
   });
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    type: 'Once' | 'Continue',
+  ) => {
     event.preventDefault();
     try {
       if (!editRecord.price) {
@@ -177,8 +197,14 @@ const RecordModal = ({
         wallet: wallet,
         category: selectedCategory,
       });
+
+      if (type === 'Once') {
+        setOpen(false);
+      }
     } catch (error) {}
   };
+
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const keyListener = (event: KeyboardEvent) => {
@@ -228,7 +254,7 @@ const RecordModal = ({
 
   return (
     <CustomModal setOpen={setOpen} size="Medium">
-      <form className="w-full" onSubmit={handleSubmit}>
+      <form className="w-full">
         <p className="text-2xl pb-2">
           New {categoryType.charAt(0).toUpperCase() + categoryType.slice(1)}
         </p>
@@ -293,6 +319,43 @@ const RecordModal = ({
           </div>
         </div>
 
+        <div className="flex justify-between py-1 gap-1">
+          {/* Wallet and date */}
+          <div className="flex-1">
+            <CustomSelector
+              title={'Wallet:'}
+              options={wallets?.map((w) => w.name) ?? []}
+              value={wallet?.name}
+              callbackAction={(value) => {
+                const newFavWallet = wallets?.find((w) => w.name === value);
+                console.log(value);
+                if (newFavWallet) {
+                  console.log(newFavWallet);
+                  dispatch(updateFavWallet(newFavWallet.id));
+                }
+              }}
+            />
+          </div>
+          <div className="flex flex-col">
+            Date:
+            <DatePicker
+              onChange={(e) => {
+                if (e) {
+                  setEditRecord((prev) => {
+                    return {
+                      ...prev,
+                      date:
+                        DateTime.fromJSDate(e).toISO() ??
+                        DateTime.fromJSDate(e).toFormat('yyyy-LL-dd'),
+                    };
+                  });
+                }
+              }}
+              selected={new Date(editRecord.date)}
+              className=" outline-none border border-info-600 rounded-md p-2"
+            />
+          </div>
+        </div>
         <div className="relative bg-info-100 text-lg rounded-md p-1 text-right truncate overflow-auto mb-2">
           <span className="absolute left-1 text-info-600 opacity-30 font-semibold">
             {wallet && wallet.currency}
@@ -329,6 +392,9 @@ const RecordModal = ({
           <button
             className="bg-info-400 w-fit p-1 rounded-md text-white hover:bg-info-300 cursor-pointer active:bg-info-500 select-none"
             type="button"
+            onClick={(e) => {
+              handleSubmit(e, 'Continue');
+            }}
           >
             {editRecord.id === 0
               ? 'Create and Continue'
@@ -336,7 +402,10 @@ const RecordModal = ({
           </button>
           <button
             className="bg-rose-400 w-fit p-1 rounded-md text-white hover:bg-rose-300 cursor-pointer active:bg-rose-500 select-none"
-            type="submit"
+            type="button"
+            onClick={(e) => {
+              handleSubmit(e, 'Once');
+            }}
           >
             {editRecord.id === 0 ? 'Create' : 'Update'}
           </button>
