@@ -7,6 +7,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -45,6 +46,8 @@ export class Wallet extends BaseEntity {
   deletedAt: Date;
 
   @ManyToOne(() => User, (user) => user.wallets)
+  @ApiProperty({ type: () => User })
+  @JoinColumn()
   user: User;
 
   @OneToMany(() => Record, (record) => record.wallet)

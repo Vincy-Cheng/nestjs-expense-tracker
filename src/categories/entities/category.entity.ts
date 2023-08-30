@@ -7,6 +7,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -57,6 +58,8 @@ export class Category extends BaseEntity {
   deletedAt: Date;
 
   @ManyToOne(() => User, (user) => user.categories)
+  @ApiProperty({ type: () => User })
+  @JoinColumn()
   user: User;
 
   @OneToMany(() => Record, (records) => records.category)

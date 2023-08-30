@@ -12,6 +12,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -22,7 +23,6 @@ import { Wallet } from '../../wallets/entities/wallet.entity';
 @Entity({ name: 'records' })
 export class Record extends BaseEntity {
   @PrimaryGeneratedColumn()
-  @ApiProperty()
   id: number;
 
   @Column({ type: 'decimal' })
@@ -55,9 +55,13 @@ export class Record extends BaseEntity {
   deletedAt: Date;
 
   @ManyToOne(() => Category, (category) => category.records)
+  @ApiProperty({ type: () => Category })
+  @JoinColumn()
   category: Category;
 
   @ManyToOne(() => Wallet, (wallet) => wallet.records)
+  @ApiProperty({ type: () => Wallet })
+  @JoinColumn()
   wallet: Wallet;
 
   constructor(partial: Partial<Record>) {
