@@ -11,6 +11,7 @@ import {
   UseInterceptors,
   Request,
   UnauthorizedException,
+  BadRequestException,
 } from '@nestjs/common';
 import { RecordsService } from './records.service';
 import { CreateRecordDto } from './dto/create-record.dto';
@@ -52,8 +53,17 @@ export class RecordsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRecordDto: UpdateRecordDto) {
-    return this.recordsService.update(+id, updateRecordDto);
+  async update(
+    @Param('id') id: number,
+    @Body() updateRecordDto: UpdateRecordDto,
+  ) {
+    const record = await this.recordsService.findOne(id);
+
+    if (!record) {
+      throw new BadRequestException('Record does not exist');
+    }
+
+    return await this.recordsService.update(id, updateRecordDto);
   }
 
   @Delete(':id')

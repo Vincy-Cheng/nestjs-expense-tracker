@@ -40,6 +40,7 @@ export class RecordsService {
       id: id,
       price: updateRecordDto.price,
       remarks: updateRecordDto.remarks,
+      date: updateRecordDto.date,
     });
   }
 
