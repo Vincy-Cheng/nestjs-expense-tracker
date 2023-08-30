@@ -8,7 +8,6 @@ import { LuCandy } from 'react-icons/lu';
 import { BiCameraMovie, BiSolidDonateHeart } from 'react-icons/bi';
 import {
   PiAirplaneTiltFill,
-  PiAirplaneTiltThin,
   PiBabyThin,
   PiBankThin,
   PiBasketballThin,

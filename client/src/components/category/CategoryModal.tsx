@@ -33,7 +33,7 @@ const CategoryModal = ({
   const removeCategoryMutation = useMutation(deleteCategory, {
     onError(error, variables, context) {},
     onMutate: async (variables) => {
-      queryClient.setQueryData<ICategory[]>(['wallets'], (oldData) => {
+      queryClient.setQueryData<ICategory[]>(['categories'], (oldData) => {
         if (oldData) {
           return oldData.filter((prev) => prev.id !== variables);
         }
@@ -52,13 +52,6 @@ const CategoryModal = ({
         return oldData;
       });
 
-      queryClient.setQueryData<ICategory[]>(['categories'], (oldData) => {
-        if (oldData) {
-          return oldData.filter((category) => category.id !== variables);
-        }
-        return oldData;
-      });
-
       return {
         previousCategories: queryClient.getQueryData<ICategory[]>([
           'categories',
@@ -70,6 +63,10 @@ const CategoryModal = ({
       toast(`${editCategory.name} is delete`, { type: 'info' });
       setOpenDelete(false);
       setOpen(false);
+    },
+    onSettled: () => {
+      // Refetch the data to ensure it's up to date
+      queryClient.invalidateQueries(['categories', 'user']);
     },
   });
 

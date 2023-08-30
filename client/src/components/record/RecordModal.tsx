@@ -11,7 +11,7 @@ import {
 import Calculator from '../calculator/Calculator';
 import { evaluate } from 'mathjs';
 import CustomTextField from '../Custom/CustomTextField';
-import { createRecord, updateRecord } from '../../apis/record';
+import { createRecord, deleteRecord, updateRecord } from '../../apis/record';
 import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
@@ -57,6 +57,8 @@ const RecordModal = ({
   const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(
     recordCategory ?? null,
   );
+
+  const [openDelete, setOpenDelete] = useState<boolean>(false);
 
   const { access_token } = useAppSelector((state) => state.user);
 
@@ -240,6 +242,36 @@ const RecordModal = ({
     retry: 3,
   });
 
+  const removeRecordMutation = useMutation(deleteRecord, {
+    onError(error, variables, context) {},
+    onMutate: async (variables) => {
+      queryClient.setQueryData<IWalletRecordWithCategory[]>(
+        ['wallets'],
+        (oldData) => {
+          if (oldData) {
+            const walletIndex = oldData.findIndex((o) => o.id === wallet?.id);
+            if (walletIndex) {
+              oldData[walletIndex].records = oldData[
+                walletIndex
+              ].records.filter((r) => r.id !== variables);
+            }
+            console.log(oldData);
+          }
+          return oldData;
+        },
+      );
+    },
+    onSuccess(data, variables, context) {
+      toast(`Record ID: ${editRecord.id} is delete`, { type: 'info' });
+      setOpenDelete(false);
+      setOpen(false);
+    },
+    onSettled: () => {
+      // Refetch the data to ensure it's up to date
+      queryClient.invalidateQueries(['wallets']);
+    },
+  });
+
   const handleSubmit = async (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     type: 'Once' | 'Continue',
@@ -324,167 +356,193 @@ const RecordModal = ({
   }, [categories, user]);
 
   return (
-    <CustomModal setOpen={setOpen} size="Medium">
-      <form className="w-full">
-        <p className="text-2xl pb-2">
-          {editRecord.id === 0 ? 'New' : 'Update'}{' '}
-          {categoryType.charAt(0).toUpperCase() + categoryType.slice(1)}
-        </p>
-        <CategorySelector
-          categoryType={categoryType}
-          toggle={(type) => {
-            setCategoryType(type);
-          }}
-        />
-        {/* Category */}
-        <div
-          className={clsx(
-            'rounded-md my-2 w-full overflow-auto',
-            categoryType === ECategoryType.EXPENSE
-              ? 'bg-rose-50'
-              : 'bg-info-50',
-          )}
-        >
+    <div>
+      <CustomModal setOpen={setOpen} size="Medium">
+        <form className="w-full">
+          <p className="text-2xl pb-2">
+            {editRecord.id === 0 ? 'New' : 'Update'}{' '}
+            {categoryType.charAt(0).toUpperCase() + categoryType.slice(1)}
+          </p>
+          <CategorySelector
+            categoryType={categoryType}
+            toggle={(type) => {
+              setCategoryType(type);
+            }}
+          />
+          {/* Category */}
           <div
             className={clsx(
-              'grid grid-flow-col overflow-x-auto grid-rows-3 w-fit gap-2 p-1',
+              'rounded-md my-2 w-full overflow-auto',
+              categoryType === ECategoryType.EXPENSE
+                ? 'bg-rose-50'
+                : 'bg-info-50',
             )}
           >
-            {sortedCategories
-              .filter((sorted) => sorted.type === categoryType)
-              .map((category) => (
-                <div
-                  className={clsx(
-                    'rounded-md p-1 shadow cursor-pointer flex gap-2 items-center',
-                    {
-                      'bg-rose-400 text-rose-50 shadow-rose-300 hover:bg-rose-300 active:bg-rose-400':
-                        categoryType === ECategoryType.EXPENSE &&
-                        selectedCategory?.id === category.id,
-                    },
+            <div
+              className={clsx(
+                'grid grid-flow-col overflow-x-auto grid-rows-3 w-fit gap-2 p-1',
+              )}
+            >
+              {sortedCategories
+                .filter((sorted) => sorted.type === categoryType)
+                .map((category) => (
+                  <div
+                    className={clsx(
+                      'rounded-md p-1 shadow cursor-pointer flex gap-2 items-center',
+                      {
+                        'bg-rose-400 text-rose-50 shadow-rose-300 hover:bg-rose-300 active:bg-rose-400':
+                          categoryType === ECategoryType.EXPENSE &&
+                          selectedCategory?.id === category.id,
+                      },
 
-                    {
-                      'bg-rose-100 text-rose-400 shadow-rose-300 hover:bg-rose-200 active:bg-rose-100':
-                        categoryType === ECategoryType.EXPENSE &&
-                        selectedCategory?.id !== category.id,
-                    },
+                      {
+                        'bg-rose-100 text-rose-400 shadow-rose-300 hover:bg-rose-200 active:bg-rose-100':
+                          categoryType === ECategoryType.EXPENSE &&
+                          selectedCategory?.id !== category.id,
+                      },
 
-                    {
-                      'bg-info-400 text-info-50 shadow-info-300 hover:bg-info-300 active:bg-info-100':
-                        categoryType === ECategoryType.INCOME &&
-                        selectedCategory?.id === category.id,
-                    },
-                    {
-                      'bg-info-100 text-info-400 shadow-info-300 hover:bg-info-200 active:bg-info-100':
-                        categoryType === ECategoryType.INCOME &&
-                        selectedCategory?.id !== category.id,
-                    },
-                  )}
-                  key={category.id}
-                  onClick={() => {
-                    setSelectedCategory(category);
-                  }}
-                >
-                  <IconSelector name={category.icon} />
-                  <span>{category.name}</span>
-                </div>
-              ))}
+                      {
+                        'bg-info-400 text-info-50 shadow-info-300 hover:bg-info-300 active:bg-info-100':
+                          categoryType === ECategoryType.INCOME &&
+                          selectedCategory?.id === category.id,
+                      },
+                      {
+                        'bg-info-100 text-info-400 shadow-info-300 hover:bg-info-200 active:bg-info-100':
+                          categoryType === ECategoryType.INCOME &&
+                          selectedCategory?.id !== category.id,
+                      },
+                    )}
+                    key={category.id}
+                    onClick={() => {
+                      setSelectedCategory(category);
+                    }}
+                  >
+                    <IconSelector name={category.icon} />
+                    <span>{category.name}</span>
+                  </div>
+                ))}
+            </div>
           </div>
-        </div>
 
-        <div className="flex justify-between py-1 gap-1">
-          {/* Wallet and date */}
-          <div className="flex-1">
-            <CustomSelector
-              title={'Wallet:'}
-              options={wallets?.map((w) => w.name) ?? []}
-              value={wallet?.name}
-              callbackAction={(value) => {
-                const newFavWallet = wallets?.find((w) => w.name === value);
-                console.log(value);
-                if (newFavWallet) {
-                  console.log(newFavWallet);
-                  dispatch(updateFavWallet(newFavWallet.id));
-                }
+          <div className="flex justify-between py-1 gap-1">
+            {/* Wallet and date */}
+            <div className="flex-1">
+              <CustomSelector
+                title={'Wallet:'}
+                options={wallets?.map((w) => w.name) ?? []}
+                value={wallet?.name}
+                callbackAction={(value) => {
+                  const newFavWallet = wallets?.find((w) => w.name === value);
+                  console.log(value);
+                  if (newFavWallet) {
+                    console.log(newFavWallet);
+                    dispatch(updateFavWallet(newFavWallet.id));
+                  }
+                }}
+              />
+            </div>
+            <div className="flex flex-col">
+              Date:
+              <DatePicker
+                onChange={(e) => {
+                  if (e) {
+                    setEditRecord((prev) => {
+                      return {
+                        ...prev,
+                        date:
+                          DateTime.fromJSDate(e).toISO() ??
+                          DateTime.fromJSDate(e).toFormat('yyyy-LL-dd'),
+                      };
+                    });
+                  }
+                }}
+                selected={new Date(editRecord.date)}
+                className=" outline-none border border-info-600 rounded-md p-2"
+              />
+            </div>
+          </div>
+          <div className="relative bg-info-100 text-lg rounded-md p-1 text-right truncate overflow-auto mb-2">
+            <span className="absolute left-1 text-info-600 opacity-30 font-semibold">
+              {wallet && wallet.currency}
+            </span>
+
+            <span>{value.length > 0 ? value : 0}</span>
+          </div>
+
+          <div className="bg-zinc-50 rounded-md p-2">
+            {/* Calculator */}
+            <Calculator
+              callback={(key) => {
+                updateCalc(key);
               }}
             />
           </div>
-          <div className="flex flex-col">
-            Date:
-            <DatePicker
-              onChange={(e) => {
-                if (e) {
-                  setEditRecord((prev) => {
-                    return {
-                      ...prev,
-                      date:
-                        DateTime.fromJSDate(e).toISO() ??
-                        DateTime.fromJSDate(e).toFormat('yyyy-LL-dd'),
-                    };
-                  });
-                }
+          <div className="py-2">
+            <CustomTextField
+              type={'text'}
+              name="Remarks"
+              value={editRecord.remarks}
+              callbackAction={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setEditRecord((prev) => {
+                  return {
+                    ...prev,
+                    remarks: event.target.value,
+                  };
+                });
               }}
-              selected={new Date(editRecord.date)}
-              className=" outline-none border border-info-600 rounded-md p-2"
             />
           </div>
-        </div>
-        <div className="relative bg-info-100 text-lg rounded-md p-1 text-right truncate overflow-auto mb-2">
-          <span className="absolute left-1 text-info-600 opacity-30 font-semibold">
-            {wallet && wallet.currency}
-          </span>
-          {/* <span>{editRecord.price}</span> */}
-          <span>{value.length > 0 ? value : 0}</span>
-        </div>
 
-        <div className="bg-zinc-50 rounded-md p-2">
-          {/* Calculator */}
-          <Calculator
-            callback={(key) => {
-              updateCalc(key);
-            }}
-          />
-        </div>
-        <div className="py-2">
-          <CustomTextField
-            type={'text'}
-            name="Remarks"
-            value={editRecord.remarks}
-            callbackAction={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setEditRecord((prev) => {
-                return {
-                  ...prev,
-                  remarks: event.target.value,
-                };
-              });
-            }}
-          />
-        </div>
+          {/* Submit button and choose continue or close */}
+          <div className="flex justify-end py-2 items-center gap-2">
+            <button
+              className="bg-info-400 w-fit p-1 rounded-md text-white hover:bg-info-300 cursor-pointer active:bg-info-500 select-none"
+              type="button"
+              onClick={(e) => {
+                if (editRecord.id === 0) {
+                  handleSubmit(e, 'Continue');
+                } else {
+                  setOpenDelete(true);
+                }
+              }}
+            >
+              {editRecord.id === 0 ? 'Create and Continue' : 'Delete'}
+            </button>
 
-        {/* Submit button and choose continue or close */}
-        <div className="flex justify-end py-2 items-center gap-2">
-          <button
-            className="bg-info-400 w-fit p-1 rounded-md text-white hover:bg-info-300 cursor-pointer active:bg-info-500 select-none"
-            type="button"
-            onClick={(e) => {
-              handleSubmit(e, 'Continue');
-            }}
-          >
-            {editRecord.id === 0
-              ? 'Create and Continue'
-              : 'Update and Continue'}
-          </button>
-          <button
-            className="bg-rose-400 w-fit p-1 rounded-md text-white hover:bg-rose-300 cursor-pointer active:bg-rose-500 select-none"
-            type="button"
-            onClick={(e) => {
-              handleSubmit(e, 'Once');
-            }}
-          >
-            {editRecord.id === 0 ? 'Create' : 'Update'}
-          </button>
-        </div>
-      </form>
-    </CustomModal>
+            <button
+              className="bg-rose-400 w-fit p-1 rounded-md text-white hover:bg-rose-300 cursor-pointer active:bg-rose-500 select-none"
+              type="button"
+              onClick={(e) => {
+                handleSubmit(e, 'Once');
+              }}
+            >
+              {editRecord.id === 0 ? 'Create' : 'Update'}
+            </button>
+          </div>
+        </form>
+      </CustomModal>
+
+      {openDelete && (
+        <CustomModal setOpen={setOpenDelete} size="Medium">
+          <div>
+            <span className="text-lg">Confirm to delete the record?</span>
+
+            <div className="flex justify-end pt-2">
+              <button
+                className="bg-info-400 w-fit p-1 rounded-md text-white hover:bg-info-300 cursor-pointer active:bg-info-500 select-none"
+                onClick={async () => {
+                  try {
+                    await removeRecordMutation.mutateAsync(editRecord.id);
+                  } catch (error) {}
+                }}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </CustomModal>
+      )}
+    </div>
   );
 };
 

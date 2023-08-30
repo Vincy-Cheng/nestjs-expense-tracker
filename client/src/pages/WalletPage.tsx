@@ -5,12 +5,12 @@ import { fetchWallets } from '../apis/wallet';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { HiOutlineTrash } from 'react-icons/hi';
 
-import { IWallet } from '../types';
+import { IWallet, IWalletRecordWithCategory } from '../types';
 import WalletModal from '../components/wallet/WalletModal';
 
 type WalletPageProps = {};
 
-const WalletPage = ({}: WalletPageProps) => {
+const WalletPage = (prop: WalletPageProps) => {
   const [open, setOpen] = useState(false);
 
   const [editWallet, setEditWallet] = useState<IWallet>({
@@ -23,7 +23,10 @@ const WalletPage = ({}: WalletPageProps) => {
 
   const trashRef = useRef<HTMLDivElement>(null);
 
-  const { data: wallets } = useQuery<IWallet[]>(['wallets'], fetchWallets);
+  const { data: wallets } = useQuery<IWalletRecordWithCategory[]>(
+    ['wallets'],
+    fetchWallets,
+  );
 
   return (
     <div>
@@ -43,7 +46,7 @@ const WalletPage = ({}: WalletPageProps) => {
         </div>
         {wallets && (
           <div className="grid grid-flow-col overflow-x-auto grid-rows-2 py-2 gap-2 w-fit p-2 transition-all duration-300">
-            {wallets.map(({ id, name, currency }) => (
+            {wallets.map(({ id, name, currency, records }) => (
               <div
                 key={id}
                 className="rounded-md bg-amber-100 p-3 relative flex flex-col gap-3 w-[200px] hover:scale-105 cursor-pointer transition-all duration-300"
@@ -82,7 +85,16 @@ const WalletPage = ({}: WalletPageProps) => {
                   {new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: currency,
-                  }).format(10)}
+                  }).format(
+                    records.reduce((acc, cur) => {
+                      if (cur.category.type === 'expense') {
+                        acc -= cur.price;
+                      } else {
+                        acc += cur.price;
+                      }
+                      return acc;
+                    }, 0),
+                  )}
                 </div>
               </div>
             ))}
