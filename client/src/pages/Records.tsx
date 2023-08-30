@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import { SetStateAction, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { fetchWallets } from '../apis/wallet';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { IoSettingsOutline } from 'react-icons/io5';
-import { IRecord, IWalletRecordWithCategory } from '../types';
+import { ICategory, IRecord, IWalletRecordWithCategory } from '../types';
 import { AiOutlinePlus } from 'react-icons/ai';
 import RecordModal from '../components/record/RecordModal';
 import { DateTime } from 'luxon';
@@ -29,6 +29,9 @@ const Records = (props: Props) => {
     date: DateTime.now().toISO() ?? DateTime.now().toFormat('yyyy-LL-dd'),
   });
 
+  const [editRecordCategory, setEditRecordCategory] =
+    useState<ICategory | null>(null);
+
   const { data: wallets } = useQuery<IWalletRecordWithCategory[]>(
     ['wallets'],
     fetchWallets,
@@ -38,45 +41,44 @@ const Records = (props: Props) => {
 
   const { id } = useAppSelector((state) => state.wallet);
 
-  const favWallet = useMemo(() => {
+  const { favWallet, income, expense, total, dateRecords } = useMemo(() => {
+    let tmpWallet;
     if (wallets) {
       if (id === 0) {
-        return wallets[0];
+        tmpWallet = wallets[0];
       } else {
-        return wallets.find((w) => w.id === id);
+        tmpWallet = wallets.find((w) => w.id === id);
       }
     }
-  }, [id, wallets]);
-
-  const { income, expense, total, dateRecords } = useMemo(() => {
     const walletExpense =
-      favWallet?.records?.reduce((i, w) => {
+      tmpWallet?.records?.reduce((i, w) => {
         if (w.category.type === 'expense') {
           i -= w.price;
         }
         return i;
       }, 0) ?? 0;
     const walletIncome =
-      favWallet?.records?.reduce((i, w) => {
+      tmpWallet?.records?.reduce((i, w) => {
         if (w.category.type === 'income') {
           i += w.price;
         }
         return i;
       }, 0) ?? 0;
 
-    const dateRecords = _.groupBy(favWallet?.records, 'date');
+    const dateRecords = _.groupBy(tmpWallet?.records, 'date');
 
     return {
+      favWallet: tmpWallet,
       income: walletIncome,
       expense: walletExpense,
       total: walletExpense + walletIncome,
       dateRecords,
     };
-  }, [favWallet]);
+  }, [id, wallets]);
 
   return (
     <div className="relative h-full">
-      {favWallet && (
+      {favWallet ? (
         <div className="bg-primary-500 p-2 rounded-md text-white relative">
           <div>
             <div>{favWallet.name}</div>
@@ -101,77 +103,94 @@ const Records = (props: Props) => {
             <IoSettingsOutline strokeWidth={1} className="cursor-pointer" />
           </div>
         </div>
+      ) : (
+        <div>Please create a wallet first to create records.</div>
       )}
 
       <div
         className="absolute bottom-0 right-0 w-fit p-1 text-2xl text-white rounded-full bg-primary-400 hover:bg-primary-300 active:bg-primary-200 cursor-pointer"
         onClick={() => {
+          setEditRecord({
+            id: 0,
+            price: 0,
+            remarks: '',
+            date:
+              DateTime.now().toISO() ?? DateTime.now().toFormat('yyyy-LL-dd'),
+          });
           setOpen(true);
         }}
       >
         <AiOutlinePlus />
       </div>
-
-      <div className="bg-primary-300 rounded-md p-2 mt-1">
-        {Object.entries(dateRecords)
-          .reverse()
-          .map((date, index) => (
-            <div key={index} className="py-1">
-              <CustomAccordion
-                header={
-                  <div className="flex justify-between items-center">
-                    <div>{date[0]}</div>
-                    <div>
-                      ${' '}
-                      {date[1].reduce((acc, cur) => {
-                        const price =
-                          cur.category.type === 'expense'
-                            ? -cur.price
-                            : cur.price;
-                        return acc + price;
-                      }, 0)}
+      {Object.keys(dateRecords).length > 0 ? (
+        <div className="bg-primary-300 rounded-md p-2 mt-1">
+          {Object.entries(dateRecords)
+            .reverse()
+            .map((date, index) => (
+              <div key={index} className="py-1">
+                <CustomAccordion
+                  header={
+                    <div className="flex justify-between items-center">
+                      <div>{date[0]}</div>
+                      <div>
+                        ${' '}
+                        {date[1].reduce((acc, cur) => {
+                          const price =
+                            cur.category.type === 'expense'
+                              ? -cur.price
+                              : cur.price;
+                          return acc + price;
+                        }, 0)}
+                      </div>
                     </div>
-                  </div>
-                }
-                customClass="bg-primary-100"
-                triggerUpdate={favWallet}
-                hideArrow
-              >
-                <div className="space-y-1">
-                  {date[1].map((record) => (
-                    <div
-                      key={record.id}
-                      className={clsx(
-                        'flex items-center justify-between p-1 bg-primary-50 rounded-md',
-                        record.category.type === 'expense'
-                          ? 'text-rose-400'
-                          : 'text-info-400',
-                      )}
-                    >
-                      <div className={clsx('flex items-center gap-2')}>
-                        <div
-                          className={clsx(
-                            'p-1 rounded-full text-white bg-amber-400',
-                          )}
-                        >
-                          <IconSelector name={record.category.icon} />
+                  }
+                  customClass="bg-primary-100"
+                  triggerUpdate={favWallet}
+                  hideArrow
+                >
+                  <div className="space-y-1">
+                    {date[1].map((record) => (
+                      <div
+                        key={record.id}
+                        className={clsx(
+                          'flex items-center justify-between p-1 bg-white rounded-md cursor-pointer hover:bg-primary-50',
+                          record.category.type === 'expense'
+                            ? 'text-rose-400'
+                            : 'text-info-400',
+                        )}
+                        onClick={() => {
+                          setEditRecord(record);
+                          setEditRecordCategory(record.category);
+                          setOpen(true);
+                        }}
+                      >
+                        <div className={clsx('flex items-center gap-2')}>
+                          <div
+                            className={clsx(
+                              'p-1 rounded-full text-white bg-amber-400',
+                            )}
+                          >
+                            <IconSelector name={record.category.icon} />
+                          </div>
+
+                          <span>{record.category.name}</span>
+                          <span>{record.remarks}</span>
                         </div>
 
-                        <span>{record.category.name}</span>
-                        <span>{record.remarks}</span>
+                        <span>
+                          {record.category.type === 'expense' && '-'}${' '}
+                          {record.price}
+                        </span>
                       </div>
-
-                      <span>
-                        {record.category.type === 'expense' && '-'}${' '}
-                        {record.price}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </CustomAccordion>
-            </div>
-          ))}
-      </div>
+                    ))}
+                  </div>
+                </CustomAccordion>
+              </div>
+            ))}
+        </div>
+      ) : (
+        <div>No records</div>
+      )}
 
       {open && (
         <RecordModal
@@ -179,6 +198,7 @@ const Records = (props: Props) => {
           setOpen={setOpen}
           editRecord={editRecord}
           setEditRecord={setEditRecord}
+          recordCategory={editRecordCategory ?? undefined}
         />
       )}
 

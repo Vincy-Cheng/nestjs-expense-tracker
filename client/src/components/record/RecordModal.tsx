@@ -11,7 +11,7 @@ import {
 import Calculator from '../calculator/Calculator';
 import { evaluate } from 'mathjs';
 import CustomTextField from '../Custom/CustomTextField';
-import { createRecord } from '../../apis/record';
+import { createRecord, updateRecord } from '../../apis/record';
 import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
@@ -34,6 +34,7 @@ type RecordModalProps = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   editRecord: IRecord;
   setEditRecord: React.Dispatch<React.SetStateAction<IRecord>>;
+  recordCategory?: ICategory;
 };
 
 const RecordModal = ({
@@ -41,8 +42,11 @@ const RecordModal = ({
   setOpen,
   editRecord,
   setEditRecord,
+  recordCategory,
 }: RecordModalProps) => {
-  const [value, setValue] = useState<string>('');
+  const [value, setValue] = useState<string>(
+    editRecord.price === 0 ? '' : editRecord.price.toString(),
+  );
 
   const [sortedCategories, setSortedCategories] = useState<ICategory[]>([]);
 
@@ -51,7 +55,7 @@ const RecordModal = ({
   );
 
   const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(
-    null,
+    recordCategory ?? null,
   );
 
   const { access_token } = useAppSelector((state) => state.user);
@@ -174,6 +178,68 @@ const RecordModal = ({
     retry: 3,
   });
 
+  // Update record mutation
+  const updateRecordMutation = useMutation<
+    IRecord,
+    AxiosError<{ error: string; message: string; statusCode: number }>,
+    IRecord
+  >(updateRecord, {
+    onMutate: async ({ id, price, remarks, date }) => {
+      // Optimistically update the cache
+
+      queryClient.setQueryData<IWalletRecordWithCategory[]>(
+        ['wallets'],
+        (oldData) => {
+          if (oldData) {
+            const walletIndex = oldData.findIndex((o) => o.id === wallet?.id);
+            if (walletIndex) {
+              const recordIndex = oldData[walletIndex].records.findIndex(
+                (o) => o.id === id,
+              );
+              if (recordIndex) {
+                oldData[walletIndex].records[recordIndex] = {
+                  ...oldData[walletIndex].records[recordIndex],
+                  price,
+                  remarks,
+                  date,
+                };
+              }
+            }
+          }
+          return oldData;
+        },
+      );
+
+      return {
+        previousWallets: queryClient.getQueryData<IWalletRecordWithCategory[]>([
+          'wallets',
+        ]),
+      };
+    },
+    onError: (error, variables, context) => {
+      // Revert the cache to the previous state on error
+      const typedContext = context as {
+        previousWallets: IWalletRecordWithCategory[] | undefined;
+      };
+
+      if (typedContext.previousWallets) {
+        queryClient.setQueryData<IWalletRecordWithCategory[]>(
+          ['wallets'],
+          typedContext.previousWallets,
+        );
+      }
+      toast(error.response?.data.message, { type: 'error' });
+    },
+    onSettled: () => {
+      // Refetch the data to ensure it's up to date
+      queryClient.invalidateQueries(['wallets']);
+    },
+    onSuccess(data, variables, context) {
+      toast(`Record is updated`, { type: 'success' });
+    },
+    retry: 3,
+  });
+
   const handleSubmit = async (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     type: 'Once' | 'Continue',
@@ -191,12 +257,17 @@ const RecordModal = ({
       if (!selectedCategory) {
         return toast('Please select the category', { type: 'warning' });
       }
-
-      await createRecordMutation.mutateAsync({
-        ...editRecord,
-        wallet: wallet,
-        category: selectedCategory,
-      });
+      if (editRecord.id === 0) {
+        await createRecordMutation.mutateAsync({
+          ...editRecord,
+          wallet: wallet,
+          category: selectedCategory,
+        });
+      } else {
+        await updateRecordMutation.mutateAsync({
+          ...editRecord,
+        });
+      }
 
       if (type === 'Once') {
         setOpen(false);
@@ -256,7 +327,8 @@ const RecordModal = ({
     <CustomModal setOpen={setOpen} size="Medium">
       <form className="w-full">
         <p className="text-2xl pb-2">
-          New {categoryType.charAt(0).toUpperCase() + categoryType.slice(1)}
+          {editRecord.id === 0 ? 'New' : 'Update'}{' '}
+          {categoryType.charAt(0).toUpperCase() + categoryType.slice(1)}
         </p>
         <CategorySelector
           categoryType={categoryType}
@@ -360,6 +432,7 @@ const RecordModal = ({
           <span className="absolute left-1 text-info-600 opacity-30 font-semibold">
             {wallet && wallet.currency}
           </span>
+          {/* <span>{editRecord.price}</span> */}
           <span>{value.length > 0 ? value : 0}</span>
         </div>
 
