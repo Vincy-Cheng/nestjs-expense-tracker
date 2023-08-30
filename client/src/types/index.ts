@@ -28,11 +28,11 @@ export interface IRecord {
   date: string;
 }
 
-interface IRecordWIthCategory extends IRecord {
+interface IRecordWithCategory extends IRecord {
   category: ICategory;
 }
 export interface IWalletRecordWithCategory extends IWallet {
-  records: IRecordWIthCategory[];
+  records: IRecordWithCategory[];
 }
 export interface LoginResponse {
   access_token: string;
