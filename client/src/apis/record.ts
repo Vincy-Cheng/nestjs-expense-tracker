@@ -12,3 +12,22 @@ export async function createRecord(newRecord: ICreateRecord): Promise<IRecord> {
 
   return res.data;
 }
+
+export async function updateRecord(record: IRecord): Promise<IRecord> {
+  console.log(record);
+  const res = await Axios.patch(`v1/records/${record.id}`, {
+    price: record.price,
+    remarks: record.remarks,
+    date: record.date,
+  });
+
+  return res.data;
+}
+
+export async function deleteRecord(id: number) {
+  const url = `v1/records/${id}`;
+
+  const response = await Axios.delete(url);
+
+  return response.data;
+}
