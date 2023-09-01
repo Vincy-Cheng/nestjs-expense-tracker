@@ -86,14 +86,14 @@ const WalletPage = (prop: WalletPageProps) => {
                     style: 'currency',
                     currency: currency,
                   }).format(
-                    records.reduce((acc, cur) => {
+                    records?.reduce((acc, cur) => {
                       if (cur.category.type === 'expense') {
-                        acc -= cur.price;
+                        acc -= Number(cur.price);
                       } else {
-                        acc += cur.price;
+                        acc += Number(cur.price);
                       }
                       return acc;
-                    }, 0),
+                    }, 0) ?? 0,
                   )}
                 </div>
               </div>

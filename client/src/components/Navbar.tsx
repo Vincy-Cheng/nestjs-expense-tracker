@@ -12,7 +12,7 @@ interface INavItem {
   path: string;
 }
 
-const navItems: INavItem[] = [
+export const navItems: INavItem[] = [
   {
     name: 'Home',
     icon: <HiOutlineHome strokeWidth="1" />,

@@ -53,14 +53,14 @@ const Records = (props: Props) => {
     const walletExpense =
       tmpWallet?.records?.reduce((i, w) => {
         if (w.category.type === 'expense') {
-          i -= w.price;
+          i -= Number(w.price);
         }
         return i;
       }, 0) ?? 0;
     const walletIncome =
       tmpWallet?.records?.reduce((i, w) => {
         if (w.category.type === 'income') {
-          i += w.price;
+          i += Number(w.price);
         }
         return i;
       }, 0) ?? 0;
@@ -80,7 +80,7 @@ const Records = (props: Props) => {
     <div className="relative h-full">
       {favWallet ? (
         <div className="bg-primary-500 p-2 rounded-md text-white relative">
-          <div>
+          <div className="relative">
             <div>{favWallet.name}</div>
             <div className="flex items-center justify-between">
               <p>Income:</p> <p>{income}</p>
@@ -90,6 +90,9 @@ const Records = (props: Props) => {
             </div>
             <div className="flex items-center justify-between">
               <p>Balance:</p> <p>{total}</p>
+            </div>
+            <div className="absolute text-primary-100 text-opacity-25 text-6xl top-0 right-0">
+              {favWallet.currency}
             </div>
           </div>
           <div
@@ -137,8 +140,8 @@ const Records = (props: Props) => {
                         {date[1].reduce((acc, cur) => {
                           const price =
                             cur.category.type === 'expense'
-                              ? -cur.price
-                              : cur.price;
+                              ? -Number(cur.price)
+                              : Number(cur.price);
                           return acc + price;
                         }, 0)}
                       </div>

@@ -12,7 +12,7 @@ export const useMenu = () => {
 };
 
 export const MenuOpenProvider = ({ children }: any) => {
-  const [isSideBarOpen, setIsSideBarOpen] = useState<boolean>(true);
+  const [isSideBarOpen, setIsSideBarOpen] = useState<boolean>(false);
 
   const toggle = () => {
     setIsSideBarOpen((prev) => !prev);
