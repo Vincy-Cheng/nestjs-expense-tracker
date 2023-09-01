@@ -13,7 +13,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Category } from '../../categories/entities/category.entity';
 import { User } from '../../users/entities/user.entity';
 import { Record } from '../../records/entities/record.entity';
 

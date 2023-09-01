@@ -63,7 +63,7 @@ export class RecordsController {
       throw new BadRequestException('Record does not exist');
     }
 
-    return await this.recordsService.update(id, updateRecordDto);
+    return await this.recordsService.update(+id, updateRecordDto);
   }
 
   @Delete(':id')

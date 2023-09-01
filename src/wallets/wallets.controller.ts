@@ -41,20 +41,26 @@ export class WalletsController {
     const user = await this.usersService.findById(createWalletDto.userId);
 
     if (user.id !== req.user.id) {
-      throw new UnauthorizedException('Unable to create category');
+      throw new UnauthorizedException('Unable to create wallet');
     }
     return await this.walletsService.create(createWalletDto, user);
   }
 
   @Get()
   async findAll(@Request() req) {
-    return await this.walletsService.findAll(req.user.id);
+    const user = await this.usersService.findById(req.user.id);
+
+    if (!user) {
+      throw new UnauthorizedException('Unable to fetch wallet list');
+    }
+
+    return await this.walletsService.findAll(user.id);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.walletsService.findOne(+id);
-  }
+  // @Get(':id')
+  // findOne(@Param('id') id: number) {
+  //   return this.walletsService.findOne(+id);
+  // }
 
   @Patch(':id')
   async update(
@@ -90,4 +96,9 @@ export class WalletsController {
 
     return await this.walletsService.remove(wallet.id);
   }
+
+  // @Get('test')
+  // async testSQL() {
+  //   return await this.walletsService.test();
+  // }
 }
