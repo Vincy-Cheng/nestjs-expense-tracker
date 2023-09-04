@@ -135,7 +135,7 @@ const RecordModal = ({
                 date,
                 category: selectedCategory,
               };
-              oldData[walletIndex].records.push(record);
+              oldData[walletIndex].records.unshift(record);
             }
           }
 

@@ -65,7 +65,12 @@ const Records = (props: Props) => {
         return i;
       }, 0) ?? 0;
 
-    const dateRecords = _.groupBy(tmpWallet?.records, 'date');
+    const groupedDates = _.groupBy(tmpWallet?.records, 'date');
+
+    const dateRecords = _.sortBy(Object.keys(groupedDates)).map((date) => ({
+      date,
+      records: groupedDates[date],
+    }));
 
     return {
       favWallet: tmpWallet,
@@ -83,13 +88,13 @@ const Records = (props: Props) => {
           <div className="relative">
             <div>{favWallet.name}</div>
             <div className="flex items-center justify-between">
-              <p>Income:</p> <p>{income}</p>
+              <p>Income:</p> <p>{income.toFixed(2)}</p>
             </div>
             <div className="flex items-center justify-between">
-              <p>Expense:</p> <p>{expense}</p>
+              <p>Expense:</p> <p>{expense.toFixed(2)}</p>
             </div>
             <div className="flex items-center justify-between">
-              <p>Balance:</p> <p>{total}</p>
+              <p>Balance:</p> <p>{total.toFixed(2)}</p>
             </div>
             <div className="absolute text-primary-100 text-opacity-25 text-6xl top-0 right-0">
               {favWallet.currency}
@@ -127,69 +132,69 @@ const Records = (props: Props) => {
       </div>
       {Object.keys(dateRecords).length > 0 ? (
         <div className="bg-primary-300 rounded-md p-2 mt-1">
-          {Object.entries(dateRecords)
-            .reverse()
-            .map((date, index) => (
-              <div key={index} className="py-1">
-                <CustomAccordion
-                  header={
-                    <div className="flex justify-between items-center">
-                      <div>{date[0]}</div>
-                      <div>
-                        ${' '}
-                        {date[1].reduce((acc, cur) => {
+          {dateRecords.map(({ date, records }, index) => (
+            <div key={index} className="py-1">
+              <CustomAccordion
+                header={
+                  <div className="flex justify-between items-center">
+                    <div>{date}</div>
+                    <div>
+                      ${' '}
+                      {records
+                        .reduce((acc, cur) => {
                           const price =
                             cur.category.type === 'expense'
                               ? -Number(cur.price)
                               : Number(cur.price);
                           return acc + price;
-                        }, 0)}
-                      </div>
+                        }, 0)
+                        .toFixed(2)}
                     </div>
-                  }
-                  customClass="bg-primary-100"
-                  triggerUpdate={favWallet}
-                  hideArrow
-                >
-                  <div className="space-y-1">
-                    {date[1].map((record) => (
-                      <div
-                        key={record.id}
-                        className={clsx(
-                          'flex items-center justify-between p-1 bg-white rounded-md cursor-pointer hover:bg-primary-50',
-                          record.category.type === 'expense'
-                            ? 'text-rose-400'
-                            : 'text-info-400',
-                        )}
-                        onClick={() => {
-                          setEditRecord(record);
-                          setEditRecordCategory(record.category);
-                          setOpen(true);
-                        }}
-                      >
-                        <div className={clsx('flex items-center gap-2')}>
-                          <div
-                            className={clsx(
-                              'p-1 rounded-full text-white bg-amber-400',
-                            )}
-                          >
-                            <IconSelector name={record.category.icon} />
-                          </div>
-
-                          <span>{record.category.name}</span>
-                          <span>{record.remarks}</span>
+                  </div>
+                }
+                customClass="bg-primary-100"
+                triggerUpdate={favWallet}
+                hideArrow
+              >
+                <div className="space-y-1">
+                  {records.map((record) => (
+                    <div
+                      key={record.id}
+                      className={clsx(
+                        'flex items-center justify-between p-1 bg-white rounded-md cursor-pointer hover:bg-primary-50',
+                        record.category.type === 'expense'
+                          ? 'text-rose-400'
+                          : 'text-info-400',
+                      )}
+                      onClick={() => {
+                        setEditRecord(record);
+                        setEditRecordCategory(record.category);
+                        setOpen(true);
+                      }}
+                    >
+                      <div className={clsx('flex items-center gap-2')}>
+                        <div
+                          className={clsx(
+                            'p-1 rounded-full text-white bg-amber-400',
+                          )}
+                        >
+                          <IconSelector name={record.category.icon} />
                         </div>
 
-                        <span>
-                          {record.category.type === 'expense' && '-'}${' '}
-                          {record.price}
-                        </span>
+                        <span>{record.category.name}</span>
+                        <span>{record.remarks}</span>
                       </div>
-                    ))}
-                  </div>
-                </CustomAccordion>
-              </div>
-            ))}
+
+                      <span>
+                        {record.category.type === 'expense' && '-'}${' '}
+                        {record.price}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </CustomAccordion>
+            </div>
+          ))}
         </div>
       ) : (
         <div>No records</div>
