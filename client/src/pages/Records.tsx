@@ -1,19 +1,17 @@
-import { useQuery } from '@tanstack/react-query';
-import { useMemo, useState } from 'react';
-import { fetchWallets } from '../apis/wallet';
-import { useAppDispatch, useAppSelector } from '../hooks';
+import { useState } from 'react';
+import { useAppDispatch } from '../hooks';
 import { IoSettingsOutline } from 'react-icons/io5';
-import { ICategory, IRecord, IWalletRecordWithCategory } from '../types';
+import { ICategory, IRecord } from '../types';
 import { AiOutlinePlus } from 'react-icons/ai';
 import RecordModal from '../components/record/RecordModal';
 import { DateTime } from 'luxon';
 import IconSelector from '../components/IconSelector';
 import clsx from 'clsx';
-import * as _ from 'lodash';
 import CustomAccordion from '../components/Custom/CustomAccordion';
 import CustomModal from '../components/Custom/CustomModal';
 import CustomSelector from '../components/Custom/CustomSelector';
 import { updateFavWallet } from '../store/walletSlice';
+import { useRecord } from '../provider/RecordDataProvider';
 
 type Props = {};
 
@@ -32,54 +30,10 @@ const Records = (props: Props) => {
   const [editRecordCategory, setEditRecordCategory] =
     useState<ICategory | null>(null);
 
-  const { data: wallets } = useQuery<IWalletRecordWithCategory[]>(
-    ['wallets'],
-    fetchWallets,
-  );
+  const { wallets, favWallet, income, expense, total, dateRecords } =
+    useRecord();
 
   const dispatch = useAppDispatch();
-
-  const { id } = useAppSelector((state) => state.wallet);
-
-  const { favWallet, income, expense, total, dateRecords } = useMemo(() => {
-    let tmpWallet;
-    if (wallets) {
-      if (id === 0) {
-        tmpWallet = wallets[0];
-      } else {
-        tmpWallet = wallets.find((w) => w.id === id);
-      }
-    }
-    const walletExpense =
-      tmpWallet?.records?.reduce((i, w) => {
-        if (w.category.type === 'expense') {
-          i -= Number(w.price);
-        }
-        return i;
-      }, 0) ?? 0;
-    const walletIncome =
-      tmpWallet?.records?.reduce((i, w) => {
-        if (w.category.type === 'income') {
-          i += Number(w.price);
-        }
-        return i;
-      }, 0) ?? 0;
-
-    const groupedDates = _.groupBy(tmpWallet?.records, 'date');
-
-    const dateRecords = _.sortBy(Object.keys(groupedDates)).map((date) => ({
-      date,
-      records: groupedDates[date],
-    }));
-
-    return {
-      favWallet: tmpWallet,
-      income: walletIncome,
-      expense: walletExpense,
-      total: walletExpense + walletIncome,
-      dateRecords,
-    };
-  }, [id, wallets]);
 
   return (
     <div className="relative h-full">

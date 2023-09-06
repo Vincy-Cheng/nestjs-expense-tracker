@@ -25,9 +25,9 @@ import CategorySelector from './CategorySelector';
 import IconSelector from '../IconSelector';
 import { DateTime } from 'luxon';
 import DatePicker from 'react-datepicker';
-import { fetchWallets } from '../../apis/wallet';
 import CustomSelector from '../Custom/CustomSelector';
 import { updateFavWallet } from '../../store/walletSlice';
+import { useRecord } from '../../provider/RecordDataProvider';
 
 type RecordModalProps = {
   wallet: IWallet | undefined;
@@ -80,10 +80,7 @@ const RecordModal = ({
     profile(decoded.sub),
   );
 
-  const { data: wallets } = useQuery<IWalletRecordWithCategory[]>(
-    ['wallets'],
-    fetchWallets,
-  );
+  const { wallets } = useRecord();
 
   const updateCalc = (key: string) => {
     if (key === '=') {
@@ -168,7 +165,7 @@ const RecordModal = ({
       queryClient.invalidateQueries(['wallets']);
     },
     onSuccess(data, variables, context) {
-      toast(`Record is added`, { type: 'success' });
+      toast(`${variables.category.name} is added`, { type: 'success' });
       setEditRecord({
         id: 0,
         price: 0,

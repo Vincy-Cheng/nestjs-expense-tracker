@@ -28,7 +28,7 @@ export interface IRecord {
   date: string;
 }
 
-interface IRecordWithCategory extends IRecord {
+export interface IRecordWithCategory extends IRecord {
   category: ICategory;
 }
 export interface IWalletRecordWithCategory extends IWallet {
@@ -57,4 +57,9 @@ export interface IUserInfo {
   username: string;
   email: string;
   categoryOrder: number[];
+}
+
+export interface IGroupByCategoryRecord {
+  income: { [key: string]: IRecordWithCategory[] };
+  expense: { [key: string]: IRecordWithCategory[] };
 }

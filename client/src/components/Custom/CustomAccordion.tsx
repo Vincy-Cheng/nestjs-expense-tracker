@@ -10,6 +10,7 @@ type CustomAccordionProps = {
   triggerUpdate?: any;
   arrowPosition?: 'Left' | 'Right';
   hideArrow?: boolean;
+  focus?: string;
 };
 
 const CustomAccordion = ({
@@ -20,6 +21,7 @@ const CustomAccordion = ({
   triggerUpdate,
   arrowPosition,
   hideArrow,
+  focus,
 }: CustomAccordionProps) => {
   const [open, setOpen] = useState<boolean>(false);
 
