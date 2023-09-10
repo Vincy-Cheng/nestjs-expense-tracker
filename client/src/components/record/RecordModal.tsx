@@ -430,9 +430,8 @@ const RecordModal = ({
                 value={wallet?.name}
                 callbackAction={(value) => {
                   const newFavWallet = wallets?.find((w) => w.name === value);
-                  console.log(value);
+
                   if (newFavWallet) {
-                    console.log(newFavWallet);
                     dispatch(updateFavWallet(newFavWallet.id));
                   }
                 }}

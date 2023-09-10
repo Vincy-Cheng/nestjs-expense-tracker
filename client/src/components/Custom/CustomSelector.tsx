@@ -10,6 +10,7 @@ type CustomSelectorProps = {
   placeholder?: string;
   filter?: boolean;
   value: any;
+  titlePosition?: 'top' | 'left';
   callbackAction: (value: string) => void;
 };
 
@@ -19,6 +20,7 @@ const CustomSelector = ({
   filter,
   placeholder,
   value,
+  titlePosition,
   callbackAction,
 }: CustomSelectorProps) => {
   const [inputValue, setInputValue] = useState<string>('');
@@ -40,17 +42,24 @@ const CustomSelector = ({
 
   return (
     <div className="w-full font-medium " ref={wrapperRef}>
-      <div>{title}</div>
       <div
-        className="w-full cursor-pointer border border-info-600 p-2 flex items-center justify-between rounded"
-        onClick={() => {
-          setOpen((prev) => !prev);
-        }}
-        ref={buttonRef}
+        className={clsx('', {
+          'flex items-center gap-2': titlePosition === 'left',
+        })}
       >
-        <p className="truncate select-none">{value}</p>
-        <BsChevronDown />
+        <div>{title}</div>
+        <div
+          className="w-full cursor-pointer border border-info-600 p-2 flex items-center justify-between rounded"
+          onClick={() => {
+            setOpen((prev) => !prev);
+          }}
+          ref={buttonRef}
+        >
+          <p className="truncate select-none">{value}</p>
+          <BsChevronDown />
+        </div>
       </div>
+
       <ul
         className={clsx(
           'bg-white mt-2 max-h-40 text-info-700 overflow-y-auto overflow-x-hidden z-50 absolute break-words rounded-sm transition-all duration-300 shadow',
