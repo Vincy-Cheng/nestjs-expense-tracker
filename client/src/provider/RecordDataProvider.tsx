@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import React, { useContext, useMemo, useState } from 'react';
 import { fetchWallets } from '../apis/wallet';
 import {
+  ICategory,
   IGroupByCategoryRecord,
   IRecordWithCategory,
   IWalletRecordWithCategory,
@@ -31,7 +32,14 @@ interface ProviderValue {
   groupBy: GroupByScale;
   updateGroupingScale: (value: GroupByScale, reset?: boolean) => void;
   updateCurrentDate: (type: 'plus' | 'minus') => void;
-  test: () => void;
+  filterForTrend: (
+    currentYear: number,
+    category?: ICategory,
+  ) => {
+    date: string;
+    income: number;
+    expense: number;
+  }[];
 }
 
 const RecordDataContext = React.createContext<any>({});
@@ -242,36 +250,52 @@ export const RecordDateProvider = ({ children }: any) => {
     setCurrentDate((prev) => (type === 'plus' ? prev + 1 : prev - 1));
   };
 
-  const test = () => {
-    const now = DateTime.now();
+  const filterForTrend = (currentYear: number, category?: ICategory) => {
+    const now = DateTime.now().plus({
+      year: currentYear,
+    });
     const a = dateGrouping(GroupByScale.MONTH, favWallet?.records ?? []);
 
     const b = categoryGrouping(a);
 
-    let incomeByDate = 0;
-    let expenseByDate = 0;
     const tmpFilter = b
       .filter(
-        // date = 202309
         (gbcr) => DateTime.fromFormat(gbcr.date, 'yyyyLL').year === now.year,
       )
-      .map((t) => {
-        Object.values(t.records?.expense ?? {}).forEach((exp) => {
-          exp.forEach((e) => {
-            expenseByDate += Number(e.price);
-          });
-        });
+      .map((record) => {
+        const expense = Object.values(record.records.expense).reduce(
+          (acc, cur) => {
+            return (
+              acc +
+              cur.reduce((a, c) => {
+                if (category && c.category.name !== category.name) return a;
+                return a + Number(c.price);
+              }, 0)
+            );
+          },
+          0,
+        );
+        const income = Object.values(record.records.income).reduce(
+          (acc, cur) => {
+            return (
+              acc +
+              cur.reduce((a, c) => {
+                if (category && c.category.name !== category.name) return a;
+                return a + Number(c.price);
+              }, 0)
+            );
+          },
+          0,
+        );
 
-        Object.values(t.records?.income ?? {}).forEach((inc) => {
-          inc.forEach((i) => {
-            incomeByDate += Number(i.price);
-          });
-        });
-        return t;
-        // return { ...t, date: displayDate(t.date, scale) };
+        return {
+          date: record.date,
+          income,
+          expense,
+        };
       });
 
-    console.log(tmpFilter);
+    return tmpFilter;
   };
 
   return (
@@ -289,7 +313,7 @@ export const RecordDateProvider = ({ children }: any) => {
         expenseByDate,
         updateGroupingScale,
         updateCurrentDate,
-        test,
+        filterForTrend,
       }}
     >
       {children}

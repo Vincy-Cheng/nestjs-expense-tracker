@@ -361,9 +361,10 @@ const RecordModal = ({
             {categoryType.charAt(0).toUpperCase() + categoryType.slice(1)}
           </p>
           <CategorySelector
-            categoryType={categoryType}
+            options={Object.values(ECategoryType)}
+            value={categoryType}
             toggle={(type) => {
-              setCategoryType(type);
+              setCategoryType(type as ECategoryType);
             }}
           />
           {/* Category */}

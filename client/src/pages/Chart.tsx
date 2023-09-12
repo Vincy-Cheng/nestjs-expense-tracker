@@ -10,9 +10,7 @@ import Trend from '../components/chart/Trend';
 type Props = {};
 
 const Chart = (props: Props) => {
-  const [chartType, setChartType] = useState<'Pie Chart' | 'Trend'>(
-    'Pie Chart',
-  );
+  const [chartType, setChartType] = useState<'Pie Chart' | 'Trend'>('Trend');
 
   const { wallets, favWallet } = useRecord();
 

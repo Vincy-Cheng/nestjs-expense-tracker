@@ -73,9 +73,10 @@ const PieChart = (props: Props) => {
       <div className="w-full sm:w-1/2 ">
         <div className="">
           <CategorySelector
-            categoryType={categoryType}
+            options={Object.values(ECategoryType)}
+            value={categoryType}
             toggle={(type) => {
-              setCategoryType(type);
+              setCategoryType(type as ECategoryType);
             }}
           />
           <div className="flex gap-2 p-1 flex-wrap">
