@@ -90,7 +90,7 @@ const Records = (props: Props) => {
             <div key={index} className="py-1">
               <CustomAccordion
                 header={
-                  <div className="flex justify-between items-center">
+                  <div className="accordion-header flex justify-between items-center">
                     <div>{date}</div>
                     <div>
                       ${' '}
@@ -109,6 +109,7 @@ const Records = (props: Props) => {
                 customClass="bg-primary-100"
                 triggerUpdate={favWallet}
                 hideArrow
+                focus
               >
                 <div className="space-y-1">
                   {records.map((record) => (

@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import { ReactElement, useEffect, useRef, useState } from 'react';
 import { BsChevronDown } from 'react-icons/bs';
+import { useOutsideAlerter } from '../../hooks';
 
 type CustomAccordionProps = {
   header: string | ReactElement;
@@ -10,7 +11,7 @@ type CustomAccordionProps = {
   triggerUpdate?: any;
   arrowPosition?: 'Left' | 'Right';
   hideArrow?: boolean;
-  focus?: string;
+  focus?: boolean;
 };
 
 const CustomAccordion = ({
@@ -28,6 +29,25 @@ const CustomAccordion = ({
   const [contentHeight, setContentHeight] = useState(0);
 
   const childRef = useRef<HTMLDivElement>(null);
+  const accordionRef = useRef<HTMLDivElement>(null);
+
+  const handleClickOutside = (event: React.MouseEvent) => {
+    if (accordionRef.current) {
+      if (focus) {
+        if (accordionRef.current.contains(event.target as Node)) {
+          setOpen(true);
+        } else {
+          setOpen(false);
+        }
+      } else {
+        if (accordionRef.current.contains(event.target as Node)) {
+          setOpen((prev) => !prev);
+        }
+      }
+    }
+  };
+
+  useOutsideAlerter(handleClickOutside);
 
   useEffect(() => {
     if (childRef.current) {
@@ -37,15 +57,11 @@ const CustomAccordion = ({
 
   return (
     <div
-      className={clsx('p-2 rounded w-full shadow flex flex-col', customClass)}
-      onClick={(event) => {
-        if (
-          childRef.current &&
-          !childRef.current.contains(event.target as Node)
-        ) {
-          setOpen((prev) => !prev);
-        }
-      }}
+      ref={accordionRef}
+      className={clsx(
+        'accordion p-2 rounded w-full shadow flex flex-col',
+        customClass,
+      )}
     >
       <div
         className={clsx(
@@ -53,7 +69,9 @@ const CustomAccordion = ({
           arrowPosition === 'Right' ? 'flex-row-reverse' : '',
         )}
       >
-        <span className="flex-1">{header}</span>
+        <span className="flex-1" ref={accordionRef}>
+          {header}
+        </span>
 
         <BsChevronDown
           className={clsx(
