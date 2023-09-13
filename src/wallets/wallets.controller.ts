@@ -46,11 +46,11 @@ export class WalletsController {
     return await this.walletsService.create(createWalletDto, user);
   }
 
-  @Get()
-  async findAll(@Request() req) {
-    const user = await this.usersService.findById(req.user.id);
+  @Get('/user/:id')
+  async findAll(@Request() req, @Param('id') id: number) {
+    const user = await this.usersService.findById(id);
 
-    if (!user) {
+    if (user.id !== req.user.id) {
       throw new UnauthorizedException('Unable to fetch wallet list');
     }
 
@@ -96,9 +96,4 @@ export class WalletsController {
 
     return await this.walletsService.remove(wallet.id);
   }
-
-  // @Get('test')
-  // async testSQL() {
-  //   return await this.walletsService.test();
-  // }
 }

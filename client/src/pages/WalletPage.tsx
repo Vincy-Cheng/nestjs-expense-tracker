@@ -1,12 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
 
-import { fetchWallets } from '../apis/wallet';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { HiOutlineTrash } from 'react-icons/hi';
 
-import { IWallet, IWalletRecordWithCategory } from '../types';
+import { IWallet } from '../types';
 import WalletModal from '../components/wallet/WalletModal';
+import { useRecord } from '../provider/RecordDataProvider';
 
 type WalletPageProps = {};
 
@@ -23,10 +22,7 @@ const WalletPage = (prop: WalletPageProps) => {
 
   const trashRef = useRef<HTMLDivElement>(null);
 
-  const { data: wallets } = useQuery<IWalletRecordWithCategory[]>(
-    ['wallets'],
-    fetchWallets,
-  );
+  const { wallets } = useRecord();
 
   return (
     <div>

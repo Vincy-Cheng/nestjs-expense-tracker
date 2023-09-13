@@ -12,6 +12,7 @@ import * as _ from 'lodash';
 import { DateTime } from 'luxon';
 import { GroupByScale } from '../common/group-scale.enum';
 import { displayDate, formatDate } from '../common/format-date';
+import jwt_decode from 'jwt-decode';
 
 interface ProviderValue {
   wallets: IWalletRecordWithCategory[];
@@ -49,13 +50,21 @@ export const useRecord = () => {
 };
 
 export const RecordDateProvider = ({ children }: any) => {
+  const { access_token } = useAppSelector((state) => state.user);
+  const decoded = jwt_decode<{
+    username: string;
+    sub: number;
+    iat: number;
+    exp: number;
+  }>(access_token ?? sessionStorage.getItem('access_token') ?? '');
+
   const [groupBy, setGroupBy] = useState<GroupByScale>(GroupByScale.ALL);
 
   const [currentDate, setCurrentDate] = useState<number>(0);
 
   const { data: wallets } = useQuery<IWalletRecordWithCategory[]>(
-    ['wallets'],
-    fetchWallets,
+    ['wallets', decoded.sub],
+    () => fetchWallets(decoded.sub),
   );
 
   const { id } = useAppSelector((state) => state.wallet);
