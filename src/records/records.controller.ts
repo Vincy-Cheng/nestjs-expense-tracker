@@ -19,6 +19,7 @@ import { UpdateRecordDto } from './dto/update-record.dto';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UsersService } from '../users/users.service';
+import { WalletsService } from '../wallets/wallets.service';
 
 @ApiTags('Record')
 @ApiBearerAuth()
@@ -29,6 +30,7 @@ export class RecordsController {
   constructor(
     private readonly recordsService: RecordsService,
     private readonly usersService: UsersService,
+    private readonly walletService: WalletsService,
   ) {}
 
   @Post()
@@ -42,9 +44,15 @@ export class RecordsController {
     return this.recordsService.create(createRecordDto);
   }
 
-  @Get('')
-  findAll() {
-    return this.recordsService.findAll();
+  @Get('/wallet/:id')
+  async findAll(@Param('id') id: number) {
+    const wallet = await this.walletService.findOne(id);
+
+    if (!wallet) {
+      throw new BadRequestException('Wallet does not exist');
+    }
+
+    return await this.recordsService.findAll(wallet);
   }
 
   @Get(':id')

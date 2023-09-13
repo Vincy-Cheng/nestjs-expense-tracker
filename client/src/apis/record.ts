@@ -1,5 +1,5 @@
 import { Axios } from '.';
-import { ICreateRecord, IRecord } from '../types';
+import { ICreateRecord, IRecord, IRecordWithCategory } from '../types';
 
 export async function createRecord(newRecord: ICreateRecord): Promise<IRecord> {
   const res = await Axios.post('v1/records', {
@@ -13,8 +13,15 @@ export async function createRecord(newRecord: ICreateRecord): Promise<IRecord> {
   return res.data;
 }
 
+export async function fetchRecords(
+  walletId: number,
+): Promise<IRecordWithCategory[]> {
+  const response = await Axios.get(`/v1/records/wallet/${walletId}`);
+
+  return response.data;
+}
+
 export async function updateRecord(record: IRecord): Promise<IRecord> {
-  console.log(record);
   const res = await Axios.patch(`v1/records/${record.id}`, {
     price: record.price,
     remarks: record.remarks,

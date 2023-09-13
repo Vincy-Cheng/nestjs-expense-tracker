@@ -4,6 +4,7 @@ import { UpdateRecordDto } from './dto/update-record.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Record } from './entities/record.entity';
 import { Repository } from 'typeorm';
+import { Wallet } from '../wallets/entities/wallet.entity';
 
 @Injectable()
 export class RecordsService {
@@ -24,11 +25,16 @@ export class RecordsService {
     return await this.recordRepository.save(record);
   }
 
-  async findAll() {
-    // return await this.recordRepository
-    //   .createQueryBuilder('record')
-    //   .leftJoin('record.wallet', 'wallet')
-    //   .where('wallet.id = :id', { id: wallet.id });
+  async findAll(wallet: Wallet) {
+    const query = this.recordRepository
+      .createQueryBuilder('record')
+      .leftJoin('record.wallet', 'wallet')
+      .leftJoinAndSelect('record.category', 'category')
+      .where('wallet.id = :id', { id: wallet.id })
+      .orderBy('record.id', 'DESC')
+      .limit(6);
+
+    return await query.getMany();
   }
 
   async findOne(id: number) {

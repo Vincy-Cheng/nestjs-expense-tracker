@@ -4,9 +4,10 @@ import { RecordsController } from './records.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Record } from './entities/record.entity';
 import { UsersModule } from '../users/users.module';
+import { WalletsModule } from '../wallets/wallets.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Record]), UsersModule],
+  imports: [TypeOrmModule.forFeature([Record]), UsersModule, WalletsModule],
   controllers: [RecordsController],
   providers: [RecordsService],
 })
