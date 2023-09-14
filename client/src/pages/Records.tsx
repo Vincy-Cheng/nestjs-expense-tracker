@@ -72,13 +72,12 @@ const Records = (props: Props) => {
       <div
         className="absolute bottom-0 right-0 w-fit p-1 text-2xl text-white rounded-full bg-primary-400 hover:bg-primary-300 active:bg-primary-200 cursor-pointer"
         onClick={() => {
-          setEditRecord({
+          setEditRecord((prev) => ({
+            ...prev,
             id: 0,
             price: 0,
             remarks: '',
-            date:
-              DateTime.now().toISO() ?? DateTime.now().toFormat('yyyy-LL-dd'),
-          });
+          }));
           setOpen(true);
         }}
       >
@@ -90,7 +89,12 @@ const Records = (props: Props) => {
             <div key={index} className="py-1">
               <CustomAccordion
                 header={
-                  <div className="accordion-header flex justify-between items-center">
+                  <div
+                    className="accordion-header flex justify-between items-center"
+                    onClick={() => {
+                      setEditRecord((prev) => ({ ...prev, date: date }));
+                    }}
+                  >
                     <div>{date}</div>
                     <div>
                       ${' '}

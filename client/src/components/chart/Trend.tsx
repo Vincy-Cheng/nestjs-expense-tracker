@@ -24,6 +24,7 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchCategories } from '../../apis/category';
 import { ICategory } from '../../types';
 import CustomSelector from '../Custom/CustomSelector';
+import CoreChart from './CoreChart';
 
 type Props = {};
 
@@ -213,18 +214,7 @@ const Trend = (props: Props) => {
           }}
         />
       </div>
-
-      {chartType === 'bar' ? (
-        <Bar
-          options={options as ChartOptions<'bar'>}
-          data={data as ChartData<'bar'>}
-        />
-      ) : (
-        <Line
-          options={options as ChartOptions<'line'>}
-          data={data as ChartData<'line'>}
-        />
-      )}
+      <CoreChart chartType={chartType} options={options} data={data} />
     </div>
   );
 };

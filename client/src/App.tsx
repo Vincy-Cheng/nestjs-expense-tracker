@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'react-datepicker/dist/react-datepicker.css';
 import { MenuOpenProvider } from './provider/MenuOpenProvider';
 import { RecordDateProvider } from './provider/RecordDataProvider';
+import { AuthProvider } from './provider/AuthProvider';
 
 export const queryClient = new QueryClient();
 
@@ -16,11 +17,13 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
-        <MenuOpenProvider>
-          <RecordDateProvider>
-            <RouterProvider router={router} />
-          </RecordDateProvider>
-        </MenuOpenProvider>
+        <AuthProvider>
+          <MenuOpenProvider>
+            <RecordDateProvider>
+              <RouterProvider router={router} />
+            </RecordDateProvider>
+          </MenuOpenProvider>
+        </AuthProvider>
       </Provider>
       <ToastContainer />
     </QueryClientProvider>

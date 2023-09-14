@@ -439,7 +439,20 @@ const RecordModal = ({
               />
             </div>
             <div className="flex flex-col">
-              Date:
+              <div className="flex gap-4 flex-wrap justify-between">
+                Date:{' '}
+                <div
+                  className=" p-1 text-xs text-info-400 rounded-md bg-info-50 cursor-pointer hover:bg-info-100"
+                  onClick={() => {
+                    setEditRecord((prev) => ({
+                      ...prev,
+                      date: DateTime.now().toFormat('yyyy-LL-dd'),
+                    }));
+                  }}
+                >
+                  Today?
+                </div>
+              </div>
               <DatePicker
                 onChange={(e) => {
                   if (e) {

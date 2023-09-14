@@ -1,33 +1,16 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import jwt_decode from 'jwt-decode';
-import { useAppDispatch, useAppSelector } from '../hooks';
+
 import Layout from './Layout';
-import { logout } from '../store/userSlice';
+
 import { Axios } from '../apis';
+import { useAuth } from '../provider/AuthProvider';
 
 type Props = {};
 
 const AuthLayout = (props: Props) => {
-  const { isSignedIn, access_token } = useAppSelector((state) => state.user);
-  const dispatch = useAppDispatch();
+  const { authorized, isSignedIn } = useAuth();
 
-  try {
-    const decoded = jwt_decode<{
-      username: string;
-      sub: number;
-      iat: number;
-      exp: number;
-    }>(access_token ?? sessionStorage.getItem('access_token') ?? '');
-
-    // Check expiration time
-    const today = new Date();
-
-    if (today.getTime() / 1000 > decoded.exp || !isSignedIn) {
-      dispatch(logout());
-      return <Navigate to={'/login'} />;
-    }
-  } catch (error) {
-    dispatch(logout());
+  if (!isSignedIn || !authorized) {
     return <Navigate to={'/login'} />;
   }
 

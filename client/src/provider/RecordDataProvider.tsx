@@ -12,11 +12,11 @@ import * as _ from 'lodash';
 import { DateTime } from 'luxon';
 import { GroupByScale } from '../common/group-scale.enum';
 import { displayDate, formatDate } from '../common/format-date';
-import jwt_decode from 'jwt-decode';
+import { useAuth } from './AuthProvider';
 
 interface ProviderValue {
   wallets: IWalletRecordWithCategory[];
-  favWallet: IWalletRecordWithCategory;
+  favWallet?: IWalletRecordWithCategory;
   income: number;
   expense: number;
   total: number;
@@ -50,21 +50,16 @@ export const useRecord = () => {
 };
 
 export const RecordDateProvider = ({ children }: any) => {
-  const { access_token } = useAppSelector((state) => state.user);
-  const decoded = jwt_decode<{
-    username: string;
-    sub: number;
-    iat: number;
-    exp: number;
-  }>(access_token ?? sessionStorage.getItem('access_token') ?? '');
+  const { userId } = useAuth();
 
   const [groupBy, setGroupBy] = useState<GroupByScale>(GroupByScale.ALL);
 
   const [currentDate, setCurrentDate] = useState<number>(0);
 
   const { data: wallets } = useQuery<IWalletRecordWithCategory[]>(
-    ['wallets', decoded.sub],
-    () => fetchWallets(decoded.sub),
+    ['wallets', userId],
+    () => fetchWallets(userId!),
+    { enabled: !!userId },
   );
 
   const { id } = useAppSelector((state) => state.wallet);
@@ -163,6 +158,7 @@ export const RecordDateProvider = ({ children }: any) => {
   };
   const { favWallet, income, expense, total, dateRecords } = useMemo(() => {
     let tmpWallet;
+
     if (wallets) {
       if (id === 0) {
         tmpWallet = wallets[0];

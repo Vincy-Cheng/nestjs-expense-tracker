@@ -35,7 +35,7 @@ const CustomAccordion = ({
     if (accordionRef.current) {
       if (focus) {
         if (accordionRef.current.contains(event.target as Node)) {
-          setOpen(true);
+          setOpen((prev) => !prev);
         } else {
           setOpen(false);
         }

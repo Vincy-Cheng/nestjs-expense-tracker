@@ -24,14 +24,20 @@ const Home = (props: Props) => {
   const { favWallet } = useRecord();
 
   const { data: records } = useQuery<IRecordWithCategory[]>(
-    ['records', favWallet.id],
-    () => fetchRecords(favWallet.id),
+    ['records', favWallet?.id],
+    () => fetchRecords(favWallet!.id),
+    {
+      enabled: !!favWallet?.id,
+    },
   );
 
   return (
     <div className="select-none">
       <div>Quick Access</div>
-      <div className="flex gap-4 flex-wrap">
+      <div className="flex gap-4 ">
+        <div className="bg-primary-300 rounded-lg p-1 w-[300px] h-fit">
+          Trend
+        </div>
         <div className="bg-info-300 rounded-lg p-1 w-[300px] h-fit">
           <div className="flex justify-between items-center">
             <p>Latest Record</p>
@@ -64,13 +70,10 @@ const Home = (props: Props) => {
                   </div>
                   {record.category.name}
                 </div>
-                {favWallet.currency} {record.price}
+                {favWallet?.currency} {record.price}
               </div>
             ))}
           </div>
-        </div>
-        <div className="bg-primary-300 rounded-lg p-1 w-[300px] h-fit">
-          Trend
         </div>
       </div>
 
