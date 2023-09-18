@@ -1,16 +1,28 @@
 import { AiOutlinePlus } from 'react-icons/ai';
 import RecordModal from '../components/record/RecordModal';
 import { DateTime } from 'luxon';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRecord } from '../provider/RecordDataProvider';
 import { IRecord, IRecordWithCategory } from '../types';
 import { useQuery } from '@tanstack/react-query';
 import { fetchRecords } from '../apis/record';
 import IconSelector from '../components/IconSelector';
 import clsx from 'clsx';
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  ChartOptions,
+  ChartData,
+} from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { Doughnut } from 'react-chartjs-2';
+import { GroupByScale } from '../common/group-scale.enum';
 
 type Props = {};
 
+ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 const Home = (props: Props) => {
   const [open, setOpen] = useState(false);
 
@@ -21,7 +33,8 @@ const Home = (props: Props) => {
     date: DateTime.now().toISO() ?? DateTime.now().toFormat('yyyy-LL-dd'),
   });
 
-  const { favWallet } = useRecord();
+  const { favWallet, groupByCategoryRecords, groupBy, updateGroupingScale } =
+    useRecord();
 
   const { data: records } = useQuery<IRecordWithCategory[]>(
     ['records', favWallet?.id],
@@ -31,12 +44,76 @@ const Home = (props: Props) => {
     },
   );
 
+  const options: ChartOptions<'doughnut'> = {
+    cutout: '30%',
+    plugins: {
+      legend: {
+        labels: {
+          font: {
+            family: 'Barlow',
+          },
+        },
+      },
+      datalabels: {
+        display: true,
+        font: {
+          size: 20,
+          family: 'Barlow',
+        },
+        formatter: function (value, context) {
+          return (context.chart.data.labels as [])[context.dataIndex];
+        },
+        anchor: 'end',
+        offset: 0,
+        align: 'start',
+      },
+    },
+  };
+
+  const data: ChartData<'doughnut'> = {
+    labels: Object.keys(groupByCategoryRecords?.records?.expense ?? {}),
+
+    datasets: [
+      {
+        label: '# of Votes',
+        data: Object.values(groupByCategoryRecords?.records?.expense ?? {}).map(
+          (e) =>
+            e.reduce((acc, cur) => {
+              return acc + Number(cur.price);
+            }, 0),
+        ),
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.6)',
+          'rgba(54, 162, 235, 0.6)',
+          'rgba(255, 206, 86, 0.6)',
+          'rgba(75, 192, 192, 0.6)',
+          'rgba(153, 102, 255, 0.6)',
+          'rgba(255, 159, 64, 0.6)',
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  useEffect(() => {
+    updateGroupingScale(GroupByScale.MONTH);
+  }, [groupByCategoryRecords]);
+
   return (
     <div className="select-none">
       <div>Quick Access</div>
       <div className="flex gap-4 ">
-        <div className="bg-primary-300 rounded-lg p-1 w-[300px] h-fit">
-          Trend
+        <div className="bg-primary-200 rounded-lg p-1 w-[300px] h-fit">
+          Distribution of {groupByCategoryRecords.date}
+          <Doughnut options={options} data={data}></Doughnut>
         </div>
         <div className="bg-info-300 rounded-lg p-1 w-[300px] h-fit">
           <div className="flex justify-between items-center">
