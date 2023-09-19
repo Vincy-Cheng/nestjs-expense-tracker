@@ -3,12 +3,14 @@ import { navItems } from './Navbar';
 import { useNavigate } from 'react-router-dom';
 import { useMenu } from '../provider/MenuOpenProvider';
 import OpenCloseIcon from './OpenCloseIcon';
+import { useDarkMode } from '../provider/DarkModeProvider';
 
 type Props = {};
 
 const NavbarOverlay = (props: Props) => {
   const navigate = useNavigate();
   const { isSideBarOpen, toggle } = useMenu();
+  const { isDarkMode } = useDarkMode();
 
   return (
     <div className="w-full h-full bg-zinc-900 bg-opacity-80">
@@ -16,7 +18,7 @@ const NavbarOverlay = (props: Props) => {
         <OpenCloseIcon
           isOpen={isSideBarOpen}
           size={24}
-          color="white"
+          color={isDarkMode ? 'white' : 'black'}
           stroke={4}
         />
       </div>

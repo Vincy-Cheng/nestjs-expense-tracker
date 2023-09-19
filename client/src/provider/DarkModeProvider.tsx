@@ -78,8 +78,8 @@ export const DarkModeProvider = ({ children }: any) => {
       value={{
         isDarkMode,
         toggle: () => handleChange(),
-        enable: () => setIsDarkMode(true),
-        disable: () => setIsDarkMode(false),
+        enable: () => classToggle(true),
+        disable: () => classToggle(false),
       }}
     >
       {children}

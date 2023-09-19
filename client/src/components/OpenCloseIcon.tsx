@@ -11,24 +11,22 @@ const OpenCloseIcon = ({ isOpen, color, stroke, size }: OpenCloseIconProps) => {
   // Common Style for lines
   const commonStyle: React.CSSProperties = {
     height: stroke ?? 1,
-    width: size,
-    left: isOpen
-      ? (size - Math.sqrt(Math.pow(size + (stroke ?? 1), 2) / 2)) / 2
-      : 0,
+    width: isOpen ? size * 0.75 : size,
     display: 'block',
     position: 'absolute',
-    transformOrigin: 'left center',
+    transformOrigin: 'center',
     transition: '.25s ease-in-out',
     borderRadius: size,
     opacity: 1,
-    background: color ?? 'black',
+    backgroundColor: color ?? 'black',
   };
+
   return (
     <div className="flex">
       <div
         className="my-auto"
         style={{
-          width: size,
+          width: isOpen ? size * 0.75 : size,
           height: size * 0.75,
           position: 'relative',
           transform: 'rotate(0)',
@@ -38,9 +36,8 @@ const OpenCloseIcon = ({ isOpen, color, stroke, size }: OpenCloseIconProps) => {
         <span
           style={{
             ...commonStyle,
-            top: isOpen ? (stroke ?? 1) / 2 : 0,
+            top: isOpen ? (size * 0.75) / 2 : 0,
             transform: isOpen ? 'rotate(45deg)' : 'rotate(0)',
-            color: 'red',
           }}
         ></span>
         <span
@@ -49,15 +46,13 @@ const OpenCloseIcon = ({ isOpen, color, stroke, size }: OpenCloseIconProps) => {
             top: (size * 0.75) / 2,
             width: isOpen ? '0' : size,
             opacity: isOpen ? 0 : 1,
-            color: 'yellow',
           }}
         ></span>
         <span
           style={{
             ...commonStyle,
-            top: isOpen ? size * 0.75 - (stroke ?? 1) / 2 : size * 0.75,
+            top: isOpen ? (size * 0.75) / 2 : size * 0.75,
             transform: isOpen ? 'rotate(-45deg)' : 'rotate(0)',
-            color: 'blue',
           }}
         ></span>
       </div>

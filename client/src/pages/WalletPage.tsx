@@ -25,8 +25,8 @@ const WalletPage = (prop: WalletPageProps) => {
   const { wallets } = useRecord();
 
   return (
-    <div>
-      <div className="bg-amber-200 rounded-md p-2">
+    <div className="">
+      <div className="bg-amber-200 rounded-md p-2 dark:text-primary-900">
         <div className="flex justify-between items-center pb-2">
           <span>List of Wallets</span>
           <div className="hover:bg-amber-50 hover:bg-opacity-50 rounded-full p-1">

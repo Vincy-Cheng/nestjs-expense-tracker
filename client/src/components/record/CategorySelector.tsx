@@ -18,7 +18,7 @@ const CategorySelector = ({
 }: CategorySelectorProps) => {
   return (
     <div
-      className="grid text-center w-full bg-primary-100 rounded-md p-2 relative shadow"
+      className="grid text-center w-full bg-primary-100 dark:bg-primary-800 rounded-md p-2 relative shadow"
       style={{
         gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))`,
         background: color?.background,
@@ -26,7 +26,7 @@ const CategorySelector = ({
     >
       <div
         className={clsx(
-          'absolute bg-primary-200 h-full rounded-md shadow transition-all',
+          'absolute bg-primary-200 dark:bg-primary-600  h-full rounded-md shadow transition-all',
         )}
         style={{
           backgroundColor: color?.selected,

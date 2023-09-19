@@ -64,7 +64,7 @@ const LoginPage = (props: Props) => {
   return (
     <div className="flex flex-col items-center gap-4 font-Barlow">
       <form
-        className="min-w-[50%] max-w-[80%] py-3 px-5 text-lg flex flex-col gap-2 rounded-lg shadow"
+        className="min-w-[50%] max-w-[80%] py-3 px-5 text-lg flex flex-col gap-2 rounded-lg shadow dark:shadow-zinc-700"
         onSubmit={handleSignIn}
       >
         {error && <CustomAlert type={'error'} content={error} />}

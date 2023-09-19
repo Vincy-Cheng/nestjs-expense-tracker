@@ -113,7 +113,7 @@ const Home = (props: Props) => {
       <div className="flex gap-4 ">
         <div className="bg-primary-200 rounded-lg p-1 w-[300px] h-fit">
           Distribution of {groupByCategoryRecords.date}
-          <Doughnut options={options} data={data}></Doughnut>
+          {/* <Doughnut options={options} data={data}></Doughnut> */}
         </div>
         <div className="bg-info-300 rounded-lg p-1 w-[300px] h-fit">
           <div className="flex justify-between items-center">

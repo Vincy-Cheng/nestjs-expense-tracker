@@ -84,7 +84,7 @@ const Records = (props: Props) => {
         <AiOutlinePlus />
       </div>
       {Object.keys(dateRecords).length > 0 ? (
-        <div className="bg-primary-300 rounded-md p-2 mt-1">
+        <div className="bg-primary-300 dark:bg-primary-600 rounded-md p-2 mt-1">
           {dateRecords.map(({ date, records }, index) => (
             <div key={index} className="py-1">
               <CustomAccordion
@@ -110,7 +110,7 @@ const Records = (props: Props) => {
                     </div>
                   </div>
                 }
-                customClass="bg-primary-100"
+                customClass="bg-primary-100 dark:bg-primary-400"
                 triggerUpdate={favWallet}
                 hideArrow
                 focus
@@ -120,10 +120,10 @@ const Records = (props: Props) => {
                     <div
                       key={record.id}
                       className={clsx(
-                        'flex items-center justify-between p-1 bg-white rounded-md cursor-pointer hover:bg-primary-50',
+                        'flex items-center justify-between p-1 bg-white dark:bg-primary-200 rounded-md cursor-pointer hover:bg-primary-50',
                         record.category.type === 'expense'
-                          ? 'text-rose-400'
-                          : 'text-info-400',
+                          ? 'text-rose-400 '
+                          : 'text-info-400 dark:text-info-600',
                       )}
                       onClick={() => {
                         setEditRecord(record);

@@ -23,8 +23,8 @@ const Chart = (props: Props) => {
         <div className="flex py-2">
           <div
             className={clsx(
-              'px-2 hover:bg-info-100 cursor-pointer rounded-t-md active:bg-info-50',
-              { 'bg-info-200': chartType === 'Pie Chart' },
+              'px-2 hover:bg-info-100 cursor-pointer rounded-t-md active:bg-info-50 dark:bg-opacity-40 dark:active:bg-opacity-70',
+              { 'bg-info-200 dark:bg-info-700': chartType === 'Pie Chart' },
             )}
             onClick={() => {
               setChartType('Pie Chart');
@@ -34,8 +34,8 @@ const Chart = (props: Props) => {
           </div>
           <div
             className={clsx(
-              'px-2 hover:bg-info-100 cursor-pointer rounded-t-md active:bg-info-50',
-              { 'bg-info-200': chartType === 'Trend' },
+              'px-2 hover:bg-info-100 cursor-pointer rounded-t-md active:bg-info-50 dark:bg-opacity-40 dark:active:bg-opacity-70',
+              { 'bg-info-200 dark:bg-info-700': chartType === 'Trend' },
             )}
             onClick={() => {
               setChartType('Trend');

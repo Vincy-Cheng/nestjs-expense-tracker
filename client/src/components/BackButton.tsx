@@ -12,7 +12,7 @@ const BackButton = ({ text }: BackButtonProps) => {
   return (
     <div className="flex gap-2 items-center">
       <div
-        className="cursor-pointer rounded-full p-1 hover:bg-primary-50 active:bg-primary-100 w-fit"
+        className="cursor-pointer rounded-full p-1 hover:bg-primary-50 active:bg-primary-100 dark:hover:bg-opacity-40 dark:active:bg-opacity-60 w-fit"
         onClick={() => {
           navigate(-1);
         }}

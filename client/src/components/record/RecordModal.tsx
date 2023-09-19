@@ -372,8 +372,8 @@ const RecordModal = ({
             className={clsx(
               'rounded-md my-2 w-full overflow-auto',
               categoryType === ECategoryType.EXPENSE
-                ? 'bg-rose-50'
-                : 'bg-info-50',
+                ? 'bg-rose-50 dark:bg-rose-900 dark:bg-opacity-70'
+                : 'bg-info-50 dark:bg-info-900',
             )}
           >
             <div
@@ -388,24 +388,24 @@ const RecordModal = ({
                     className={clsx(
                       'rounded-md p-1 shadow cursor-pointer flex gap-2 items-center',
                       {
-                        'bg-rose-400 text-rose-50 shadow-rose-300 hover:bg-rose-300 active:bg-rose-400':
+                        'bg-rose-400 text-rose-50 dark:bg-rose-700 shadow-rose-300 dark:shadow-rose-600 hover:bg-rose-300 active:bg-rose-400':
                           categoryType === ECategoryType.EXPENSE &&
                           selectedCategory?.id === category.id,
                       },
 
                       {
-                        'bg-rose-100 text-rose-400 shadow-rose-300 hover:bg-rose-200 active:bg-rose-100':
+                        'bg-rose-100 text-rose-400 dark:bg-rose-400 dark:text-rose-100 shadow-rose-300 hover:bg-rose-200 active:bg-rose-100':
                           categoryType === ECategoryType.EXPENSE &&
                           selectedCategory?.id !== category.id,
                       },
 
                       {
-                        'bg-info-400 text-info-50 shadow-info-300 hover:bg-info-300 active:bg-info-100':
+                        'bg-info-400 text-info-50 dark:bg-info-700 dark:shadow-info-600 shadow-info-300 hover:bg-info-300 active:bg-info-100':
                           categoryType === ECategoryType.INCOME &&
                           selectedCategory?.id === category.id,
                       },
                       {
-                        'bg-info-100 text-info-400 shadow-info-300 hover:bg-info-200 active:bg-info-100':
+                        'bg-info-100 text-info-400 dark:bg-info-400 dark:text-info-100 shadow-info-300 hover:bg-info-200 active:bg-info-100':
                           categoryType === ECategoryType.INCOME &&
                           selectedCategory?.id !== category.id,
                       },
@@ -442,7 +442,7 @@ const RecordModal = ({
               <div className="flex gap-4 flex-wrap justify-between">
                 Date:{' '}
                 <div
-                  className=" p-1 text-xs text-info-400 rounded-md bg-info-50 cursor-pointer hover:bg-info-100"
+                  className=" p-1 text-xs text-info-400 rounded-md bg-transparent cursor-pointer hover:bg-info-100 dark:bg-opacity-25"
                   onClick={() => {
                     setEditRecord((prev) => ({
                       ...prev,
@@ -467,19 +467,19 @@ const RecordModal = ({
                   }
                 }}
                 selected={new Date(editRecord.date)}
-                className=" outline-none border border-info-600 rounded-md p-2"
+                className=" outline-none border border-info-600 rounded-md p-2 bg-transparent"
               />
             </div>
           </div>
-          <div className="relative bg-info-100 text-lg rounded-md p-1 text-right truncate overflow-auto mb-2">
-            <span className="absolute left-1 text-info-600 opacity-30 font-semibold">
+          <div className="relative bg-info-100 dark:bg-zinc-700 text-lg rounded-md p-1 text-right truncate overflow-auto mb-2">
+            <span className="absolute left-1 text-info-600 dark:text-info-300 opacity-30 font-semibold">
               {wallet && wallet.currency}
             </span>
 
             <span>{value.length > 0 ? value : 0}</span>
           </div>
 
-          <div className="bg-zinc-50 rounded-md p-2">
+          <div className="bg-zinc-50 dark:bg-zinc-700 rounded-md p-2">
             {/* Calculator */}
             <Calculator
               callback={(key) => {

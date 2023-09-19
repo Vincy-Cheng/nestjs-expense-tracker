@@ -71,7 +71,7 @@ const CategoryModal = ({
   });
 
   return (
-    <div>
+    <div className="dark:text-info-900">
       <CustomModal setOpen={setOpen}>
         <form onSubmit={callback}>
           <div className="text-2xl">
@@ -100,7 +100,7 @@ const CategoryModal = ({
               <div className="flex items-center gap-3">
                 <div
                   className={clsx(
-                    'text-4xl text-white rounded-full p-2',
+                    'text-4xl text-white rounded-full p-2 ',
                     editCategory.type === ECategoryType.EXPENSE
                       ? 'bg-rose-400'
                       : 'bg-info-400',

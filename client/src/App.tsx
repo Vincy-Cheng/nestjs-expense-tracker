@@ -10,6 +10,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { MenuOpenProvider } from './provider/MenuOpenProvider';
 import { RecordDateProvider } from './provider/RecordDataProvider';
 import { AuthProvider } from './provider/AuthProvider';
+import { DarkModeProvider } from './provider/DarkModeProvider';
 
 export const queryClient = new QueryClient();
 
@@ -18,11 +19,13 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
         <AuthProvider>
-          <MenuOpenProvider>
-            <RecordDateProvider>
-              <RouterProvider router={router} />
-            </RecordDateProvider>
-          </MenuOpenProvider>
+          <DarkModeProvider>
+            <MenuOpenProvider>
+              <RecordDateProvider>
+                <RouterProvider router={router} />
+              </RecordDateProvider>
+            </MenuOpenProvider>
+          </DarkModeProvider>
         </AuthProvider>
       </Provider>
       <ToastContainer />

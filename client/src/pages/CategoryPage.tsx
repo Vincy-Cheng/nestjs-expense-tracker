@@ -316,14 +316,14 @@ const CategoryPage = (props: Props) => {
             onDragStart={handleDragStart}
             autoScroll
           >
-            <div className="p-3 flex flex-col gap-3 bg-info-100 rounded-md flex-1 h-full">
+            <div className="p-3 flex flex-col gap-3 bg-info-100 dark:bg-info-700 rounded-md flex-1 h-full">
               <div className="flex justify-between items-center">
                 <p className="text-lg">
                   {cType.charAt(0).toUpperCase() + cType.slice(1)}
                 </p>
 
                 <div
-                  className=" flex gap-2 items-center p-1 rounded-md border border-dashed border-info-300 cursor-pointer hover:bg-primary-100 active:bg-primary-50"
+                  className=" flex gap-2 items-center p-1 rounded-md border border-dashed border-info-300 cursor-pointer hover:bg-primary-100 active:bg-primary-50 dark:hover:bg-opacity-40 dark:active:bg-opacity-70"
                   onClick={() => {
                     setEditCategory((prev) => {
                       return { ...prev, type: cType, name: '', id: 0 };

@@ -38,7 +38,7 @@ export const navItems: INavItem[] = [
 const Navbar = (props: Props) => {
   const navigate = useNavigate();
   return (
-    <div className="bg-secondary-300 rounded-md text-secondary-800 h-full">
+    <div className="bg-secondary-300 dark:bg-secondary-700 rounded-md text-secondary-800 dark:text-secondary-200 h-full">
       <div
         className="text-2xl py-2 px-4 cursor-pointer w-fit"
         onClick={() => {
@@ -53,7 +53,7 @@ const Navbar = (props: Props) => {
           <a
             href={item.path}
             key={item.name}
-            className="flex gap-2 items-center cursor-pointer hover:bg-secondary-200 active:bg-secondary-100 rounded-md m-1 p-1 hover:scale-105 scale-100 transition-all duration-300 "
+            className="flex gap-2 items-center cursor-pointer hover:bg-secondary-200 active:bg-secondary-100 dark:hover:bg-secondary-600 dark:active:bg-secondary-500 rounded-md m-1 p-1 hover:scale-105 scale-100 transition-all duration-300 "
           >
             <span className="text-2xl">{item.icon}</span>
 

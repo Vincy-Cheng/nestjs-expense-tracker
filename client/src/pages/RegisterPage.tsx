@@ -93,7 +93,7 @@ const RegisterPage = (props: Props) => {
   return (
     <div className="flex flex-col items-center gap-4 font-Barlow">
       <form
-        className="w-1/2 py-3 px-5 text-lg flex flex-col gap-2 rounded-lg shadow"
+        className="w-1/2 py-3 px-5 text-lg flex flex-col gap-2 rounded-lg shadow dark:shadow-zinc-700"
         onSubmit={handleRegister}
       >
         {error.message && (

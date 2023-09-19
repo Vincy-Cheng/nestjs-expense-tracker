@@ -83,9 +83,9 @@ const PieChart = (props: Props) => {
             {Object.values(GroupByScale).map((gbs) => (
               <button
                 className={clsx(
-                  'hover:bg-rose-100 rounded-md p-1 active:bg-rose-50',
+                  'hover:bg-rose-100 rounded-md p-1 active:bg-rose-50  dark:hover:bg-opacity-40 dark:active:bg-opacity-70',
                   {
-                    'bg-rose-200': groupBy === gbs,
+                    'bg-rose-200 dark:bg-rose-400': groupBy === gbs,
                   },
                 )}
                 key={gbs}

@@ -15,9 +15,9 @@ const Setting = (props: Props) => {
         <>
           <FaUserCircle
             strokeWidth={1}
-            className="cursor-pointer hover:bg-zinc-100 rounded-full peer text-zinc-600 text-2xl"
+            className="cursor-pointer hover:bg-zinc-100 rounded-full peer text-zinc-600 dark:text-zinc-400 text-2xl"
           />
-          <ul className="hidden peer-hover:block bg-white absolute float-right top-0 right-0 z-10 hover:block rounded-md shadow">
+          <ul className="hidden peer-hover:block bg-white absolute float-right top-0 right-0 z-10 hover:block rounded-md shadow dark:text-zinc-800">
             <li
               className="px-3 py-2 rounded-t-md cursor-pointer hover:bg-zinc-200 active:bg-zinc-100"
               onClick={() => {
