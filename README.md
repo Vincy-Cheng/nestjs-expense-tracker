@@ -45,21 +45,22 @@ Please ensure you have installed the following framework or software
 | JWT_EXPIRATION_TIME                    | Expiration time for the JWT |
 
 ## Screebshots
-![image](https://github.com/Vincy-Cheng/nestjs-expense-tracker/assets/60846680/518286b2-33c6-4834-983d-c005a26f950e)
+![image](https://github.com/Vincy-Cheng/nestjs-expense-tracker/assets/60846680/82505857-7261-480e-b6c7-6c939f0aa8f0)
 
-![image](https://github.com/Vincy-Cheng/nestjs-expense-tracker/assets/60846680/774a15d1-efdf-4c57-9db2-9d12d3c1b7de)
+![image](https://github.com/Vincy-Cheng/nestjs-expense-tracker/assets/60846680/65fe3aeb-e03d-4804-a537-5096ff8a5533)
 
-![image](https://github.com/Vincy-Cheng/nestjs-expense-tracker/assets/60846680/f5293f3e-9139-4369-b333-86da48443196)
+![image](https://github.com/Vincy-Cheng/nestjs-expense-tracker/assets/60846680/5bdc8b45-05a5-4e2c-a561-b7cfafcb51fe)
 
-![image](https://github.com/Vincy-Cheng/nestjs-expense-tracker/assets/60846680/666b21da-dea1-415c-b661-8a52b0a34f1b)
+![image](https://github.com/Vincy-Cheng/nestjs-expense-tracker/assets/60846680/19825f3c-cf36-4925-a35e-6e5ef51f3ff9)
 
-![image](https://github.com/Vincy-Cheng/nestjs-expense-tracker/assets/60846680/067bf0c4-08d5-40e0-bdc5-b33779c1ba62)
+![image](https://github.com/Vincy-Cheng/nestjs-expense-tracker/assets/60846680/11cf1f87-40d3-4f35-8467-0e0fe0720cba)
 
-![image](https://github.com/Vincy-Cheng/nestjs-expense-tracker/assets/60846680/bb2ff007-ec25-45e2-a7e6-7a93cf52b50b)
+![image](https://github.com/Vincy-Cheng/nestjs-expense-tracker/assets/60846680/c724ce8b-57c1-45e6-909d-ab33f3741029)
 
-![image](https://github.com/Vincy-Cheng/nestjs-expense-tracker/assets/60846680/2c2aa917-996b-4f87-bedb-7b737c3a2a1f)
+![image](https://github.com/Vincy-Cheng/nestjs-expense-tracker/assets/60846680/44bc177a-19cb-4b61-bedf-cd1177e68d74)
 
-![image](https://github.com/Vincy-Cheng/nestjs-expense-tracker/assets/60846680/38cda686-3d32-4aa2-998f-addc66126ffa)
+![image](https://github.com/Vincy-Cheng/nestjs-expense-tracker/assets/60846680/a74ab4a2-5a55-47b0-86c8-5ab457791cb5)
 
-![image](https://github.com/Vincy-Cheng/nestjs-expense-tracker/assets/60846680/40a8ccc3-afd9-40ac-bce1-72cf9ef55ec8)
+![image](https://github.com/Vincy-Cheng/nestjs-expense-tracker/assets/60846680/2bad23e1-f054-40b9-a081-40ce8943f584)
 
+![image](https://github.com/Vincy-Cheng/nestjs-expense-tracker/assets/60846680/e3b46ab5-8272-4b00-9e8b-e9411ac1688c)
