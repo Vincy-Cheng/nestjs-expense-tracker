@@ -34,6 +34,7 @@ const CustomTextField = ({
       >
         <input
           value={value}
+          autoComplete="on"
           type={type === 'password' ? (visible ? 'text' : 'password') : type}
           className={clsx(
             'outline-none bg-transparent',
