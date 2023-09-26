@@ -1,73 +1,45 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Expense Tracker (NestJS & ReactJS)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This is expense tracker web application. It is built with NestJS (backend), ReactJS (frontend) and MySQL (database).
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+**Most of the styling and design are refered to [Monny app](https://greamer.com/)**
 
-## Description
+## Features
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+1. Manage expense and income and the same time
+2. User can create multiple wallets
+3. View the expense/income distribution by pie chart, bar chart and line chart.
 
-## Installation
+## Deploy
 
-```bash
-$ npm install
-```
+### Pre-requisite
 
-## Running the app
+Please ensure you have installed the following framework or software
 
-```bash
-# development
-$ npm run start
+1. [NodeJS](https://nodejs.org/en/download/current)
+2. [Docker](https://www.docker.com/)
+3. [NestJS](https://docs.nestjs.com/first-steps) framework
 
-# watch mode
-$ npm run start:dev
+### Steps
 
-# production mode
-$ npm run start:prod
-```
+1. Pull [MySQL image](https://hub.docker.com/_/mysql)
+2. Start the container and create database (You may need to create a user in the MySQL container)
+3. Create a .env file as .env.example and fill them all  
+4. Build the client folder (frontend)
 
-## Test
+    ```npm run build:client```
+5. Start the application
 
-```bash
-# unit tests
-$ npm run test
+    ```npm run start```
 
-# e2e tests
-$ npm run test:e2e
+## Environment variables
 
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+| Name                           | Description                                          |
+|--------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
+| DB_HOST                        | MySQL host. Ignored if `DB_SOCKETPATH` is provided.          |
+| DB_PORT                        | MySQL port, default `3306`. Ignored if `DB_SOCKETPATH` is provided. |
+| DB_DATABASE                    | MySQL database name.                                         |
+| DB_USERNAME                    | MySQL username.                                              |
+| DB_PASSWORD                    | MySQL password. For production, the password should be stored in `GAE_DB_PASSWORD` secret in the same GCP project. |
+| JWT_SECRET                    | Secret for creating and verifying the JWT                                             |
+| JWT_EXPIRATION_TIME                    | Expiration time for the JWT |
