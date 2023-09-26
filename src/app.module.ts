@@ -15,7 +15,8 @@ import { WalletsModule } from './wallets/wallets.module';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'client'),
+      rootPath: join(__dirname, '..', 'client/build'),
+      exclude: ['/v1/*'],
     }),
     ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
