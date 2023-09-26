@@ -59,6 +59,11 @@ export interface IUserInfo {
   categoryOrder: number[];
 }
 
+export interface IUpdatePasswordDto extends IUserInfo {
+  oldPassword: string;
+  newPassword: string;
+}
+
 export interface IGroupByCategoryRecord {
   income: { [key: string]: IRecordWithCategory[] };
   expense: { [key: string]: IRecordWithCategory[] };

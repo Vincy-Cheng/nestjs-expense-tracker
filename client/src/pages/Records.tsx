@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useAppDispatch } from '../hooks';
 import { IoSettingsOutline } from 'react-icons/io5';
 import { ICategory, IRecord } from '../types';
@@ -17,6 +17,10 @@ type Props = {};
 
 const Records = (props: Props) => {
   const [open, setOpen] = useState(false);
+
+  const [selectedDate, setSelectedDate] = useState<string>('');
+
+  const headerRef = useRef<HTMLDivElement>(null);
 
   const [openSelectWallet, setOpenSelectWallet] = useState(false);
 
@@ -90,6 +94,7 @@ const Records = (props: Props) => {
               <CustomAccordion
                 header={
                   <div
+                    ref={headerRef}
                     className="accordion-header flex justify-between items-center"
                     onClick={() => {
                       setEditRecord((prev) => ({ ...prev, date: date }));
@@ -113,7 +118,19 @@ const Records = (props: Props) => {
                 customClass="bg-primary-100 dark:bg-primary-400"
                 triggerUpdate={favWallet}
                 hideArrow
-                focus
+                controlled={{
+                  expanded: selectedDate === date,
+                  handleChange: (
+                    open: boolean,
+                    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+                  ) => {
+                    if (open) {
+                      setSelectedDate('');
+                    } else {
+                      setSelectedDate(date);
+                    }
+                  },
+                }}
               >
                 <div className="space-y-1">
                   {records.map((record) => (

@@ -71,7 +71,7 @@ const CategoryModal = ({
   });
 
   return (
-    <div className="dark:text-info-900">
+    <div className="dark:text-white">
       <CustomModal setOpen={setOpen}>
         <form onSubmit={callback}>
           <div className="text-2xl">

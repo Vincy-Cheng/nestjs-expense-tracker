@@ -19,11 +19,14 @@ import {
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Doughnut } from 'react-chartjs-2';
 import { GroupByScale } from '../common/group-scale.enum';
+import { useDarkMode } from '../provider/DarkModeProvider';
 
 type Props = {};
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 const Home = (props: Props) => {
+  const { isDarkMode } = useDarkMode();
+
   const [open, setOpen] = useState(false);
 
   const [editRecord, setEditRecord] = useState<IRecord>({
@@ -52,6 +55,7 @@ const Home = (props: Props) => {
           font: {
             family: 'Barlow',
           },
+          color: isDarkMode ? 'lightgray' : 'black',
         },
       },
       datalabels: {
@@ -66,6 +70,7 @@ const Home = (props: Props) => {
         anchor: 'end',
         offset: 0,
         align: 'start',
+        color: isDarkMode ? 'lightgray' : 'darkgray',
       },
     },
   };
@@ -111,11 +116,11 @@ const Home = (props: Props) => {
     <div className="select-none">
       <div>Quick Access</div>
       <div className="flex gap-4 ">
-        <div className="bg-primary-200 rounded-lg p-1 w-[300px] h-fit">
+        <div className="bg-primary-200 rounded-lg p-1 w-[300px] h-fit dark:bg-primary-600">
           Distribution of {groupByCategoryRecords.date}
-          {/* <Doughnut options={options} data={data}></Doughnut> */}
+          <Doughnut options={options} data={data}></Doughnut>
         </div>
-        <div className="bg-info-300 rounded-lg p-1 w-[300px] h-fit">
+        <div className="bg-info-300 rounded-lg p-1 w-[300px] h-fit dark:bg-info-700">
           <div className="flex justify-between items-center">
             <p>Latest Record</p>
             <div
@@ -132,7 +137,7 @@ const Home = (props: Props) => {
             {records?.map((record) => (
               <div
                 key={record.id}
-                className="flex items-center justify-between rounded-md bg-primary-100 p-1"
+                className="flex items-center justify-between rounded-md bg-primary-100 p-1 dark:bg-primary-300"
               >
                 <div className="flex items-center gap-2">
                   <div

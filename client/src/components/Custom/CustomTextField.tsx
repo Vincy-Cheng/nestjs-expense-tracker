@@ -10,6 +10,7 @@ type CustomTextFieldProps = {
   visibleControl?: boolean;
   visible?: boolean;
   setVisibleControl?: React.Dispatch<React.SetStateAction<boolean>>;
+  direction?: 'vertical' | 'horizontal';
 };
 
 const CustomTextField = ({
@@ -20,9 +21,10 @@ const CustomTextField = ({
   visibleControl,
   visible,
   setVisibleControl,
+  direction,
 }: CustomTextFieldProps) => {
   return (
-    <div className="flex flex-col gap-2">
+    <div className={clsx('flex gap-2', direction ? '' : 'flex-col')}>
       {name && <div>{name}: </div>}
 
       <div

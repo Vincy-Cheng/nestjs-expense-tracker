@@ -11,7 +11,14 @@ type CustomAccordionProps = {
   triggerUpdate?: any;
   arrowPosition?: 'Left' | 'Right';
   hideArrow?: boolean;
-  focus?: boolean;
+
+  controlled?: {
+    expanded: boolean;
+    handleChange: (
+      open: boolean,
+      e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    ) => void;
+  };
 };
 
 const CustomAccordion = ({
@@ -22,42 +29,29 @@ const CustomAccordion = ({
   triggerUpdate,
   arrowPosition,
   hideArrow,
-  focus,
+  controlled,
 }: CustomAccordionProps) => {
   const [open, setOpen] = useState<boolean>(false);
 
   const [contentHeight, setContentHeight] = useState(0);
 
   const childRef = useRef<HTMLDivElement>(null);
-  const accordionRef = useRef<HTMLDivElement>(null);
-
-  const handleClickOutside = (event: React.MouseEvent) => {
-    if (accordionRef.current) {
-      if (focus) {
-        if (accordionRef.current.contains(event.target as Node)) {
-          setOpen((prev) => !prev);
-        } else {
-          setOpen(false);
-        }
-      } else {
-        if (accordionRef.current.contains(event.target as Node)) {
-          setOpen((prev) => !prev);
-        }
-      }
-    }
-  };
-
-  useOutsideAlerter(handleClickOutside);
 
   useEffect(() => {
+    if (controlled) {
+      if (controlled.expanded) {
+        setOpen(true);
+      } else {
+        setOpen(false);
+      }
+    }
     if (childRef.current) {
       setContentHeight(childRef.current?.scrollHeight);
     }
-  }, [triggerUpdate, open]);
+  }, [triggerUpdate, open, controlled?.expanded]);
 
   return (
     <div
-      ref={accordionRef}
       className={clsx(
         'accordion p-2 rounded w-full shadow flex flex-col',
         customClass,
@@ -68,10 +62,15 @@ const CustomAccordion = ({
           'flex w-full justify-between cursor-pointer items-center',
           arrowPosition === 'Right' ? 'flex-row-reverse' : '',
         )}
+        onClick={(e) => {
+          if (!controlled) {
+            setOpen((prev) => !prev);
+          } else {
+            controlled.handleChange(open, e);
+          }
+        }}
       >
-        <span className="flex-1" ref={accordionRef}>
-          {header}
-        </span>
+        <span className="flex-1">{header}</span>
 
         <BsChevronDown
           className={clsx(

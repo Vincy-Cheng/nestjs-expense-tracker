@@ -12,7 +12,7 @@ import {
   LineElement,
   PointElement,
 } from 'chart.js';
-import { Bar, Line } from 'react-chartjs-2';
+
 import { useState } from 'react';
 import CategorySelector from '../record/CategorySelector';
 import * as _ from 'lodash';
@@ -25,6 +25,9 @@ import { fetchCategories } from '../../apis/category';
 import { ICategory } from '../../types';
 import CustomSelector from '../Custom/CustomSelector';
 import CoreChart from './CoreChart';
+import { useDarkMode } from '../../provider/DarkModeProvider';
+import { displayDate } from '../../common/format-date';
+import { GroupByScale } from '../../common/group-scale.enum';
 
 type Props = {};
 
@@ -41,6 +44,8 @@ ChartJS.register(
   Annotation,
 );
 const Trend = (props: Props) => {
+  const { isDarkMode } = useDarkMode();
+
   const [categoryType, setCategoryType] = useState<
     'expense' | 'income' | 'all'
   >('expense');
@@ -78,7 +83,7 @@ const Trend = (props: Props) => {
         display: false,
       },
       datalabels: {
-        color: 'white',
+        color: isDarkMode ? 'gray' : 'darkgray',
         display: chartType === 'bar',
       },
       annotation: {
@@ -117,12 +122,15 @@ const Trend = (props: Props) => {
         ticks: {
           sampleSize: 2,
         },
+        grid: { color: isDarkMode ? 'gray' : 'lightgray' },
         beginAtZero: true,
       },
     },
   };
 
-  const labels = value.map((year) => year.date);
+  const labels = value.map((year) =>
+    displayDate(year.date, GroupByScale.MONTH),
+  );
   const data: ChartData = {
     labels,
     datasets: [
@@ -187,7 +195,10 @@ const Trend = (props: Props) => {
 
       <div className="py-2 flex gap-2 items-end">
         <CategorySelector
-          color={{ selected: '#C0E2E7', background: '#DEF0F2' }}
+          color={{
+            selected: isDarkMode ? '#409CAA' : '#C0E2E7',
+            background: isDarkMode ? '#204E55' : '#DEF0F2',
+          }}
           options={['bar', 'line']}
           value={chartType}
           toggle={(type) => {

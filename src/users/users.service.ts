@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UpdateCategoryOrderDto } from './dto/update-category-order';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 
 @Injectable()
 export class UsersService {
@@ -51,7 +52,25 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+    return await this.userRepository.save({
+      id: id,
+      username: updateUserDto.username,
+      email: updateUserDto.email,
+    });
+  }
+
+  async updatePassword(user: User, updatePasswordDto: UpdatePasswordDto) {
+    if (!(await bcrypt.compare(updatePasswordDto.oldPassword, user.password))) {
+      throw new UnauthorizedException('Old password does not match');
+    }
+
+    const salt = await bcrypt.genSalt();
+    const hash = await bcrypt.hash(updatePasswordDto.newPassword, salt);
+
+    return await this.userRepository.save({
+      id: user.id,
+      password: hash,
+    });
   }
 
   async updateCategoryOrder(updateCategoryOrderDto: UpdateCategoryOrderDto) {

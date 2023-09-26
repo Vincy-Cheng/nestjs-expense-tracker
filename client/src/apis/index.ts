@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { NewUser } from '../pages/RegisterPage';
-import { IUser, IUserInfo, LoginResponse } from '../types';
+import { IUpdatePasswordDto, IUser, IUserInfo, LoginResponse } from '../types';
 
 export const Axios = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
@@ -23,6 +23,30 @@ export async function register(newUser: NewUser): Promise<IUserInfo> {
 
 export async function profile(id: number): Promise<IUserInfo> {
   const res = await Axios.get(`/v1/users/${id}`);
+
+  return res.data;
+}
+
+export async function updateUser(updateInfo: {
+  user: IUserInfo;
+  id: number;
+}): Promise<IUserInfo> {
+  const res = await Axios.patch(`/v1/users/${updateInfo.id}`, {
+    ...updateInfo.user,
+  });
+
+  return res.data;
+}
+
+export async function updatePassword(
+  updatePassword: IUpdatePasswordDto,
+): Promise<IUserInfo> {
+  const res = await Axios.patch(
+    `/v1/users/${updatePassword.id}/update-password`,
+    {
+      ...updatePassword,
+    },
+  );
 
   return res.data;
 }

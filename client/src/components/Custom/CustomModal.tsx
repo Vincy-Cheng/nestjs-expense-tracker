@@ -10,6 +10,7 @@ type CustomModalProps = {
 
 const CustomModal = ({ children, setOpen, size }: CustomModalProps) => {
   const modalContentRef = useRef<HTMLDivElement>(null);
+
   return (
     <div
       className="modal fixed w-full h-full bg-zinc-900 bg-opacity-40 overflow-auto top-0 left-0 z-50 flex items-center p-5"

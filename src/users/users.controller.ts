@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   UnauthorizedException,
   UseGuards,
   ClassSerializerInterceptor,
@@ -19,6 +18,8 @@ import { CreateCategoryDto } from '../categories/dto/create-category.dto';
 import { IconName, CategoryType } from '../enums';
 import { CategoriesService } from '../categories/categories.service';
 import { UpdateCategoryOrderDto } from './dto/update-category-order';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 
 @ApiTags('User')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -141,18 +142,48 @@ export class UsersController {
     return await this.usersService.findById(+id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id/category-order')
-  async update(
+  async updateCategoryOrder(
     @Param('id') id: number,
     @Body() updateCategoryOrder: UpdateCategoryOrderDto,
   ) {
-    const user = await this.usersService.findById(updateCategoryOrder.id);
+    const user = await this.usersService.findById(id);
     if (!user) {
       throw new UnauthorizedException(
         'Unauthorized to update the order of category.',
       );
     }
     return await this.usersService.updateCategoryOrder(updateCategoryOrder);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
+    const user = await this.usersService.findById(id);
+    if (!user) {
+      throw new UnauthorizedException(
+        'Unauthorized to update the order of category.',
+      );
+    }
+
+    return await this.usersService.update(user.id, updateUserDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/update-password')
+  async updatePassword(
+    @Param('id') id: number,
+    @Body() updatePasswordDto: UpdatePasswordDto,
+  ) {
+    const user = await this.usersService.findById(id);
+    if (!user) {
+      throw new UnauthorizedException(
+        'Unauthorized to update the order of category.',
+      );
+    }
+
+    return await this.usersService.updatePassword(user, updatePasswordDto);
   }
 
   // @Delete(':id')
