@@ -1,6 +1,6 @@
 # Expense Tracker (NestJS & ReactJS)
 
-This is expense tracker web application. It is built with NestJS (backend), ReactJS (frontend) and MySQL (database).
+This is expense tracker web application. It is built with NestJS (backend), ReactJS (frontend) and MySQL (database). It had used some popular library like React-Toastify (message alert), dnd-kit (drag and drop), React Query (manage the API calling) and Chart.js.
 
 **Most of the styling and design are referred to [Monny app](https://greamer.com/)**
 
@@ -45,6 +45,7 @@ Please ensure you have installed the following framework or software
 | JWT_EXPIRATION_TIME                    | Expiration time for the JWT |
 
 ## Screebshots
+
 ![image](https://github.com/Vincy-Cheng/nestjs-expense-tracker/assets/60846680/82505857-7261-480e-b6c7-6c939f0aa8f0)
 
 ![image](https://github.com/Vincy-Cheng/nestjs-expense-tracker/assets/60846680/65fe3aeb-e03d-4804-a537-5096ff8a5533)
