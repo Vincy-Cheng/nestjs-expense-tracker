@@ -1,14 +1,13 @@
-import jwt_decode from 'jwt-decode';
 import BackButton from '../components/BackButton';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { profile, updatePassword } from '../apis';
-import { useAppSelector } from '../hooks';
 import { IUpdatePasswordDto, IUserInfo } from '../types';
 import CustomTextField from '../components/Custom/CustomTextField';
 import { useState } from 'react';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { queryClient } from '../App';
+import { useAuth } from '../provider/AuthProvider';
 
 type Props = {};
 
@@ -17,17 +16,10 @@ interface IConfirmPassword extends IUpdatePasswordDto {
 }
 
 const UpdatePassword = (props: Props) => {
-  const { access_token } = useAppSelector((state) => state.user);
+  const { userId } = useAuth();
 
-  const decoded = jwt_decode<{
-    username: string;
-    sub: number;
-    iat: number;
-    exp: number;
-  }>(access_token ?? sessionStorage.getItem('access_token') ?? '');
-
-  const { data: user } = useQuery<IUserInfo>(['user', decoded.sub], () =>
-    profile(decoded.sub),
+  const { data: user } = useQuery<IUserInfo>(['user', userId], () =>
+    profile(userId!),
   );
 
   const [password, setPassword] = useState<IConfirmPassword>({
@@ -59,7 +51,7 @@ const UpdatePassword = (props: Props) => {
 
       if (typedContext.previousUser) {
         queryClient.setQueryData<IUserInfo>(
-          ['users'],
+          ['user'],
           typedContext.previousUser,
         );
       }

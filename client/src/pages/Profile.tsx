@@ -1,29 +1,21 @@
-import jwt_decode from 'jwt-decode';
 import BackButton from '../components/BackButton';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { profile, updateUser } from '../apis';
-import { IUserInfo, IWallet } from '../types';
-import { useAppSelector } from '../hooks';
+import { IUserInfo } from '../types';
 import { useState } from 'react';
 import CustomTextField from '../components/Custom/CustomTextField';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { queryClient } from '../App';
+import { useAuth } from '../provider/AuthProvider';
 
 type Props = {};
 
 const Profile = (props: Props) => {
-  const { access_token } = useAppSelector((state) => state.user);
+  const { userId } = useAuth();
 
-  const decoded = jwt_decode<{
-    username: string;
-    sub: number;
-    iat: number;
-    exp: number;
-  }>(access_token ?? sessionStorage.getItem('access_token') ?? '');
-
-  const { data: user } = useQuery<IUserInfo>(['user', decoded.sub], () =>
-    profile(decoded.sub),
+  const { data: user } = useQuery<IUserInfo>(['user', userId], () =>
+    profile(userId!),
   );
   const [edit, setEdit] = useState<boolean>(false);
 
@@ -39,7 +31,7 @@ const Profile = (props: Props) => {
   >(updateUser, {
     onMutate: async ({ user }) => {
       // Optimistically update the cache
-      queryClient.setQueryData<IUserInfo>(['users'], (oldData) => {
+      queryClient.setQueryData<IUserInfo>(['user'], (oldData) => {
         if (oldData) {
           oldData.username = user.username;
           oldData.email = user.email;
@@ -47,7 +39,7 @@ const Profile = (props: Props) => {
         return oldData;
       });
       return {
-        previousWallets: queryClient.getQueryData<IUserInfo>(['users']),
+        previousWallets: queryClient.getQueryData<IUserInfo>(['user']),
       };
     },
     onError: (error, variables, context) => {
@@ -58,7 +50,7 @@ const Profile = (props: Props) => {
 
       if (typedContext.previousUser) {
         queryClient.setQueryData<IUserInfo>(
-          ['users'],
+          ['user'],
           typedContext.previousUser,
         );
       }

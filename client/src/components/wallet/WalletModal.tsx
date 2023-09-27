@@ -7,9 +7,8 @@ import { currencyList } from '../../utils';
 import CustomSelector from '../Custom/CustomSelector';
 import CustomTextField from '../Custom/CustomTextField';
 import { AxiosError } from 'axios';
-import { useAppSelector } from '../../hooks';
-import jwt_decode from 'jwt-decode';
 import { toast } from 'react-toastify';
+import { useAuth } from '../../provider/AuthProvider';
 
 type WalletModalProps = {
   type: 'Create' | 'Edit' | 'Delete';
@@ -26,14 +25,7 @@ const WalletModal = ({
 }: WalletModalProps) => {
   const queryClient = useQueryClient();
 
-  const { access_token } = useAppSelector((state) => state.user);
-
-  const decoded = jwt_decode<{
-    username: string;
-    sub: number;
-    iat: number;
-    exp: number;
-  }>(access_token ?? sessionStorage.getItem('access_token') ?? '');
+  const { userId } = useAuth();
 
   // Create wallet mutation
   const createWalletMutation = useMutation<
@@ -143,7 +135,7 @@ const WalletModal = ({
         // Call the mutation to create the wallet
         await createWalletMutation.mutateAsync({
           ...wallet,
-          userId: decoded.sub,
+          userId,
         });
       } else {
         await updateWalletMutation.mutateAsync({ ...editWallet });

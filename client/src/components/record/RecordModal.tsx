@@ -16,9 +16,8 @@ import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { fetchCategories } from '../../apis/category';
-import jwt_decode from 'jwt-decode';
 import { profile } from '../../apis';
-import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useAppDispatch } from '../../hooks';
 import { ECategoryType } from '../../common/category-type';
 import clsx from 'clsx';
 import CategorySelector from './CategorySelector';
@@ -28,6 +27,7 @@ import DatePicker from 'react-datepicker';
 import CustomSelector from '../Custom/CustomSelector';
 import { updateFavWallet } from '../../store/walletSlice';
 import { useRecord } from '../../provider/RecordDataProvider';
+import { useAuth } from '../../provider/AuthProvider';
 
 type RecordModalProps = {
   wallet: IWallet | undefined;
@@ -44,6 +44,8 @@ const RecordModal = ({
   setEditRecord,
   recordCategory,
 }: RecordModalProps) => {
+  const { userId } = useAuth();
+
   const [value, setValue] = useState<string>(
     editRecord.price === 0 ? '' : editRecord.price.toString(),
   );
@@ -60,24 +62,15 @@ const RecordModal = ({
 
   const [openDelete, setOpenDelete] = useState<boolean>(false);
 
-  const { access_token } = useAppSelector((state) => state.user);
-
   const queryClient = useQueryClient();
-
-  const decoded = jwt_decode<{
-    username: string;
-    sub: number;
-    iat: number;
-    exp: number;
-  }>(access_token ?? sessionStorage.getItem('access_token') ?? '');
 
   const { data: categories } = useQuery<ICategory[]>(
     ['categories'],
     fetchCategories,
   );
 
-  const { data: user } = useQuery<IUserInfo>(['user', decoded.sub], () =>
-    profile(decoded.sub),
+  const { data: user } = useQuery<IUserInfo>(['user', userId], () =>
+    profile(userId!),
   );
 
   const { wallets } = useRecord();

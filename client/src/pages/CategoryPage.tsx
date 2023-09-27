@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
 import BackButton from '../components/BackButton';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import jwt_decode from 'jwt-decode';
 import { addCategory, fetchCategories, updateCategory } from '../apis/category';
-import { useAppSelector } from '../hooks';
 import { ICategory, ICreateCategory, IUserInfo } from '../types';
 import { profile, updateCategoryOrder } from '../apis';
 import {
@@ -31,13 +29,14 @@ import { AiOutlinePlus } from 'react-icons/ai';
 import { ECategoryType } from '../common/category-type';
 import CategoryModal from '../components/category/CategoryModal';
 import { EIconName } from '../common/icon-name.enum';
+import { useAuth } from '../provider/AuthProvider';
 
 type Props = {};
 
 const CategoryPage = (props: Props) => {
   const queryClient = useQueryClient();
 
-  const { access_token } = useAppSelector((state) => state.user);
+  const { userId } = useAuth();
 
   const [sortedCategories, setSortedCategories] = useState<ICategory[]>([]);
 
@@ -53,20 +52,13 @@ const CategoryPage = (props: Props) => {
     icon: EIconName.MONEY,
   });
 
-  const decoded = jwt_decode<{
-    username: string;
-    sub: number;
-    iat: number;
-    exp: number;
-  }>(access_token ?? sessionStorage.getItem('access_token') ?? '');
-
   const { data: categories } = useQuery<ICategory[]>(
     ['categories'],
     fetchCategories,
   );
 
-  const { data: user } = useQuery<IUserInfo>(['user', decoded.sub], () =>
-    profile(decoded.sub),
+  const { data: user } = useQuery<IUserInfo>(['user', userId], () =>
+    profile(userId!),
   );
 
   // Update category order mutation
