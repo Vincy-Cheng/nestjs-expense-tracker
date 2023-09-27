@@ -64,6 +64,7 @@ export const RecordDateProvider = ({ children }: any) => {
 
   const { id } = useAppSelector((state) => state.wallet);
 
+  // Format the date in different format
   const dateGrouping = (scale: GroupByScale, value: IRecordWithCategory[]) => {
     let res;
     switch (scale) {
@@ -106,6 +107,7 @@ export const RecordDateProvider = ({ children }: any) => {
     return res;
   };
 
+  // Grouping record by category
   const categoryGrouping = (value: [string, IRecordWithCategory[]][]) => {
     return value.map((groupRecord) => {
       const tmpGrouping = groupRecord[1]?.reduce(
@@ -125,6 +127,7 @@ export const RecordDateProvider = ({ children }: any) => {
     });
   };
 
+  // Filter the records by date
   const filterByScale = (
     value: {
       date: string;
@@ -156,6 +159,68 @@ export const RecordDateProvider = ({ children }: any) => {
 
     return { incomeByDate, expenseByDate, filteredResult: tmpFilter };
   };
+
+  const updateGroupingScale = (value: GroupByScale, reset?: boolean) => {
+    if (reset) {
+      setCurrentDate(0);
+    }
+    setGroupBy(value);
+  };
+
+  const updateCurrentDate = (type: 'plus' | 'minus') => {
+    setCurrentDate((prev) => (type === 'plus' ? prev + 1 : prev - 1));
+  };
+
+  // Filter the records by current year and use Month for grouping
+  const filterForTrend = (currentYear: number, category?: ICategory) => {
+    const now = DateTime.now().plus({
+      year: currentYear,
+    });
+    const groupedDateRecord = dateGrouping(
+      GroupByScale.MONTH,
+      favWallet?.records ?? [],
+    );
+
+    const groupDateRecordByCategory = categoryGrouping(groupedDateRecord);
+
+    return groupDateRecordByCategory
+      .filter(
+        (gbcr) => DateTime.fromFormat(gbcr.date, 'yyyyLL').year === now.year,
+      )
+      .map((record) => {
+        const expense = Object.values(record.records.expense).reduce(
+          (acc, cur) => {
+            return (
+              acc +
+              cur.reduce((a, c) => {
+                if (category && c.category.name !== category.name) return a;
+                return a + Number(c.price);
+              }, 0)
+            );
+          },
+          0,
+        );
+        const income = Object.values(record.records.income).reduce(
+          (acc, cur) => {
+            return (
+              acc +
+              cur.reduce((a, c) => {
+                if (category && c.category.name !== category.name) return a;
+                return a + Number(c.price);
+              }, 0)
+            );
+          },
+          0,
+        );
+
+        return {
+          date: record.date,
+          income,
+          expense,
+        };
+      });
+  };
+
   const { favWallet, income, expense, total, dateRecords } = useMemo(() => {
     let tmpWallet;
 
@@ -166,20 +231,18 @@ export const RecordDateProvider = ({ children }: any) => {
         tmpWallet = wallets.find((w) => w.id === id);
       }
     }
-    const walletExpense =
-      tmpWallet?.records?.reduce((i, w) => {
-        if (w.category.type === 'expense') {
-          i -= Number(w.price);
-        }
-        return i;
-      }, 0) ?? 0;
-    const walletIncome =
-      tmpWallet?.records?.reduce((i, w) => {
+
+    const { walletExpense, walletIncome } = tmpWallet?.records?.reduce(
+      (i, w) => {
         if (w.category.type === 'income') {
-          i += Number(w.price);
+          i.walletIncome += Number(w.price);
+        } else {
+          i.walletExpense += Number(w.price);
         }
         return i;
-      }, 0) ?? 0;
+      },
+      { walletExpense: 0, walletIncome: 0 },
+    ) ?? { walletExpense: 0, walletIncome: 0 };
 
     const groupedDates = _.groupBy(tmpWallet?.records, 'date');
 
@@ -242,66 +305,7 @@ export const RecordDateProvider = ({ children }: any) => {
                 records: [],
               },
       };
-    }, [groupByCategoryAndDateRecords, groupBy, currentDate]);
-
-  const updateGroupingScale = (value: GroupByScale, reset?: boolean) => {
-    if (reset) {
-      setCurrentDate(0);
-    }
-    setGroupBy(value);
-  };
-
-  const updateCurrentDate = (type: 'plus' | 'minus') => {
-    setCurrentDate((prev) => (type === 'plus' ? prev + 1 : prev - 1));
-  };
-
-  const filterForTrend = (currentYear: number, category?: ICategory) => {
-    const now = DateTime.now().plus({
-      year: currentYear,
-    });
-    const a = dateGrouping(GroupByScale.MONTH, favWallet?.records ?? []);
-
-    const b = categoryGrouping(a);
-
-    const tmpFilter = b
-      .filter(
-        (gbcr) => DateTime.fromFormat(gbcr.date, 'yyyyLL').year === now.year,
-      )
-      .map((record) => {
-        const expense = Object.values(record.records.expense).reduce(
-          (acc, cur) => {
-            return (
-              acc +
-              cur.reduce((a, c) => {
-                if (category && c.category.name !== category.name) return a;
-                return a + Number(c.price);
-              }, 0)
-            );
-          },
-          0,
-        );
-        const income = Object.values(record.records.income).reduce(
-          (acc, cur) => {
-            return (
-              acc +
-              cur.reduce((a, c) => {
-                if (category && c.category.name !== category.name) return a;
-                return a + Number(c.price);
-              }, 0)
-            );
-          },
-          0,
-        );
-
-        return {
-          date: record.date,
-          income,
-          expense,
-        };
-      });
-
-    return tmpFilter;
-  };
+    }, [groupByCategoryAndDateRecords, groupBy, currentDate, income, expense]);
 
   return (
     <RecordDataContext.Provider
