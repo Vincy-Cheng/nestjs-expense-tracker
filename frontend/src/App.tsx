@@ -1,18 +1,19 @@
-import { GitHubBanner, Refine, WelcomePage } from "@refinedev/core";
-import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
-import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
+import { GitHubBanner, Refine, WelcomePage } from '@refinedev/core';
+import { DevtoolsPanel, DevtoolsProvider } from '@refinedev/devtools';
+import { RefineKbar, RefineKbarProvider } from '@refinedev/kbar';
 
-import nestjsxCrudDataProvider from "@refinedev/nestjsx-crud";
+import nestjsxCrudDataProvider from '@refinedev/nestjsx-crud';
 import routerBindings, {
   DocumentTitleHandler,
   UnsavedChangesNotifier,
-} from "@refinedev/react-router-v6";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import "./App.css";
-import { authProvider } from "./authProvider";
+} from '@refinedev/react-router-v6';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import './App.css';
+import { authProvider } from './authProvider';
+import Home from './pages/home';
 
 function App() {
-  const API_URL = "https://api.nestjsx-crud.refine.dev";
+  const API_URL = 'http://localhost:5000/api';
   const dataProvider = nestjsxCrudDataProvider(API_URL);
 
   return (
@@ -27,11 +28,11 @@ function App() {
             options={{
               syncWithLocation: true,
               warnWhenUnsavedChanges: true,
-              projectId: "ZeZmaZ-cpl7oS-HeyuDn",
+              projectId: 'ZeZmaZ-cpl7oS-HeyuDn',
             }}
           >
             <Routes>
-              <Route index element={<WelcomePage />} />
+              <Route index element={<Home />} />
             </Routes>
             <RefineKbar />
             <UnsavedChangesNotifier />
