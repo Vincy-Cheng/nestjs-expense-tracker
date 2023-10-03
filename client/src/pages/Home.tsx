@@ -118,7 +118,14 @@ const Home = (props: Props) => {
       <div className="flex gap-4 ">
         <div className="bg-primary-200 rounded-lg p-1 w-[300px] h-fit dark:bg-primary-600">
           Distribution of {groupByCategoryRecords.date}
-          <Doughnut options={options} data={data}></Doughnut>
+          {Object.keys(groupByCategoryRecords.records?.expense ?? {}).length ===
+            0 &&
+          Object.keys(groupByCategoryRecords.records?.income ?? {}).length ===
+            0 ? (
+            <div>No record for {groupByCategoryRecords.date}</div>
+          ) : (
+            <Doughnut options={options} data={data}></Doughnut>
+          )}
         </div>
         <div className="bg-info-300 rounded-lg p-1 w-[300px] h-fit dark:bg-info-700">
           <div className="flex justify-between items-center">

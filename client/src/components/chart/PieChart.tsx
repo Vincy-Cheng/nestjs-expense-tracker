@@ -120,8 +120,7 @@ const PieChart = (props: Props) => {
             </div>
           </div>
         </div>
-
-        <Doughnut
+        {Object.keys(groupByCategoryRecords.records?.expense ?? {}).length === 0 && Object.keys(groupByCategoryRecords.records?.income ?? {}).length === 0 ? (<div>No record for {groupByCategoryRecords.date}</div>):<Doughnut
           options={{
             cutout: '30%',
             plugins: {
@@ -148,7 +147,9 @@ const PieChart = (props: Props) => {
             },
           }}
           data={data}
-        ></Doughnut>
+        ></Doughnut>}
+          
+        
       </div>
       <div
         className={clsx(
