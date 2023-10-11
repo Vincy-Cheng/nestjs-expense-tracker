@@ -5,9 +5,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Record } from './entities/record.entity';
 import { UsersModule } from '../users/users.module';
 import { WalletsModule } from '../wallets/wallets.module';
+import { CategoriesModule } from '../categories/categories.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Record]), UsersModule, WalletsModule],
+  imports: [
+    TypeOrmModule.forFeature([Record]),
+    UsersModule,
+    WalletsModule,
+    CategoriesModule,
+  ],
   controllers: [RecordsController],
   providers: [RecordsService],
 })

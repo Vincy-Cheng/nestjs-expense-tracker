@@ -20,6 +20,7 @@ import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UsersService } from '../users/users.service';
 import { WalletsService } from '../wallets/wallets.service';
+import { CategoriesService } from '../categories/categories.service';
 
 @ApiTags('Record')
 @ApiBearerAuth()
@@ -30,7 +31,8 @@ export class RecordsController {
   constructor(
     private readonly recordsService: RecordsService,
     private readonly usersService: UsersService,
-    private readonly walletService: WalletsService,
+    private readonly walletsService: WalletsService,
+    private readonly categoriesService: CategoriesService,
   ) {}
 
   @Post()
@@ -46,7 +48,7 @@ export class RecordsController {
 
   @Get('/wallet/:id')
   async findAll(@Param('id') id: number) {
-    const wallet = await this.walletService.findOne(id);
+    const wallet = await this.walletsService.findOne(id);
 
     if (!wallet) {
       throw new BadRequestException('Wallet does not exist');
@@ -56,7 +58,7 @@ export class RecordsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number) {
     return this.recordsService.findOne(+id);
   }
 
@@ -75,7 +77,28 @@ export class RecordsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.recordsService.remove(+id);
+  async remove(@Param('id') id: number) {
+    return await this.recordsService.remove(+id);
+  }
+
+  @Get('/category/:categoryId/remarks')
+  async getRemarks(@Param('categoryId') categoryId: number) {
+    // Get all the remarks of that category
+    const category = await this.categoriesService.findOne(categoryId);
+
+    if (!category) {
+      throw new BadRequestException('The category does not exist');
+    }
+
+    const records = await this.recordsService.getRemarks(category);
+    return records.reduce((remarks: string[], record) => {
+      if (
+        record.remarks &&
+        !remarks.find((remark) => remark === record.remarks)
+      ) {
+        remarks.push(record.remarks);
+      }
+      return remarks;
+    }, []);
   }
 }

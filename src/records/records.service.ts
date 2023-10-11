@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Record } from './entities/record.entity';
 import { Repository } from 'typeorm';
 import { Wallet } from '../wallets/entities/wallet.entity';
+import { Category } from '../categories/entities/category.entity';
 
 @Injectable()
 export class RecordsService {
@@ -52,5 +53,16 @@ export class RecordsService {
 
   async remove(id: number) {
     return await this.recordRepository.softDelete(id);
+  }
+
+  async getRemarks(category: Category) {
+    return await this.recordRepository.find({
+      relations: { category: true },
+      where: {
+        category: {
+          id: category.id,
+        },
+      },
+    });
   }
 }
