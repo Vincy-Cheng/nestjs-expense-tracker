@@ -36,7 +36,7 @@ export class CategoriesService {
   }
 
   async findOne(id: number) {
-    return await this.categoryRepository.find({
+    return await this.categoryRepository.findOne({
       where: {
         id,
       },

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import CustomModal from '../Custom/CustomModal';
 import {
   ICategory,
@@ -11,7 +11,12 @@ import {
 import Calculator from '../calculator/Calculator';
 import { evaluate } from 'mathjs';
 import CustomTextField from '../Custom/CustomTextField';
-import { createRecord, deleteRecord, updateRecord } from '../../apis/record';
+import {
+  createRecord,
+  deleteRecord,
+  getRemarks,
+  updateRecord,
+} from '../../apis/record';
 import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
@@ -73,7 +78,15 @@ const RecordModal = ({
     profile(userId!),
   );
 
+  const { data: remarks } = useQuery<string[]>(
+    ['remarks', selectedCategory?.id],
+    () => getRemarks(selectedCategory?.id!),
+  );
+
   const { wallets } = useRecord();
+
+  const datePickerRef = useRef<any>(null);
+  const textInputRef = useRef<HTMLDivElement>(null);
 
   const updateCalc = (key: string) => {
     if (key === '=') {
@@ -267,6 +280,7 @@ const RecordModal = ({
     type: 'Once' | 'Continue',
   ) => {
     event.preventDefault();
+
     try {
       if (!editRecord.price) {
         return toast('Please input the expense/income', { type: 'warning' });
@@ -301,6 +315,12 @@ const RecordModal = ({
 
   useEffect(() => {
     const keyListener = (event: KeyboardEvent) => {
+      if (
+        textInputRef.current?.contains(document.activeElement) ||
+        datePickerRef.current.input.contains(document.activeElement)
+      ) {
+        return;
+      }
       const reg = /\d|\/|\*|-|\+|\./g;
 
       if (event.key === 'Backspace') {
@@ -447,6 +467,7 @@ const RecordModal = ({
                 </div>
               </div>
               <DatePicker
+                ref={datePickerRef}
                 onChange={(e) => {
                   if (e) {
                     setEditRecord((prev) => {
@@ -480,7 +501,7 @@ const RecordModal = ({
               }}
             />
           </div>
-          <div className="py-2">
+          <div className="py-2" ref={textInputRef}>
             <CustomTextField
               type={'text'}
               name="Remarks"
@@ -494,6 +515,23 @@ const RecordModal = ({
                 });
               }}
             />
+            <div className="text-sm pt-2 flex flex-wrap gap-2">
+              {remarks?.map((remark) => (
+                <span
+                  className="bg-info-100 rounded-lg p-1 cursor-pointer hover:bg-info-200"
+                  onClick={() => {
+                    setEditRecord((prev) => {
+                      return {
+                        ...prev,
+                        remarks: remark,
+                      };
+                    });
+                  }}
+                >
+                  {remark}
+                </span>
+              ))}
+            </div>
           </div>
 
           {/* Submit button and choose continue or close */}

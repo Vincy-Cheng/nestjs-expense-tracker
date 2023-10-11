@@ -38,3 +38,10 @@ export async function deleteRecord(id: number) {
 
   return response.data;
 }
+
+export async function getRemarks(categoryId: number): Promise<string[]> {
+  const url = `v1/records/category/${categoryId}/remarks`;
+  const response = await Axios.get(url);
+
+  return response.data;
+}

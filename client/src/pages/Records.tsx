@@ -156,9 +156,10 @@ const Records = (props: Props) => {
                         >
                           <IconSelector name={record.category.icon} />
                         </div>
-
-                        <span>{record.category.name}</span>
-                        <span>{record.remarks}</span>
+                        <span className="flex items-baseline gap-2">
+                          <span>{record.category.name}</span>
+                          <span className="text-sm">{record.remarks}</span>
+                        </span>
                       </div>
 
                       <span>
