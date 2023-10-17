@@ -1,11 +1,18 @@
 import { AuthBindings } from '@refinedev/core';
+import jwt_decode from 'jwt-decode';
+import { Axios, signIn } from './apis';
+import { IUser } from './types';
 
 export const TOKEN_KEY = 'refine-auth';
 
 export const authProvider: AuthBindings = {
-  login: async ({ username, email, password }) => {
-    if ((username || email) && password) {
-      localStorage.setItem(TOKEN_KEY, username);
+  login: async (user: IUser) => {
+    if (user) {
+      const { access_token } = await signIn(user);
+      sessionStorage.setItem('access_token', access_token);
+
+      Axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
+
       return {
         success: true,
         redirectTo: '/',
@@ -21,22 +28,29 @@ export const authProvider: AuthBindings = {
     };
   },
   logout: async () => {
-    localStorage.removeItem(TOKEN_KEY);
+    delete Axios.defaults.headers.common['Authorization'];
+    sessionStorage.removeItem('access_token');
     return {
       success: true,
       redirectTo: '/login',
     };
   },
   check: async () => {
-    const token = localStorage.getItem(TOKEN_KEY);
-    return {
-      authenticated: true,
-    };
     const accessToken = sessionStorage.getItem('access_token');
-    if (token) {
-      return {
-        authenticated: true,
-      };
+    if (accessToken) {
+      try {
+        const decoded = jwt_decode(accessToken);
+        if (decoded) {
+          return {
+            authenticated: true,
+          };
+        }
+      } catch (error) {
+        return {
+          authenticated: false,
+          redirectTo: '/login',
+        };
+      }
     }
 
     return {
@@ -46,14 +60,18 @@ export const authProvider: AuthBindings = {
   },
   getPermissions: async () => null,
   getIdentity: async () => {
-    console.log('auth');
-    const token = localStorage.getItem(TOKEN_KEY);
-    if (token) {
-      return {
-        id: 1,
-        name: 'John Doe',
-        avatar: 'https://i.pravatar.cc/300',
-      };
+    const accessToken = sessionStorage.getItem('access_token');
+    if (accessToken) {
+      try {
+        const decoded = jwt_decode(accessToken);
+        if (decoded) {
+          return {
+            ...decoded,
+          };
+        }
+      } catch (error) {
+        return null;
+      }
     }
     return null;
   },
