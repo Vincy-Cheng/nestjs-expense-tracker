@@ -79,8 +79,16 @@ function App() {
               >
                 <Route path="/login" element={<Login />} />
               </Route>
-              <Route path="/register" element={<Register />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route
+                element={
+                  <Layout>
+                    <Outlet />
+                  </Layout>
+                }
+              >
+                <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+              </Route>
             </Routes>
             <RefineKbar />
             <UnsavedChangesNotifier />
