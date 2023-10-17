@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { NewUser } from '../pages/RegisterPage';
 import { IUpdatePasswordDto, IUser, IUserInfo, LoginResponse } from '../types';
+import { NewUser } from '../pages/register';
 
 export const Axios = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
