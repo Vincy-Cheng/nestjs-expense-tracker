@@ -2,6 +2,7 @@ import { AuthBindings } from '@refinedev/core';
 import jwt_decode from 'jwt-decode';
 import { Axios, signIn } from './apis';
 import { IUser } from './types';
+import { AxiosError } from 'axios';
 
 export const TOKEN_KEY = 'refine-auth';
 
@@ -75,8 +76,7 @@ export const authProvider: AuthBindings = {
     }
     return null;
   },
-  onError: async (error) => {
-    console.error(error);
-    return { error };
+  onError: async (error: AxiosError) => {
+    return { error, logout: true };
   },
 };
