@@ -2,10 +2,10 @@ import { AuthPage } from '@refinedev/core';
 import { IUser, IUserInfo } from '../../types';
 import { useState } from 'react';
 import { AxiosError } from 'axios';
-import { useMutation } from 'react-query';
 import { register } from '../../apis';
 import CustomTextField from '../../components/custom/CustomText';
 import { toast } from 'react-toastify';
+import { useMutation } from '@tanstack/react-query';
 export interface NewUser extends IUser {
   email: string;
   confirmPassword: string;
@@ -30,7 +30,8 @@ export const Register = () => {
     IUserInfo,
     AxiosError<{ error: string; message: string; statusCode: number }>,
     NewUser
-  >(register, {
+  >({
+    mutationFn: register,
     onError(error, variables, context) {
       toast(error.message, { type: 'error' });
     },

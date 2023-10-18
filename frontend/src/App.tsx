@@ -27,6 +27,10 @@ import { Layout } from './components/layout';
 import { ForgotPassword } from './pages/forgotPassword';
 import { Register } from './pages/register';
 import { Login } from './pages/login';
+import Setting from './pages/setting';
+import Profile from './pages/setting/Profile';
+import UpdatePassword from './pages/setting/UpdatePassword';
+import Category from './components/category';
 
 function App() {
   const API_URL = 'http://localhost:5000/api';
@@ -60,6 +64,13 @@ function App() {
                 }
               >
                 <Route index element={<Home />} />
+
+                <Route path="settings">
+                  <Route index element={<Setting />} />
+                  <Route path="categories" element={<Category />} />
+                  <Route path="profile" element={<Profile />} />
+                  <Route path="update-password" element={<UpdatePassword />} />
+                </Route>
 
                 <Route path="*" element={<ErrorComponent />} />
               </Route>

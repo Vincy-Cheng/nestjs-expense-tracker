@@ -13,7 +13,6 @@ export const authProvider: AuthBindings = {
       sessionStorage.setItem('access_token', access_token);
 
       Axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
-
       return {
         success: true,
         redirectTo: '/',
@@ -64,7 +63,12 @@ export const authProvider: AuthBindings = {
     const accessToken = sessionStorage.getItem('access_token');
     if (accessToken) {
       try {
-        const decoded = jwt_decode(accessToken);
+        const decoded = jwt_decode<{
+          username: string;
+          sub: number;
+          iat: number;
+          exp: number;
+        }>(accessToken);
         if (decoded) {
           return {
             ...decoded,
