@@ -10,6 +10,10 @@ This is expense tracker web application. It is built with NestJS (backend), Reac
 2. User can create multiple wallets
 3. View the expense/income distribution by pie chart, bar chart and line chart.
 
+## Branches
+
+There are 2 branch: master and refine-vite. The refine-vite branch is using refine's vite framework to develop. Both branch perform the same.
+
 ## Deploy
 
 ### Pre-requisite
