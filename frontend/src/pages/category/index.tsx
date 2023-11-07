@@ -12,9 +12,9 @@ import {
 import { ECategoryType } from '../../common/category-type';
 import { EIconName } from '../../common/icon-name.enum';
 import { ICategory, IUserInfo, ICreateCategory } from '../../types';
-import BackButton from '../custom/BackButton';
-import CategoryModal from './CategoryModal';
-import CategoryRow from './CategoryRow';
+import BackButton from '../../components/custom/BackButton';
+import CategoryModal from '../../components/category/CategoryModal';
+import CategoryRow from '../../components/category/CategoryRow';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   DragEndEvent,

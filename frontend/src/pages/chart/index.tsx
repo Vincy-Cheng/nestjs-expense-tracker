@@ -1,11 +1,9 @@
-import { useState } from 'react';
-import PieChart from '../components/chart/PieChart';
 import clsx from 'clsx';
-import CustomSelector from '../components/Custom/CustomSelector';
-import { useRecord } from '../provider/RecordDataProvider';
-import { useAppDispatch } from '../hooks';
-import { updateFavWallet } from '../store/walletSlice';
-import Trend from '../components/chart/Trend';
+import { useState } from 'react';
+import PieChart from '../../components/chart/PieChart';
+import Trend from '../../components/chart/Trend';
+import CustomSelector from '../../components/custom/CustomSelector';
+import { useRecord } from '../../provider/RecordDataProvider';
 
 type Props = {};
 
@@ -16,7 +14,6 @@ const Chart = (props: Props) => {
 
   const { wallets, favWallet } = useRecord();
 
-  const dispatch = useAppDispatch();
   return (
     <div>
       <div className=" flex justify-between">
@@ -53,7 +50,7 @@ const Chart = (props: Props) => {
             callbackAction={(value) => {
               const newFavWallet = wallets?.find((w) => w.name === value);
               if (newFavWallet) {
-                dispatch(updateFavWallet(newFavWallet.id));
+                localStorage.setItem('walletId', newFavWallet.id.toString());
               }
             }}
           />

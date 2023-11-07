@@ -1,9 +1,4 @@
-import {
-  Authenticated,
-  ErrorComponent,
-  Refine,
-  WelcomePage,
-} from '@refinedev/core';
+import { Authenticated, ErrorComponent, Refine } from '@refinedev/core';
 import { DevtoolsPanel, DevtoolsProvider } from '@refinedev/devtools';
 import { RefineKbar, RefineKbarProvider } from '@refinedev/kbar';
 
@@ -30,7 +25,14 @@ import { Login } from './pages/login';
 import Setting from './pages/setting';
 import Profile from './pages/setting/Profile';
 import UpdatePassword from './pages/setting/UpdatePassword';
-import Category from './components/category';
+import Category from './pages/category';
+import { RecordDateProvider } from './provider/RecordDataProvider';
+import Wallet from './pages/wallet';
+import Record from './pages/record';
+import Chart from './pages/chart';
+import { HiOutlineWallet } from 'react-icons/hi2';
+import { AiOutlineBarChart } from 'react-icons/ai';
+import { TbReportSearch } from 'react-icons/tb';
 
 function App() {
   const API_URL = 'http://localhost:5000/api';
@@ -49,61 +51,89 @@ function App() {
               warnWhenUnsavedChanges: true,
               projectId: 'ZeZmaZ-cpl7oS-HeyuDn',
             }}
+            resources={[
+              {
+                name: 'Wallet',
+                list: '/wallets',
+                icon: <HiOutlineWallet strokeWidth="1" />,
+              },
+              {
+                name: 'Record',
+                list: '/records',
+                icon: <TbReportSearch strokeWidth="1" />,
+              },
+              {
+                name: 'Chart',
+                list: '/charts',
+                icon: <AiOutlineBarChart strokeWidth="1" />,
+              },
+            ]}
           >
-            <Routes>
-              <Route
-                element={
-                  <Authenticated
-                    key="authenticated-inner"
-                    fallback={<CatchAllNavigate to="/login" />}
-                  >
-                    <Layout>
-                      <Outlet />
-                    </Layout>
-                  </Authenticated>
-                }
-              >
-                <Route index element={<Home />} />
-
-                <Route path="settings">
-                  <Route index element={<Setting />} />
-                  <Route path="categories" element={<Category />} />
-                  <Route path="profile" element={<Profile />} />
-                  <Route path="update-password" element={<UpdatePassword />} />
-                </Route>
-
-                <Route path="*" element={<ErrorComponent />} />
-              </Route>
-              <Route
-                element={
-                  <Authenticated
-                    key="authenticated-outer"
-                    fallback={
+            <RecordDateProvider>
+              <Routes>
+                <Route
+                  element={
+                    <Authenticated
+                      key="authenticated-inner"
+                      fallback={<CatchAllNavigate to="/login" />}
+                    >
                       <Layout>
                         <Outlet />
                       </Layout>
-                    }
-                  >
-                    <Navigate to={'/'} replace />
-                  </Authenticated>
-                }
-              >
-                <Route path="/login" element={<Login />} />
-              </Route>
-              <Route
-                element={
-                  <Layout>
-                    <Outlet />
-                  </Layout>
-                }
-              >
-                <Route path="/register" element={<Register />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-              </Route>
-            </Routes>
-            <RefineKbar />
-            <UnsavedChangesNotifier />
-            <DocumentTitleHandler />
+                    </Authenticated>
+                  }
+                >
+                  <Route index element={<Home />} />
+
+                  <Route path="settings">
+                    <Route index element={<Setting />} />
+                    <Route path="categories" element={<Category />} />
+                    <Route path="profile" element={<Profile />} />
+                    <Route
+                      path="update-password"
+                      element={<UpdatePassword />}
+                    />
+                  </Route>
+                  <Route path="wallets" element={<Wallet />}></Route>
+                  <Route path="records" element={<Record />}></Route>
+                  <Route path="charts" element={<Chart />}></Route>
+
+                  {/* Add Wallet, Category and Record pages here */}
+                  {/* Need to think how to handle the redux issue */}
+
+                  <Route path="*" element={<ErrorComponent />} />
+                </Route>
+                <Route
+                  element={
+                    <Authenticated
+                      key="authenticated-outer"
+                      fallback={
+                        <Layout>
+                          <Outlet />
+                        </Layout>
+                      }
+                    >
+                      <Navigate to={'/'} replace />
+                    </Authenticated>
+                  }
+                >
+                  <Route path="/login" element={<Login />} />
+                </Route>
+                <Route
+                  element={
+                    <Layout>
+                      <Outlet />
+                    </Layout>
+                  }
+                >
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
+                </Route>
+              </Routes>
+              <RefineKbar />
+              <UnsavedChangesNotifier />
+              <DocumentTitleHandler />{' '}
+            </RecordDateProvider>
           </Refine>
           {/* <DevtoolsPanel /> */}
         </DevtoolsProvider>

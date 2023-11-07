@@ -4,13 +4,13 @@ import { Axios, signIn } from './apis';
 import { IUser } from './types';
 import { AxiosError } from 'axios';
 
-export const TOKEN_KEY = 'refine-auth';
+export const ACCESS_TOKEN = 'access_token';
 
 export const authProvider: AuthBindings = {
   login: async (user: IUser) => {
     if (user) {
       const { access_token } = await signIn(user);
-      sessionStorage.setItem('access_token', access_token);
+      sessionStorage.setItem(ACCESS_TOKEN, access_token);
 
       Axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
       return {
@@ -29,18 +29,22 @@ export const authProvider: AuthBindings = {
   },
   logout: async () => {
     delete Axios.defaults.headers.common['Authorization'];
-    sessionStorage.removeItem('access_token');
+    sessionStorage.removeItem(ACCESS_TOKEN);
     return {
       success: true,
       redirectTo: '/login',
     };
   },
   check: async () => {
-    const accessToken = sessionStorage.getItem('access_token');
+    const accessToken = sessionStorage.getItem(ACCESS_TOKEN);
+
     if (accessToken) {
       try {
         const decoded = jwt_decode(accessToken);
         if (decoded) {
+          Axios.defaults.headers.common[
+            'Authorization'
+          ] = `Bearer ${accessToken}`;
           return {
             authenticated: true,
           };
@@ -60,7 +64,7 @@ export const authProvider: AuthBindings = {
   },
   getPermissions: async () => null,
   getIdentity: async () => {
-    const accessToken = sessionStorage.getItem('access_token');
+    const accessToken = sessionStorage.getItem(ACCESS_TOKEN);
     if (accessToken) {
       try {
         const decoded = jwt_decode<{

@@ -7,12 +7,11 @@ import {
   IRecordWithCategory,
   IWalletRecordWithCategory,
 } from '../types';
-import { useAppSelector } from '../hooks';
 import * as _ from 'lodash';
 import { DateTime } from 'luxon';
 import { GroupByScale } from '../common/group-scale.enum';
 import { displayDate, formatDate } from '../common/format-date';
-import { useAuth } from './AuthProvider';
+import { useGetIdentity } from '@refinedev/core';
 
 interface ProviderValue {
   wallets: IWalletRecordWithCategory[];
@@ -50,19 +49,24 @@ export const useRecord = () => {
 };
 
 export const RecordDateProvider = ({ children }: any) => {
-  const { userId } = useAuth();
+  const { data: userInfo } = useGetIdentity<{
+    username: string;
+    sub: number;
+    iat: number;
+    exp: number;
+  }>();
 
   const [groupBy, setGroupBy] = useState<GroupByScale>(GroupByScale.ALL);
 
   const [currentDate, setCurrentDate] = useState<number>(0);
 
-  const { data: wallets } = useQuery<IWalletRecordWithCategory[]>(
-    ['wallets', userId],
-    () => fetchWallets(userId!),
-    { enabled: !!userId },
-  );
+  const { data: wallets } = useQuery<IWalletRecordWithCategory[]>({
+    queryKey: ['wallets', userInfo?.sub],
+    queryFn: () => fetchWallets(userInfo?.sub!),
+    enabled: !!userInfo?.sub,
+  });
 
-  const { id } = useAppSelector((state) => state.wallet);
+  const id = Number(localStorage.getItem('walletId')) ?? 0;
 
   // Format the date in different format
   const dateGrouping = (scale: GroupByScale, value: IRecordWithCategory[]) => {
